@@ -1,0 +1,44 @@
+#content{
+	.chat-box{
+		padding-bottom: 5rem;
+		height: 100%;
+		
+		.chat{
+			height: 100%;
+			margin-right: $filter-theme-width;
+			overflow-y: scroll;
+			// padding-bottom: 5rem;
+		}
+	}
+
+	.chat-input{
+		position: relative;
+		bottom: 5rem;
+		margin-right: $filter-theme-width;
+		display: block;
+		    
+		.nav-wrapper{
+			border-bottom: 2px solid grey;
+		}
+
+		.input-field{
+			input{
+				margin: 0;
+				color: #636363;
+			}
+
+			label.active{
+				& ~ .material-icons{
+					color:#444;
+				}
+				.material-icons{
+					color:#444;
+				}
+			}
+
+			.send{
+				color: white;
+			}
+		}
+	}
+}

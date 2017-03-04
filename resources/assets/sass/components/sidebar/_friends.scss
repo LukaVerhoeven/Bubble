@@ -1,0 +1,43 @@
+#friends{
+	.friends{
+		height: 80%;
+		overflow:hidden;
+		transition: height .8s ease-in-out;
+
+		&.minimized{
+			height: 0;
+		}
+	}
+	.bottom{
+		height: 20%;
+		overflow: hidden;
+		overflow-y: hidden;
+		transition: height .8s ease-in-out;
+
+		&.full{
+			height: 100%;
+		}
+
+		&.overflow-delay{
+			overflow: visible;
+		}
+
+		.search-friends{
+			transition: margin-top .8s ease-in-out;
+			z-index: 0;
+
+			&.minimized{
+				margin-top: -70px;
+			}
+			
+			&.position-delay{
+			    position: relative;
+			    z-index: -9;
+			}
+		}
+
+		.search-new-friends{
+			margin-top: 40px;
+		}
+	}
+}

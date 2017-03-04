@@ -1,0 +1,17 @@
+.filter{
+	right:0;
+	top:0;
+	height: 100vh;
+	width: $filter-theme-width;
+	padding-top: $content-nav-height;
+	position: absolute;
+	
+	.side-nav{
+		-webkit-transform: translateX(0);
+		transform: translateX(0);
+		position: relative;
+		width: inherit;
+		height: 100%;
+		padding: 0;
+	}
+}

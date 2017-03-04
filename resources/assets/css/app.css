@@ -1,0 +1,273 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);html {
+  box-sizing: border-box;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
+/* // Body
+$body-bg: #f5f8fa;
+
+// Borders
+$laravel-border-color: darken($body-bg, 10%);
+$list-group-border: $laravel-border-color;
+$navbar-default-border: $laravel-border-color;
+$panel-default-border: $laravel-border-color;
+$panel-inner-border: $laravel-border-color;
+
+// Brands
+$brand-primary: #3097D1;
+$brand-info: #8eb4cb;
+$brand-success: #2ab27b;
+$brand-warning: #cbb956;
+$brand-danger: #bf5329;
+
+// Typography
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+$font-family-sans-serif: "Raleway", sans-serif;
+$font-size-base: 14px;
+$line-height-base: 1.6;
+$text-color: #636b6f;
+
+// Navbar
+$navbar-default-bg: #fff;
+
+// Buttons
+$btn-default-color: $text-color;
+
+// Inputs
+$input-border: lighten($text-color, 40%);
+$input-border-focus: lighten($brand-primary, 25%);
+$input-color-placeholder: lighten($text-color, 30%);
+
+// Panels
+$panel-default-heading-bg: #fff;
+ */
+
+#sidebar {
+  width: 28rem;
+}
+
+#sidebar .sidebar {
+  height: 100%;
+  float: left;
+  width: 100%;
+  overflow-y: hidden;
+}
+
+#sidebar .sidebar header {
+  position: absolute;
+  width: 100%;
+}
+
+#sidebar .sidebar header .profile-info {
+  padding: 1.5rem 0rem;
+  color: white;
+}
+
+#sidebar .sidebar header .profile-info .img-overflow {
+  overflow: hidden;
+  width: 6.5rem;
+  height: 6.5rem;
+}
+
+#sidebar .sidebar header .profile-info .img-overflow .profile-pic {
+  margin: 0 auto;
+  min-width: 100%;
+  height: 100%;
+  width: auto;
+}
+
+#sidebar .sidebar header .profile-info .bubble-username {
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: 0;
+  margin-top: 1.1rem;
+}
+
+#sidebar .sidebar header .profile-info .bubble-email {
+  display: block;
+  font-size: 1.3rem;
+  margin-top: 8px;
+}
+
+#sidebar .sidebar header nav div:not(.indicator),
+#sidebar .sidebar header nav ul {
+  height: 100%;
+}
+
+#sidebar .sidebar header nav div:not(.indicator) .tab,
+#sidebar .sidebar header nav ul .tab {
+  width: 20%;
+}
+
+#sidebar .sidebar header nav div:not(.indicator) .tab a.active i,
+#sidebar .sidebar header nav ul .tab a.active i {
+  color: #fff !important;
+}
+
+#sidebar .sidebar .side-nav-content {
+  height: 100%;
+  width: 100%;
+  padding-top: 50%;
+  float: left;
+}
+
+#sidebar .sidebar .side-nav-content .tab-item {
+  display: inline-block;
+  height: 100%;
+}
+
+#friends .friends {
+  height: 80%;
+  overflow: hidden;
+  -webkit-transition: height .8s ease-in-out;
+  transition: height .8s ease-in-out;
+}
+
+#friends .friends.minimized {
+  height: 0;
+}
+
+#friends .bottom {
+  height: 20%;
+  overflow: hidden;
+  overflow-y: hidden;
+  -webkit-transition: height .8s ease-in-out;
+  transition: height .8s ease-in-out;
+}
+
+#friends .bottom.full {
+  height: 100%;
+}
+
+#friends .bottom.overflow-delay {
+  overflow: visible;
+}
+
+#friends .bottom .search-friends {
+  -webkit-transition: margin-top .8s ease-in-out;
+  transition: margin-top .8s ease-in-out;
+  z-index: 0;
+}
+
+#friends .bottom .search-friends.minimized {
+  margin-top: -70px;
+}
+
+#friends .bottom .search-friends.position-delay {
+  position: relative;
+  z-index: -9;
+}
+
+#friends .bottom .search-new-friends {
+  margin-top: 40px;
+}
+
+html,
+body {
+  height: 100vh;
+}
+
+#content {
+  height: 100%;
+  margin-bottom: 0;
+  margin-left: 28rem;
+}
+
+#content .content-div {
+  height: 100%;
+  position: relative;
+}
+
+#content .content-div .nav-extended {
+  position: absolute;
+}
+
+#content .content-div .content-body {
+  height: 100%;
+}
+
+#content .content-div .content-body .tab-item {
+  height: 100%;
+  padding-top: 6rem;
+}
+
+#content .nav-content {
+  height: 6rem;
+  position: relative;
+}
+
+#content .nav-content .tabs {
+  height: 100%;
+}
+
+#content .nav-content .tabs a span {
+  font-size: 1.5rem;
+}
+
+#content .nav-content .tabs .indicator {
+  height: 5px;
+}
+
+#content .chat-box {
+  padding-bottom: 5rem;
+  height: 100%;
+}
+
+#content .chat-box .chat {
+  height: 100%;
+  margin-right: 6rem;
+  overflow-y: scroll;
+}
+
+#content .chat-input {
+  position: relative;
+  bottom: 5rem;
+  margin-right: 6rem;
+  display: block;
+}
+
+#content .chat-input .nav-wrapper {
+  border-bottom: 2px solid grey;
+}
+
+#content .chat-input .input-field input {
+  margin: 0;
+  color: #636363;
+}
+
+#content .chat-input .input-field label.active ~ .material-icons {
+  color: #444;
+}
+
+#content .chat-input .input-field label.active .material-icons {
+  color: #444;
+}
+
+#content .chat-input .input-field .send {
+  color: white;
+}
+
+.filter {
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: 6rem;
+  padding-top: 6rem;
+  position: absolute;
+}
+
+.filter .side-nav {
+  -webkit-transform: translateX(0);
+  transform: translateX(0);
+  position: relative;
+  width: inherit;
+  height: 100%;
+  padding: 0;
+}
+
+/* @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap"; */

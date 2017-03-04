@@ -1,0 +1,70 @@
+#sidebar {
+	width: $sidebar-width;
+
+	.sidebar {
+		height: 100%;
+		float: left;
+		width: 100%;
+		overflow-y: hidden;
+
+		header {
+			position: absolute;
+			width: 100%;
+
+			.profile-info {
+				padding: 1.5rem 0rem;
+				color: white;
+
+				.img-overflow {
+					overflow: hidden;
+					width: 6.5rem;
+					height: 6.5rem;
+
+					.profile-pic {
+						margin: 0 auto;
+						min-width: 100%;
+						height: 100%;
+						width: auto;
+					}
+				}
+				.bubble-username {
+					display: block;
+					font-size: $font-large;
+					margin-bottom: 0;
+					margin-top: 1.1rem;
+				}
+				.bubble-email {
+					display: block;
+					font-size: $font-medium;
+					margin-top: 8px;
+				}
+			}
+
+			nav {
+				div:not(.indicator), ul {
+					height: 100%;
+
+					.tab {
+						width: 20%;
+
+						a.active i {
+							color: #fff !important;
+						}
+					}
+				}
+			}
+		}
+
+		.side-nav-content{
+			height: 100%;
+			width: 100%;
+			padding-top: 50%;
+			float: left;
+
+			.tab-item{
+				display: inline-block;
+				height: 100%;
+			}
+		}
+	}
+}

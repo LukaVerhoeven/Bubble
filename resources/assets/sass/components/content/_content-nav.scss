@@ -1,0 +1,18 @@
+#content{
+.nav-content{
+		height: $content-nav-height;
+		position: relative;
+
+		.tabs{
+			height: 100%;
+
+			a span{
+				font-size: $font-large;
+			}
+
+			.indicator{
+				height: 5px;
+			}
+		}
+	}
+}

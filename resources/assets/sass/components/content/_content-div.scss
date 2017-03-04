@@ -1,0 +1,27 @@
+html,body{
+	height:100vh;
+}
+
+#content{
+	height:100%;
+	margin-bottom:0;
+	margin-left: $sidebar-width;
+
+	.content-div{
+		height: 100%;
+		position: relative;
+		
+		.nav-extended{
+			position: absolute;
+		}
+
+		.content-body{
+			height: 100%;
+
+			.tab-item{
+				height: 100%;
+				padding-top: $content-nav-height;
+			}
+		}
+	}
+}
