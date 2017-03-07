@@ -19,6 +19,7 @@ Route::get('/api/getChatRooms', 'ChatController@getChatRooms');
 
 Route::get('/api/message/{id?}', 'MessageController@index');
 Route::post('/api/message/{id}', 'MessageController@store');
+Route::post('/api/getThemes/{id}', 'MessageController@getThemes');
 
 Route::get('/api/searchNewFriend/{id?}', 'FriendController@searchNewFriend');
 Route::get('/api/friends', 'FriendController@getFriendList');

@@ -24,7 +24,7 @@ app.controller('FriendController',function($scope, $http, API_URL, $rootScope){
   //SEARCH NEW FRIENDS
   $scope.newfriendsearch = function (response){
       $scope.searchedfriends = response.data;
-      console.log($scope.searchedfriends);
+      // console.log($scope.searchedfriends);
   }
 
   //TODO: keypress api request--> niet te belastent voor de server? database?

@@ -41,9 +41,9 @@
 					<div id="profile" class="col s12 no-pad tab-item">profile </div>
 					<div id="friends" class="col s12 no-pad tab-item" ng-controller="FriendController">
 						<div class="js-hide-friends friends col s12">
-							<ul ng-repeat="chat in friendlist">
-								<div ng-if="chat.function === 'friendchat'">
-									<li data-id="@{{friend.friends[0].user.id}}" ng-click="openChat(chat.id , chat.name)"> @{{chat.friends[0].user.name}} </li>
+							<ul ng-repeat="item in friendlist">
+								<div ng-if="item.friendchat.function === 'friendchat'">
+									<li data-id="@{{item.friendchat.usersinchat[0].user.id}}" ng-click="openChat(item.friendchat.id , item.friendchat.usersinchat[0].user.name)"> @{{item.friendchat.usersinchat[0].user.name}} </li>
 								</div>
 							</ul>
 						</div>

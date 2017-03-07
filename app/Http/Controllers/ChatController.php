@@ -29,7 +29,7 @@ class ChatController extends Controller
         $user = Auth::user();
 
         //returns All Chats and the users in it ( without the user that is logged in)
-        $chats = Chat::with('friends')->get();
+        $chats = UsersInChat::with('friendchat')->where('user_id', $user->id )->get();
         // dd($chat);
         // $chats = UsersInChat::with('Chat')->where('user_id', $user->id )->with('friends' ,)->get();
         return $chats;

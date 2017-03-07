@@ -17,4 +17,10 @@ class UsersInChat extends Model
 	{
 		return $this->belongsTo('App\Chat','chat_id');
 	}
+
+	public function friendchat() {
+		// TODO: geef user mee
+		// $user = Auth::user();
+	    return $this->belongsTo('App\Chat','chat_id')->with('usersinchat');
+  	}
 }

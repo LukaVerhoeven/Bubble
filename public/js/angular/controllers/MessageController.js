@@ -13,28 +13,32 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
 
   //UPDATE CHAT
   $scope.successGetMessage = function (response){
-      $scope.messages = response.data;
+      $scope.messages = response.data.messages;
+      $scope.message.themes = response.data.themes;
+      $scope.message.theme = response.data.themes[0].id;
       $scope.chatID = $rootScope.chatID;
-      console.log($scope.messages );
+
       if ($scope.makeBroadcastConnection) {
           $scope.makeBroadcastConnection = false;
           $scope.broadcast($scope.chatID);
       }
   }
   
+
   $scope.update = function($id){
     $http.get(API_URL + "message" + "/" + $id)
     .then($scope.successGetMessage, $scope.errorCallback);
+    
   }
 
   //SEND A MESSAGE
   $scope.sendMessage = function(keyEvent) {
     //TODO: if id = null --> fix it ;
-    console.log(keyEvent);
     if (keyEvent.which === 13){
       $('#message-text').val('');
-      var url = API_URL + "message/" + $scope.chatID;
-    
+      //TODO: werkt alleen met rootscope nu. is het niet beter dat het met scope.chatID werkt? Anders verwijder regel 17?
+      var url = API_URL + "message/" + $rootScope.chatID;
+      console.log(url);
 
        $http({
         method: 'POST',
@@ -47,6 +51,7 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
         //     text: $scope.message.text,
         //     theme_id: $scope.message.theme
         // });
+        $scope.update($rootScope.chatID);
       },$scope.errorCallback);
     }
   }
@@ -56,7 +61,7 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
     return $rootScope.chatID;
   }, function() {
     if ($rootScope.chatID) {
-      console.log($rootScope.chatID);
+      // console.log($rootScope.chatID);
         $scope.makeBroadcastConnection = true;
         $scope.update($rootScope.chatID); 
 
@@ -80,7 +85,7 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
       })
       .listen('UpdateChat',(e)=>{
           console.log(e)
-          $scope.messages.push(e.message); // TODO=> dit is beter maar angularjs negeert updates van broadcastevents
+          // $scope.messages.push(e.message); // TODO=> dit is beter maar angularjs negeert updates van broadcastevents
           $scope.update(chatid);
       });
 };

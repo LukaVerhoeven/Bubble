@@ -21,8 +21,9 @@ class MessageController extends Controller
 
             try {
                 $messages = Message::where('chat_id', $id)->orderBy('id','asc')->get();
+                $themes = Theme::where('chat_id', $id)->get();
                 // dd($messages, $id);
-                return $messages;
+                return compact('messages', 'themes');
             } catch (Exception $e) {
                 return 'something went wrong retrieving the chat';
             }
@@ -38,7 +39,6 @@ class MessageController extends Controller
             $message->Theme()->associate($theme);
             $message->chat_id = $id;
             $message->save();
-
             $user = Auth::user();
             broadcast(new UpdateChat($message , $user, $id))->toOthers();
 
@@ -47,5 +47,10 @@ class MessageController extends Controller
             return 'wrong postcall made';
         }
  
+    }
+
+    public function getThemes($id)
+    {
+        return Theme::where('chat_id', $id)->get();
     }
 }
