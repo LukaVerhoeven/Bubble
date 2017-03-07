@@ -15,4 +15,9 @@ class Message extends Model
 	{
 		return $this->belongsTo('App\Theme','theme_id');
 	}
+
+	public function chat()
+	{
+		return $this->belongsTo('App\Chat','chat_id');
+	}
 }

@@ -1,6 +1,7 @@
 app.controller('MessageController',function($scope, $http, API_URL , $rootScope){
   $scope.message = {};
-  $scope.message.theme = 'general';
+  $scope.message.theme = '1';
+  $scope.makeBroadcastConnection = false;
 
   //ERROR
   $scope.errorCallback = function (error){
@@ -8,11 +9,17 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
       console.log("wrong call made");
   }
 
+
+
   //UPDATE CHAT
   $scope.successGetMessage = function (response){
-      $scope.messages = response.data.messages;
-      $scope.chatID = response.data.chatID;
-      console.log($scope.chatID);
+      $scope.messages = response.data;
+      $scope.chatID = $rootScope.chatID;
+      console.log($scope.messages );
+      if ($scope.makeBroadcastConnection) {
+          $scope.makeBroadcastConnection = false;
+          $scope.broadcast($scope.chatID);
+      }
   }
   
   $scope.update = function($id){
@@ -22,30 +29,61 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
 
   //SEND A MESSAGE
   $scope.sendMessage = function(keyEvent) {
-    var url = API_URL + "message/" + $scope.chatID;
     //TODO: if id = null --> fix it ;
+    console.log(keyEvent);
     if (keyEvent.which === 13){
+      $('#message-text').val('');
+      var url = API_URL + "message/" + $scope.chatID;
+    
+
        $http({
         method: 'POST',
         url: url,
         data: $.param($scope.message),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       }).then(function(response){
-        // console.log(response); 
-        $('#message-text').val('');
-        $scope.update($scope.chatID);
+        //push the message to messages collection
+        // $scope.messages.push({
+        //     text: $scope.message.text,
+        //     theme_id: $scope.message.theme
+        // });
       },$scope.errorCallback);
     }
   }
 
   //OPEN CHAT
-  $scope.$watch(function() {
-    return $rootScope.friendID;
+  $rootScope.$watch(function() {
+    return $rootScope.chatID;
   }, function() {
-    if ($rootScope.friendID) {
-        $scope.update($rootScope.friendID);
+    if ($rootScope.chatID) {
+      console.log($rootScope.chatID);
+        $scope.makeBroadcastConnection = true;
+        $scope.update($rootScope.chatID); 
+
     }
   }, true);
+
+  //BROADCAST CONNECTION
+  $scope.broadcast = function(chatid) {
+    var chatroom = 'chatroom'+ chatid;
+    Echo.join(chatroom)
+      .here((users)=>{
+        // console.log(users);
+          // this.usersInRoom = users;
+      })
+      .joining((user)=>{
+        console.log(user);
+          // this.usersInRoom.push(user);
+      })
+      .leaving((user)=>{
+          // this.usersInRoom = this.usersInRoom.filter(u => u != user);
+      })
+      .listen('UpdateChat',(e)=>{
+          console.log(e)
+          $scope.messages.push(e.message); // TODO=> dit is beter maar angularjs negeert updates van broadcastevents
+          $scope.update(chatid);
+      });
+};
 
 
 //   $scope.toggle = function (modalstate, id) {

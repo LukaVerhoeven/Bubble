@@ -26,7 +26,7 @@ class Friendship extends Model
 
     protected function getList() {
         $friends = DB::table('users')
-                    ->select('users.*')
+                    ->select('users.id', 'users.name', 'users.email')
                     ->join('friendships', 'friendships.friend_id', '=', 'users.id')
                     ->where('friendships.user_id', Auth::user()->id)
                     ->orderBy('users.name', 'desc')

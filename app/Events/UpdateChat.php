@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use App\User;
+use App\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -19,10 +21,16 @@ class UpdateChat implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($message)
+
+    public $message;
+    public $user;
+    public $roomid;
+
+    public function __construct(Message $message, User $user, $RoomId)
     {
         $this->message = $message;
-        // dd($this->message);
+        $this->user = $user;
+        $this->roomid = $RoomId;
     }
 
     /**
@@ -33,7 +41,8 @@ class UpdateChat implements ShouldBroadcast
     public function broadcastOn()
     {
         // return new PrivateChannel('channel-name');
-        return new PrivateChannel('chat', $this->message);
-        return ['my-channel'];
+        // return new PrivateChannel('privatechat', $this->message);
+        return new PresenceChannel('chatroom' . $this->roomid);
+        // return ['my-channel'];
     }
 }

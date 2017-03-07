@@ -41,8 +41,10 @@
 					<div id="profile" class="col s12 no-pad tab-item">profile </div>
 					<div id="friends" class="col s12 no-pad tab-item" ng-controller="FriendController">
 						<div class="js-hide-friends friends col s12">
-							<ul ng-repeat="friend in friendlist">
-								<li data-id="@{{friend.id}}" ng-click="openChat(friend.id, friend.name)"> @{{friend.name}} </li>
+							<ul ng-repeat="chat in friendlist">
+								<div ng-if="chat.function === 'friendchat'">
+									<li data-id="@{{friend.friends[0].user.id}}" ng-click="openChat(chat.id , chat.name)"> @{{chat.friends[0].user.name}} </li>
+								</div>
 							</ul>
 						</div>
 						<div class="js-bottom-add bottom col s12">
@@ -154,6 +156,9 @@
 			</div>
 				
 		</div>
+		<script>
+			window.Laravel = { 'csrfToken' : '{{ csrf_token() }}' };
+		</script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
 		<script src="https://js.pusher.com/4.0/pusher.min.js"></script>

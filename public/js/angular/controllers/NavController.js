@@ -4,10 +4,10 @@ app.controller('NavController',function($scope, $http, API_URL, $rootScope){
     return $rootScope.chatname;
   }, function() {
     if ($rootScope.chatname) {
-		$scope.chatname = $rootScope.chatname;
+		    $scope.chatname = $rootScope.chatname;
+        // console.log($rootScope.chatname);
     }else {
-    	$scope.chatname = 'chat';
-    	console.log($rootScope.chatname);
+          $scope.chatname = 'chat';
     }
   }, true);
 

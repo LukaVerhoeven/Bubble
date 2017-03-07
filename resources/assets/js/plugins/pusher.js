@@ -4,18 +4,18 @@ class Pusher {
     }
 
     init() {
-    	
-        Pusher.logToConsole = true;
+    	//DEBUGGER PUSHER
+  //       Pusher.logToConsole = true;
 
-		var pusher = new Pusher('f2e5a3d97d76db1562dd', {
-		  cluster: 'eu',
-		  encrypted: true
-		});
+		// var pusher = new Pusher('f2e5a3d97d76db1562dd', {
+		//   cluster: 'eu',
+		//   encrypted: true
+		// });
 
-		var channel = pusher.subscribe('my-channel');
-		channel.bind('my-event', function(data) {
-	  		alert(data.message);
-		});
+		// var channel = pusher.subscribe('chatroom');
+		// channel.bind('UpdateChat', function(data) {
+	 //  		alert(data.message);
+		// });
     }
 }
 

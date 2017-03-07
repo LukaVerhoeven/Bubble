@@ -11,15 +11,15 @@ app.controller('FriendController',function($scope, $http, API_URL, $rootScope){
   //GET FRIENDLIST
   $scope.friendList = function(response){
       $scope.friendlist = response.data;
-      console.log($scope.friendlist);
+      console.log(response.data);
   }
 
-  $scope.updateFriendlist = function(){
-    $http.get(API_URL + "friends")
+  $scope.getFriendChats = function(){
+    $http.get(API_URL + "getChatRooms")
     .then($scope.friendList, $scope.errorCallback);
   }
 
-  $scope.updateFriendlist();
+  $scope.getFriendChats();
 
   //SEARCH NEW FRIENDS
   $scope.newfriendsearch = function (response){
@@ -47,16 +47,16 @@ app.controller('FriendController',function($scope, $http, API_URL, $rootScope){
     .then(function (response) {
       if (response.data[0] === true) {
         console.log(response.data[1]); // = friendship is confirmed
-        $scope.updateFriendlist();
+        $scope.getFriendChats();
       }
     }, $scope.errorCallback);
 
   }
 
   //ENTER A CHAT
-  $scope.openChat = function (friendID , friendName){
+  $scope.openChat = function (chatID , friendName){
     $rootScope.chatname = friendName;
-    $rootScope.friendID = friendID;
+    $rootScope.chatID = chatID;
   }
 })
 

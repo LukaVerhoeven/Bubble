@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class UsersInChat extends Model
 {
@@ -11,8 +12,9 @@ class UsersInChat extends Model
 	{
 		return $this->belongsTo('App\User','user_id');
 	}
+
 	public function chat()
 	{
-		return $this->belongsTo('App\User','chat_id');
+		return $this->belongsTo('App\Chat','chat_id');
 	}
 }
