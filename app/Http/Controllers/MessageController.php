@@ -40,6 +40,8 @@ class MessageController extends Controller
             $message->chat_id = $id;
             $message->save();
             $user = Auth::user();
+            // $test = new UpdateChat($message , $user, $id);
+            // dd($test);
             broadcast(new UpdateChat($message , $user, $id))->toOthers();
 
             return 'Message record succefuly created with id: ' .$message->id;

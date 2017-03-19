@@ -4,6 +4,7 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<title>Bubble</title>
 		<link href="/css/all.css" rel="stylesheet" type="text/css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -24,13 +25,16 @@
 					</div>
 					<nav>
 						<div class="nav-content">
+							<form id="logout" action="/logout" method="POST">
+							{{ csrf_field() }}
 							<ul class="tabs tabs-transparent valign-wrapper materialize-red lighten-2">
-								<li class="tab external"><a href="{{ route('logout') }}"><i class="small material-icons col s2 ">input</i></a></li>
+								<li class="tab" onclick=""><a  href="#" onclick="document.getElementById('logout').submit()"><i class="small material-icons col s2 ">input</i></a></li>
 								<li class="tab "><a href="#profilesettings"><i class="small material-icons col s2">settings</i></a></li>
 								<li class="tab "><a href="#profile"><i class="small material-icons col s2 ">perm_identity</i></a></li>
 								<li class="tab "><a class="active" href="#friends"><i class="small material-icons col s2 ">chatbubble</i></a></li>
 								<li class="tab "><a href="#groups"><i class="small material-icons col s2">chatbubble</i></a></li>
 							</ul>
+							</form>
 							
 						</div>
 					</nav>
@@ -40,7 +44,7 @@
 					<div id="profilesettings" class="col s12 no-pad tab-item">settings </div>
 					<div id="profile" class="col s12 no-pad tab-item">profile </div>
 					<div id="friends" class="col s12 no-pad tab-item" ng-controller="FriendController">
-						<div class="js-hide-friends friends col s12">
+						<div class="js-hide-friends js-scrolldown friends col s12">
 							<ul ng-repeat="item in friendlist">
 								<div ng-if="item.friendchat.function === 'friendchat'">
 									<li data-id="@{{item.friendchat.usersinchat[0].user.id}}" ng-click="openChat(item.friendchat.id , item.friendchat.usersinchat[0].user.name)"> @{{item.friendchat.usersinchat[0].user.name}} </li>
@@ -85,76 +89,77 @@
 
 			</div>
 		</div>
+		<div class="fixed-container">
+			<div class="row " id="content">
+				<div class="col s12 no-pad content-div">
 
-		<div class="row " id="content">
-			<div class="col s12 no-pad content-div">
+					<!-- navigation content -->
+					<nav class="nav-extended" ng-controller="NavController">
+						<div class="nav-content red darken-1">
+							<ul class="tabs tabs-transparent valign-wrapper">
+								<li class="tab col s4 conversation-tab"><a class="active" href="#chat-section"><i class="small material-icons  col s2 offset-s3">chatbubble</i><span class="col s2" > @{{ chatname }} </span></a></li>
+								<li class="tab col s4 theme-tab"><a href="#test2"><i class="small material-icons  col s2 offset-s3">loyalty</i><span class="col s2">Theme</span></a></li>
+								<li class="tab col s4 settings-tab"><a href="#test3"><i class="small material-icons  col s2 offset-s3">settings</i><span class="col s2">settings</span></a></li>
+							</ul>
+						</div>
+					</nav>
 
-				<!-- navigation content -->
-				<nav class="nav-extended" ng-controller="NavController">
-					<div class="nav-content red darken-1">
-						<ul class="tabs tabs-transparent valign-wrapper">
-							<li class="tab col s4 conversation-tab"><a class="active" href="#chat-section"><i class="small material-icons  col s2 offset-s3">chatbubble</i><span class="col s2" > @{{ chatname }} </span></a></li>
-							<li class="tab col s4 theme-tab"><a href="#test2"><i class="small material-icons  col s2 offset-s3">loyalty</i><span class="col s2">Theme</span></a></li>
-							<li class="tab col s4 settings-tab"><a href="#test3"><i class="small material-icons  col s2 offset-s3">settings</i><span class="col s2">settings</span></a></li>
-						</ul>
-					</div>
-				</nav>
+					<!-- content -->
+					<section class="content-body">
 
-				<!-- content -->
-				<section class="content-body">
+						<!-- tab1 conversation-->
+						<div id="chat-section" class="col s12 tab-item" ng-controller="MessageController">
 
-					<!-- tab1 conversation-->
-					<div id="chat-section" class="col s12 tab-item" ng-controller="MessageController">
-
-						<!-- messages -->
-						<div class="chat-box">
-							<div class="chat">
-								<div ng-repeat="message in messages" class="message section card">
-									@{{ message.text }}
+							<!-- messages -->
+							<div class="chat-box">
+								<div class="chat">
+									<div ng-repeat="message in messages" class="message section card">
+										@{{ message.text }}
+									</div>
 								</div>
 							</div>
-						</div>
 
-						<!-- chat input -->
-						<div class="chat-input">
-							<nav >
-						    <div class="nav-wrapper white">
-						      <form name="frmMessage" novalidate="">
-						        <div class="input-field">
-						          <input type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)">
-						          <label class="label-icon" for="search"><i class="material-icons">note_add</i></label>
-						          <i class="material-icons send">send</i>
-						        </div>
+							<!-- chat input -->
+							<div class="chat-input">
+								<nav >
+							    <div class="nav-wrapper white">
+							      <form name="frmMessage" novalidate="">
+							        <div class="input-field">
+							          <input type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)">
+							          <label class="label-icon" for="search"><i class="material-icons">note_add</i></label>
+							          <i class="material-icons send">send</i>
+							        </div>
 
-						      </form>
-						    </div>
-						  </nav>
-						</div>
-						 
-						 <!-- filter -->
-						 <div class="filter">
-							<div class="side-nav z-depth-1">
-								<ul>
-									<li><a href=""></a></li>
-									<li><a href=""></a></li>
-									<li><a href=""></a></li>
-									<li><a href=""></a></li>
-									<li><a href=""></a></li>
-								</ul>
+							      </form>
+							    </div>
+							  </nav>
 							</div>
-						 </div>
+							 
+							 <!-- filter -->
+							 <div class="filter">
+								<div class="side-nav z-depth-1">
+									<ul>
+										<li><a href=""></a></li>
+										<li><a href=""></a></li>
+										<li><a href=""></a></li>
+										<li><a href=""></a></li>
+										<li><a href=""></a></li>
+									</ul>
+								</div>
+							 </div>
 
-					</div>
+						</div>
 
-					<!-- tab2 themes -->
-					<div id="test2" class="col s12 tab-item">Test 2 </div>
+						<!-- tab2 themes -->
+						<div id="test2" class="col s12 tab-item">Test 2 </div>
 
-					<!-- tab3 setting -->
-					<div id="test3" class="col s12 tab-item">Test 4 </div>
-				</section>
+						<!-- tab3 setting -->
+						<div id="test3" class="col s12 tab-item">Test 4 </div>
+					</section>
 
+				</div>
+					
 			</div>
-				
 		</div>
 		<script>
 			window.Laravel = { 'csrfToken' : '{{ csrf_token() }}' };

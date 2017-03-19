@@ -21,6 +21,7 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
       if ($scope.makeBroadcastConnection) {
           $scope.makeBroadcastConnection = false;
           $scope.broadcast($scope.chatID);
+
       }
   }
   
@@ -35,24 +36,23 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
   $scope.sendMessage = function(keyEvent) {
     //TODO: if id = null --> fix it ;
     if (keyEvent.which === 13){
-      $('#message-text').val('');
-      //TODO: werkt alleen met rootscope nu. is het niet beter dat het met scope.chatID werkt? Anders verwijder regel 17?
-      var url = API_URL + "message/" + $rootScope.chatID;
-      console.log(url);
+      var $textInput = $('#message-text');
+      // if the text Input is not empty send the message
+      if($textInput.val() != ""){
+          $textInput.val('');
+          //TODO: werkt alleen met rootscope nu. is het niet beter dat het met scope.chatID werkt? Anders verwijder regel 17?
+          var url = API_URL + "message/" + $rootScope.chatID;
+          console.log(url);
 
-       $http({
-        method: 'POST',
-        url: url,
-        data: $.param($scope.message),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-      }).then(function(response){
-        //push the message to messages collection
-        // $scope.messages.push({
-        //     text: $scope.message.text,
-        //     theme_id: $scope.message.theme
-        // });
-        $scope.update($rootScope.chatID);
-      },$scope.errorCallback);
+           $http({
+            method: 'POST',
+            url: url,
+            data: $.param($scope.message),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+          }).then(function(response){
+             $scope.scrollDown();
+          },$scope.errorCallback);
+      }
     }
   }
 
@@ -70,10 +70,14 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
 
   //BROADCAST CONNECTION
   $scope.broadcast = function(chatid) {
-    var chatroom = 'chatroom'+ chatid;
-    Echo.join(chatroom)
+    var chatroom = 'chatroom.'+ chatid;
+    console.log(`chatroom.${chatid}`);
+    console.log(Echo)
+
+    $scope.scrollDown();
+    Echo.join(`chatroom.${chatid}`)
       .here((users)=>{
-        // console.log(users);
+        console.log(users);
           // this.usersInRoom = users;
       })
       .joining((user)=>{
@@ -81,15 +85,51 @@ app.controller('MessageController',function($scope, $http, API_URL , $rootScope)
           // this.usersInRoom.push(user);
       })
       .leaving((user)=>{
+        console.log(user);
           // this.usersInRoom = this.usersInRoom.filter(u => u != user);
       })
       .listen('UpdateChat',(e)=>{
-          console.log(e)
-          // $scope.messages.push(e.message); // TODO=> dit is beter maar angularjs negeert updates van broadcastevents
-          $scope.update(chatid);
+          console.log(e);
+         $scope.$apply(function () {
+          $scope.messages.push({
+              text: e.message.text,
+              theme_id: e.message.theme
+          });
+        });
+          // $scope.update(chatid);
       });
 };
 
+
+
+ $scope.scrollDown = function(chatid) {
+      var $chat = $('.chat');
+      var $friend = $('.js-scrolldown');
+      setTimeout(function() {
+        $chat[0].scrollTop = $chat[0].scrollHeight;
+      }, 1);
+ };
+        
+
+    // init(){
+    //     console.log(this.$friend);
+    //     // this.$friend.on('click', 'li',  () => this.scrollDown);
+    //     this.$friend.on('click', 'li', () => {
+    //     var children = this.$chat.children().length;
+    //         // while (children === 0) {
+    //         //     children = this.$chat.children().length;
+    //         //     console.log(children);
+    //         //     this.scrollDown();
+    //         // }
+    //     });
+    // }
+
+    // scrollDown() {
+    //     console.log(this.$chat[0].scrollTop);
+    //     console.log(this.$chat[0].scrollHeight);
+        
+    // }
+// }
 
 //   $scope.toggle = function (modalstate, id) {
 //     $scope.modalstate = modalstate;

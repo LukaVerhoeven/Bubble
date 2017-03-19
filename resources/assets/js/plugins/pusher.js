@@ -5,7 +5,12 @@ class Pusher {
 
     init() {
     	//DEBUGGER PUSHER
-  //       Pusher.logToConsole = true;
+        Pusher.logToConsole = true;
+        Pusher.log = function(message) {
+		  if (window.console && window.console.log) {
+		    window.console.log(message);
+		  }
+		};
 
 		// var pusher = new Pusher('f2e5a3d97d76db1562dd', {
 		//   cluster: 'eu',
@@ -14,7 +19,7 @@ class Pusher {
 
 		// var channel = pusher.subscribe('chatroom');
 		// channel.bind('UpdateChat', function(data) {
-	 //  		alert(data.message);
+	 	//  		alert(data.message);
 		// });
     }
 }

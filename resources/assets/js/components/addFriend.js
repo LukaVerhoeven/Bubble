@@ -3,7 +3,6 @@
 
 class addFriend {
     constructor() {
-        console.log('friend');
         this.$addfriend = $('.js-add-friend');
         this.$bottom = $('.js-bottom-add');
         this.$hidefriends = $('.js-hide-friends');
@@ -14,7 +13,6 @@ class addFriend {
 
     init() {
     	this.$addfriend.on('click',()=>{
-    		console.log('test');
     		this.$bottom.toggleClass('full');
     		this.$hidefriends.toggleClass('minimized');
     		this.$searchfriends.toggleClass('minimized');

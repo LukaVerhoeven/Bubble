@@ -2,7 +2,6 @@
 
 class externalLink {
     constructor() {
-        console.log('externalLink');
         this.$external = $('.external');
         this.init();
     }

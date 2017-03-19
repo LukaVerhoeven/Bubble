@@ -1,9 +1,10 @@
 // import Carousel from './components/carousel';
 import externalLink from './helpers/externalLink';
+import AutoScrollDownChat from './helpers/autoScrollDownChat';
 import PreventDefault from './helpers/preventDefault';
 import addFriend from './components/addFriend';
 import pusher from './plugins/Pusher';
-import VueChat from './components/_vueChat';
+// import VueChat from './components/_vueChat';
 
 
 // Global variables
@@ -28,6 +29,7 @@ class App {
         //helpers
         this.externallink = new externalLink();
         this.preventdefault = new PreventDefault();
+        this.autoscrolldownchat = new AutoScrollDownChat();
     }
 
     start() {

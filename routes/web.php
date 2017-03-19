@@ -27,7 +27,7 @@ Route::post('/api/addFriend', 'FriendController@addFriend');
 
 
 Auth::routes();
-Route::get('logout','auth\LoginController@logout');
+// Route::get('logout','auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index');
 
