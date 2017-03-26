@@ -17,6 +17,7 @@ class CreateFriendshipsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('friend_id')->unsigned();
+            $table->integer('is_blocked');
             $table->boolean('confirmed');
             $table->timestamps();
 

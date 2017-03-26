@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -20,3 +20,4 @@
 	<script src="/js/all.js" charset='utf-8'></script>
 </body>
 </html>
+ --}}

@@ -13,7 +13,11 @@ const { mix } = require('laravel-mix');
    /*.js('resources/assets/materialize-src/js/bin/materialize.min.js','public/assets/all.js')*/
 
 mix.sass('resources/assets/sass/app.scss', '../resources/assets/css')
-   .js('resources/assets/js/main.js','public/js/all.js')
+   .js(
+	    'resources/assets/js/main.js',
+	    'resources/assets/js/angular/app.js',
+	    'public/js/all.js')
+   // .js('resources/assets/js/main.js','public/js/all.js')
    .sass('resources/assets/materialize-src/sass/materialize.scss', '../resources/assets/css')
    .combine([
    		'resources/assets/css/materialize.css',

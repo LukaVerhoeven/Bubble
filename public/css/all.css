@@ -9105,6 +9105,7 @@ $panel-default-heading-bg: #fff;
 
 #sidebar .sidebar header {
   position: absolute;
+  z-index: 100;
   width: 100%;
 }
 
@@ -9169,6 +9170,7 @@ $panel-default-heading-bg: #fff;
 #friends .friends {
   height: 80%;
   overflow: hidden;
+  z-index: -20;
   -webkit-transition: height .8s ease-in-out;
   transition: height .8s ease-in-out;
 }
@@ -9178,34 +9180,26 @@ $panel-default-heading-bg: #fff;
 }
 
 #friends .bottom {
-  height: 20%;
+  position: absolute;
+  background-color: white;
+  bottom: 0;
+  height: 13rem;
+  padding-top: 0;
   overflow: hidden;
   overflow-y: hidden;
-  -webkit-transition: height .8s ease-in-out;
-  transition: height .8s ease-in-out;
+  -webkit-transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
+  transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
 }
 
 #friends .bottom.full {
   height: 100%;
-}
-
-#friends .bottom.overflow-delay {
-  overflow: visible;
+  padding-top: 143px;
 }
 
 #friends .bottom .search-friends {
   -webkit-transition: margin-top .8s ease-in-out;
   transition: margin-top .8s ease-in-out;
   z-index: 0;
-}
-
-#friends .bottom .search-friends.minimized {
-  margin-top: -70px;
-}
-
-#friends .bottom .search-friends.position-delay {
-  position: relative;
-  z-index: -9;
 }
 
 #friends .bottom .search-new-friends {

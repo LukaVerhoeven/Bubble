@@ -39,6 +39,7 @@ class Friendship extends Model
           	$friendship = New Friendship;
             $friendship->User()->associate($user);
             $friendship->Friend()->associate($friendRequested);
+            $friendship->is_blocked = 0;
             $friendship->confirmed = $isConfirmed;
             $friendship->save();
 

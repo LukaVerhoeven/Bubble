@@ -2,6 +2,7 @@
 	.friends{
 		height: 80%;
 		overflow:hidden;
+		z-index: -20;
 		transition: height .8s ease-in-out;
 
 		&.minimized{
@@ -9,31 +10,23 @@
 		}
 	}
 	.bottom{
-		height: 20%;
+		position: absolute;
+		background-color: white;
+		bottom: 0;
+		height: 13rem;
+		padding-top: 0;
 		overflow: hidden;
 		overflow-y: hidden;
-		transition: height .8s ease-in-out;
+		transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
 
 		&.full{
 			height: 100%;
-		}
-
-		&.overflow-delay{
-			overflow: visible;
+			padding-top: 143px;
 		}
 
 		.search-friends{
 			transition: margin-top .8s ease-in-out;
 			z-index: 0;
-
-			&.minimized{
-				margin-top: -70px;
-			}
-			
-			&.position-delay{
-			    position: relative;
-			    z-index: -9;
-			}
 		}
 
 		.search-new-friends{
