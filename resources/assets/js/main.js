@@ -4,6 +4,8 @@ import AutoScrollDownChat from './helpers/autoScrollDownChat';
 import PreventDefault from './helpers/preventDefault';
 import addFriend from './components/addFriend';
 import pusher from './plugins/Pusher';
+import angular from 'angular';
+import angularSanitize from 'angular-sanitize';
 // import VueChat from './components/_vueChat';
 
 

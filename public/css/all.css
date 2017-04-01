@@ -9167,7 +9167,8 @@ $panel-default-heading-bg: #fff;
   height: 100%;
 }
 
-#friends .friends {
+#friends .friends,
+#groups .friends {
   height: 80%;
   overflow: hidden;
   z-index: -20;
@@ -9175,11 +9176,13 @@ $panel-default-heading-bg: #fff;
   transition: height .8s ease-in-out;
 }
 
-#friends .friends.minimized {
+#friends .friends.minimized,
+#groups .friends.minimized {
   height: 0;
 }
 
-#friends .bottom {
+#friends .bottom,
+#groups .bottom {
   position: absolute;
   background-color: white;
   bottom: 0;
@@ -9191,19 +9194,22 @@ $panel-default-heading-bg: #fff;
   transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
 }
 
-#friends .bottom.full {
+#friends .bottom.full,
+#groups .bottom.full {
   height: 100%;
   padding-top: 143px;
 }
 
-#friends .bottom .search-friends {
+#friends .bottom .search-friends,
+#groups .bottom .search-friends {
   -webkit-transition: margin-top .8s ease-in-out;
   transition: margin-top .8s ease-in-out;
   z-index: 0;
 }
 
-#friends .bottom .search-new-friends {
-  margin-top: 40px;
+#friends .bottom .search-new-friends,
+#groups .bottom .search-new-friends {
+  margin-top: 10px;
 }
 
 html,

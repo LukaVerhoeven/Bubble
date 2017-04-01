@@ -21,60 +21,18 @@ Route::get('/api/message/{id?}', 'MessageController@index');
 Route::post('/api/message/{id}', 'MessageController@store');
 Route::post('/api/getThemes/{id}', 'MessageController@getThemes');
 
-Route::get('/api/searchNewFriend/{id?}', 'FriendController@searchNewFriend');
+// friends
+Route::get('/api/searchNewFriend/{letters?}', 'FriendController@searchNewFriend');
 Route::get('/api/friends', 'FriendController@getFriendList');
 Route::post('/api/addFriend', 'FriendController@addFriend');
+Route::get('/api/searchFriend/{id?}', 'FriendController@searchFriend');
 
+//groups
+Route::post('/api/createGroup', 'GroupController@createGroup');
 
 Auth::routes();
 // Route::get('logout','auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index');
 
-// Route::get('/chatvue', 'ChatController@index') ;
-// Route::get('/api/friends', function(){
-// 	$user = Auth::user();
-// 	dd($user);
-// })->middleware('auth') ;
-
-// //pusher
-
-// Route::get('/pusher', function() {
-//     event(new App\Events\UpdateChat('Hi there Pusher!'));
-//     return "Event has been sent!";
-// });
-
-// Route::get('/bridge', function() {
-//     $pusher = App::make('pusher');
-
-//     $pusher->trigger( 'test-channel',
-//                       'test-event', 
-//                       array('text' => 'Preparing the Pusher Laracon.eu workshop!'));
-
-//     return view('welcome');
-// });
-
-
-// use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-
-// class TestEvent implements ShouldBroadcast
-// {
-//     public $text;
-
-//     public function __construct($text)
-//     {
-//         $this->text = $text;
-//     }
-
-//     public function broadcastOn()
-//     {
-//         return ['test-channel'];
-//     }
-// }
-
-// Route::get('/broadcast', function() {
-//     event(new TestEvent('Broadcasting in Laravel using Pusher!'));
-
-//     return view('welcome');
-// });
 

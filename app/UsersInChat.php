@@ -23,4 +23,11 @@ class UsersInChat extends Model
 		// $user = Auth::user();
 	    return $this->belongsTo('App\Chat','chat_id')->with('usersinchat');
   	}
+
+  	public static function create($user, $chat){
+  		$chatUser = New UsersInChat;
+    	$chatUser->User()->associate($user);
+    	$chatUser->Chat()->associate($chat);
+    	$chatUser->save();
+  	}
 }

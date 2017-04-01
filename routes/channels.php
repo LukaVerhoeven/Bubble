@@ -16,7 +16,6 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('chatroom.{id}', function ($user) {
-    // dd('droll');
     return $user;
 });
 

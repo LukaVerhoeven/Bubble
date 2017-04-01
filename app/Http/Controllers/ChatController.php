@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UsersInChat;
-use App\Chat;
 use Auth;
+use DB;
 
 class ChatController extends Controller
 {
@@ -29,9 +29,33 @@ class ChatController extends Controller
         $user = Auth::user();
 
         //returns All Chats and the users in it ( without the user that is logged in)
-        $chats = UsersInChat::with('friendchat')->where('user_id', $user->id )->get();
-        // dd($chat);
-        // $chats = UsersInChat::with('Chat')->where('user_id', $user->id )->with('friends' ,)->get();
-        return $chats;
+
+        
+        // TODO This query doet 2 keer this=> in totaal 4 calls => delete dit allemaal
+        // DB::enableQueryLog();
+        // $chats = UsersInChat::with('friendchat')->where('user_id', $user->id )->get();
+        // dd(DB::getQueryLog());
+
+        $chatID = array();
+        $groupchats = array();
+        $chats = UsersInChat::where('users_in_chats.user_id', $user->id)->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')->get();
+        foreach ($chats as $chat) {
+           array_push($chatID, $chat->id);
+           if ($chat->function === "groupschat") {
+               array_push($groupchats, $chat);
+           }
+        }
+
+        $friends = DB::table('users')
+                ->select('users.id as userid', 'users.name', 'chats.id as chatid' )
+                ->join('users_in_chats', 'users_in_chats.user_id', '=', 'users.id')
+                ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
+                ->whereIn('chats.id',$chatID)
+                ->where('users.id','!=', $user->id)
+                ->where('function', '=', 'friendchat')
+                ->orderBy('users.name', 'desc')
+                ->get();
+                
+        return compact('friends','groupchats');
     }
 }

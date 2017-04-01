@@ -49,7 +49,7 @@
 					<div id="profilesettings" class="col s12 no-pad tab-item">settings </div>
 					<div id="profile" class="col s12 no-pad tab-item">profile </div>
 					@include('chat.friends')
-					<div id="groups" class="col s12 tab-item">group chat </div>
+					@include('chat.groups')
 				</section>
 
 			</div>
@@ -91,14 +91,15 @@
 		<script>
 			window.Laravel = { 'csrfToken' : '{{ csrf_token() }}' };
 		</script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+		{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> --}}
+		{{-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> --}}
 		<script src="https://js.pusher.com/4.0/pusher.min.js"></script>
-		<script src="/js/materialize.js"></script>
 		<script src="/js/all.js"></script>
-		<script src="{{ asset('js/angular/app.js') }}"></script>
+		<script src="/js/materialize.js"></script>
+		{{-- <script src="/js/angular.js"></script> --}}
+	{{-- 	<script src="{{ asset('js/angular/app.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/MessageController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/FriendController.js') }}"></script>
-    	<script src="{{ asset('js/angular/controllers/NavController.js') }}"></script>
+    	<script src="{{ asset('js/angular/controllers/NavController.js') }}"></script> --}}
 	</body>
 </html>

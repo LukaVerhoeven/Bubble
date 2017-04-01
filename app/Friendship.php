@@ -44,24 +44,25 @@ class Friendship extends Model
             $friendship->save();
 
             if ($isConfirmed) {
-            	$chatUser1 = New UsersInChat;
-            	$chatUser2 = New UsersInChat;
+            	// $chatUser1 = New UsersInChat;
+            	// $chatUser2 = New UsersInChat;
             	$chat = New Chat;
                 
-
             	$chat->chat_name = 'friendchat';
                 $chat->function = 'friendchat';
             	$chat->save();
 
                 Theme::create($chat,'general','white');
+                UsersInChat::create($user,$chat);
+                UsersInChat::create($friendRequested,$chat);
 
-            	$chatUser1->User()->associate($user);
-            	$chatUser1->Chat()->associate($chat);
-            	$chatUser1->save();
+            	// $chatUser1->User()->associate($user);
+            	// $chatUser1->Chat()->associate($chat);
+            	// $chatUser1->save();
 
-            	$chatUser2->User()->associate($friendRequested);
-            	$chatUser2->Chat()->associate($chat);
-            	$chatUser2->save();
+            	// $chatUser2->User()->associate($friendRequested);
+            	// $chatUser2->Chat()->associate($chat);
+            	// $chatUser2->save();
             }
     }
 

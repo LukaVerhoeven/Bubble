@@ -10,7 +10,7 @@ use App\Friendship;
 
 class FriendController extends Controller
 {
-    public function searchNewFriend($id = null)
+    public function searchNewFriend($letters = null)
     {   
         $user = Auth::user();
         $friends = Friendship::getList();
@@ -21,20 +21,20 @@ class FriendController extends Controller
         foreach ($friends as $key => $friend) {
             array_push($disabledIDs, $friend->id);
         }
-
+        
         //ONLY RETURN NON-FRIEND USERS
-        if ($id == null) {
-          return User::whereNotIn('id', $disabledIDs )->orderBy('id','asc')->take(20)->get();
+        if ($letters) {
+            return User::whereNotIn('id', $disabledIDs )->where('name', 'LIKE', '%'.$letters.'%')->orderBy('id','asc')->take(20)->select('name', 'id')->get();
         }
         else {
-          return $this->show($id);
+            return null;
         }
     }
 
-    public function getFriendList()
-    {
-        return Friendship::getList();
-    }
+    // public function getFriendList()
+    // {
+    //     return Friendship::getList();
+    // }
 
     public function addFriend(Request $request)
     {

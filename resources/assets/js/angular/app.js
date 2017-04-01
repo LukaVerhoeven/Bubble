@@ -1,6 +1,2 @@
-var app = angular.module('bubble',[])
+var app = angular.module('bubble',['ngSanitize'])
         .constant('API_URL','http://bubble.local/api/')
-
-require('./controllers/FriendController');        
-require('./controllers/MessageController');        
-require('./controllers/NavController');        

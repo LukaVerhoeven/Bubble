@@ -1,5 +1,5 @@
 //vue
-require('./vue/vue'); // importeet de vue library
+// require('./vue/vue'); // importeet de vue library
 
 // Vue.component('example', require('./components/Example.vue'));
 Vue.component('chat-message', require('./vue/ChatMessage.vue'));
