@@ -1,5 +1,9 @@
 var app = angular.module('bubble',['ngSanitize'])
-        .constant('API_URL','http://bubble.local/api/');
+        // .constant('API_URL','http://bubble.local/api/');
+        // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
+        .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api');
+
+        
 
 app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) {
 
@@ -36,7 +40,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     $scope.friendList = function(response) {
         //All your friends
         $rootScope.friendlist = response.data.friends;
-        console.log($rootScope.friendlist);
+        // console.log($rootScope.friendlist);
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
@@ -54,7 +58,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     }
 
     $scope.showRequests = function(response) {
-        console.log(response.data.friendrequests);
+        // console.log(response.data.friendrequests);
         $scope.friendRequests = response.data.friendrequests;
     }
 
@@ -284,7 +288,6 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
     $scope.broadcast = function(chatid) {
         var chatroom = 'chatroom.' + chatid;
         console.log(`chatroom.${chatid}`);
-        console.log(Echo)
 
         $scope.scrollDown();
         Echo.join(`chatroom.${chatid}`)
