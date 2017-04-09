@@ -1,8 +1,14 @@
 <div id="groups" class="col s12 no-pad tab-item" ng-controller="GroupController">
 	<!-- groups -->
 	<div class="js-hide-groups js-scrolldown friends col s12">
+		<ul ng-repeat="group in groups" ng-if="group.function === 'groupschat'">
+			<li class="grey lighten-3" data-id="@{{group.chat_id}}" ng-if="!group.confirmed"> @{{group.chat_name}} 
+				<a class="btn waves-effect waves-light red" ng-click="decline(group.chat_id)">Decline</a> 
+				<a class="btn waves-effect waves-light" ng-click="accept(group.chat_id)">Accept</a>
+			</li>
+		</ul>
 		<ul ng-repeat="group in groups | filter:searchgroup" ng-if="group.function === 'groupschat'">
-			<li data-id="@{{group.chatid}}" ng-click="openChat(group.chat_id , group.chat_name)"> @{{group.chat_name}} </li>
+			<li data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , group.chat_name)"  ng-if="group.confirmed"> @{{group.chat_name}} </li>
 		</ul>
 	</div>
 
@@ -13,7 +19,7 @@
 			<div class="nav-wrapper">
 			  <form>
 			    <div class="input-field">
-			      <input id="search" type="search" placeholder="search groups" ng-model="searchgroup" required>
+			      <input id="search" type="search" placeholder="search groups" ng-model="searchgroup" autocomplete="off" required>
 			      <label class="label-icon" for="search"><i class="material-icons">search</i></label>
 			      <i class="material-icons">close</i>
 			    </div>
@@ -29,7 +35,7 @@
 			<div class="nav-wrapper">
 			  <form>
 			    <div class="input-field">
-			      <input id="search" type="search" placeholder="add friends" required>
+			      <input id="search" type="search" placeholder="add friends" autocomplete="off" required>
 			      <label class="label-icon" for="search"><i class="material-icons">search</i></label>
 			      <i class="material-icons">close</i>
 			    </div>

@@ -14,6 +14,7 @@ const { mix } = require('laravel-mix');
 
 // mix.combine([
 //    'resources/assets/js/angular/app.js',
+//    'resources/assets/js/angular/controllers/GlobalController.js',
 //    'resources/assets/js/angular/controllers/FriendController.js',
 //    'resources/assets/js/angular/controllers/GroupController.js',
 //    'resources/assets/js/angular/controllers/MessageController.js',

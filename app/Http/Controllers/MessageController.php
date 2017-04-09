@@ -20,9 +20,11 @@ class MessageController extends Controller
             $user = Auth::user();
 
             try {
-                $messages = Message::where('chat_id', $id)->orderBy('id','asc')->get();
+                $messages = Message::where('messages.chat_id', $id)
+                ->join('users', 'users.id', '=', 'messages.user_id')
+                ->orderBy('messages.id','asc')
+                ->select('messages.id','messages.chat_id','messages.theme_id', 'messages.text', 'users.name')->get();
                 $themes = Theme::where('chat_id', $id)->get();
-                // dd($messages, $id);
                 return compact('messages', 'themes');
             } catch (Exception $e) {
                 return 'something went wrong retrieving the chat';
@@ -33,22 +35,21 @@ class MessageController extends Controller
    	public function store(Request $request, $id)
     {
         try {
+            $user = Auth::user();
             $theme = Theme::where('id', $request->input('theme'))->where('chat_id', $id)->first();
             $message = New Message;
             $message->text = $request->input('text');
             $message->Theme()->associate($theme);
+            $message->User()->associate($user);
             $message->chat_id = $id;
             $message->save();
             $user = Auth::user();
-            // $test = new UpdateChat($message , $user, $id);
-            // dd($test);
             broadcast(new UpdateChat($message , $user, $id))->toOthers();
 
             return 'Message record succefuly created with id: ' .$message->id;
         } catch (Exception $e) {
             return 'wrong postcall made';
         }
- 
     }
 
     public function getThemes($id)

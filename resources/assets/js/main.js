@@ -3,9 +3,10 @@ import externalLink from './helpers/externalLink';
 import AutoScrollDownChat from './helpers/autoScrollDownChat';
 import PreventDefault from './helpers/preventDefault';
 import addFriend from './components/addFriend';
-import pusher from './plugins/Pusher';
+// import pusher from './plugins/Pusher';
 import angular from 'angular';
 import angularSanitize from 'angular-sanitize';
+// import angularSanitize from 'angular-sanitize';
 // import VueChat from './components/_vueChat';
 
 
@@ -51,9 +52,7 @@ import Echo from "laravel-echo"
 window.Echo = new Echo({
     cluster:'eu',
     broadcaster: 'pusher',
-    key: 'f2e5a3d97d76db1562dd',
+    key: '02588819c60d53b60c81',
     // encrypted: true
 });
-
-
 

@@ -32,7 +32,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(function(response) {
-            $rootScope.getFriendChats();
+
         }, $scope.errorCallback);
     }
 
@@ -70,19 +70,25 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         $scope.update(chatid, false);
     }
 
-    // UPDATE GROUPS AFTER ACCEPTING OR DECLING GROUPREQUEST
+    // LIVE UPDATE GROUPS
     $scope.update = function (id , accept) {
         if (accept) {
             $rootScope.groups.forEach(function (obj, i) {
+                console.log(obj.chat_id , id);
                 if(obj.chat_id === id){
+                    console.log(obj);
                     obj.confirmed = 1;
+                    console.log(obj);
                 }
             });
             $rootScope.groups.sort($rootScope.sort_by('chat_name', false, function(a){return a.toUpperCase()}));
         }else {
             $rootScope.groups.forEach(function (obj, i) {
+                console.log(obj.chat_id , id);
                 if(obj.chat_id === id){
+                    console.log(obj);
                     $rootScope.groups.splice(i,1);
+                    console.log(obj);
                 }
             });
         }

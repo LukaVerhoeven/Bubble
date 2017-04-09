@@ -1,6 +1,27 @@
 var app = angular.module('bubble',['ngSanitize'])
-        .constant('API_URL','http://bubble.local/api/')
+        .constant('API_URL','http://bubble.local/api/');
 
+app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) {
+
+    //SORTS AN OBJECT BY PARAMETER
+    $rootScope.sort_by = function (field, reverse, primer) {
+        var key = primer ? 
+        function(x) {return primer(x[field])} : 
+        function(x) {return x[field]};
+
+        reverse = !reverse ? 1 : -1;
+
+        return function (a, b) {
+            return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+        } 
+    }
+
+    //ENTER A CHAT
+    $rootScope.openChat = function(chatID, friendName) {
+        $rootScope.chatname = friendName;
+        $rootScope.chatID = chatID;
+    }
+})
 app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $rootScope) {
 
     $scope.newFriendInput = '';
@@ -13,18 +34,40 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     //GET FRIENDLIST
     $scope.friendList = function(response) {
+        //All your friends
         $rootScope.friendlist = response.data.friends;
+        console.log($rootScope.friendlist);
+        // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = response.data.friends;
-        console.log(response.data.groupchats);
+        // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
     }
 
-    $scope.getFriendChats = function() {
+    $rootScope.getFriendChats = function() {
         $http.get(API_URL + "getChatRooms")
             .then($scope.friendList, $scope.errorCallback);
     }
 
-    $scope.getFriendChats();
+    $scope.getFriendRequests = function() {
+        $http.get(API_URL + "friendRequests")
+            .then($scope.showRequests, $scope.errorCallback);
+    }
+
+    $scope.showRequests = function(response) {
+        console.log(response.data.friendrequests);
+        $scope.friendRequests = response.data.friendrequests;
+    }
+
+    $scope.removeRequest = function(userid) {
+       $scope.friendRequests.forEach(function (obj, i) {
+            if(obj.user_id === userid){
+                $scope.friendRequests.splice(i,1);
+            }
+        });
+    }
+     
+    $rootScope.getFriendChats();
+    $scope.getFriendRequests();
 
     //SEARCH NEW FRIENDS
     $scope.newfriendsearch = function(response) {
@@ -41,7 +84,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     }
 
     //ADD NEW FRIEND
-    $scope.addFriend = function(friendID) {
+    $scope.addFriend = function(friendID,friendrequest) {
         var newfriend = {
             newfriend: friendID
         };
@@ -55,17 +98,33 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
                 }
             })
             .then(function(response) {
+                if(friendrequest){
+                    $scope.removeRequest(friendID);
+                }
                 if (response.data[0] === true) {
                     console.log(response.data[1]); // = friendship is confirmed
-                    $scope.getFriendChats();
+                    $rootScope.getFriendChats();
                 }
             }, $scope.errorCallback);
     }
 
-    //ENTER A CHAT
-    $rootScope.openChat = function(chatID, friendName) {
-        $rootScope.chatname = friendName;
-        $rootScope.chatID = chatID;
+    //DECLINE FRIENDREQUEST
+    $scope.decline = function(friendID) {
+        var newfriend = {
+            newfriend: friendID
+        };
+        var url = API_URL + "declineFriend";
+        $http({
+                method: 'POST',
+                url: url,
+                data: $.param(newfriend),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(function(response) {
+                $scope.removeRequest(friendID);
+            }, $scope.errorCallback);
     }
 })
 app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $rootScope) {
@@ -75,7 +134,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
 
     //ERROR
     $scope.errorCallback = function(error) {
-        console.log(error)
+        // console.log(error)
         console.log("wrong call made");
     }
 
@@ -87,9 +146,10 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
                 arrayToAdd.push(obj);
             }
         });
-        arrayToAdd.sort($scope.sort_by('name', false, function(a){return a.toUpperCase()}));
+        arrayToAdd.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
     }
 
+    // CREATES A GROUP
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
         $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
@@ -101,23 +161,61 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(function(response) {
-            
+            $rootScope.getFriendChats();
         }, $scope.errorCallback);
     }
 
-    $scope.sort_by = function (field, reverse, primer) {
-        var key = primer ? 
-        function(x) {return primer(x[field])} : 
-        function(x) {return x[field]};
-
-        reverse = !reverse ? 1 : -1;
-
-        return function (a, b) {
-            return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
-        } 
+    //ACCEPT GROUP INVITE
+    $scope.accept = function (chatid) {
+        var url = API_URL + "accept";
+        $http({
+            method: 'POST',
+            url: url,
+            data: $.param({chatid : chatid}) ,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(function(response) {
+            
+        }, $scope.errorCallback);
+        $scope.update(chatid, true);
     }
 
+    //DECLINE GROUP INVITE
+    $scope.decline = function (chatid) {
+        var url = API_URL + "decline";
+        $http({
+            method: 'POST',
+            url: url,
+            data: $.param({chatid : chatid}) ,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(function(response) {
+            
+        }, $scope.errorCallback);
+        $scope.update(chatid, false);
+    }
 
+    // UPDATE GROUPS AFTER ACCEPTING OR DECLING GROUPREQUEST
+    $scope.update = function (id , accept) {
+        if (accept) {
+            $rootScope.groups.forEach(function (obj, i) {
+                if(obj.chat_id === id){
+                    obj.confirmed = 1;
+                }
+            });
+            $rootScope.groups.sort($rootScope.sort_by('chat_name', false, function(a){return a.toUpperCase()}));
+        }else {
+            $rootScope.groups.forEach(function (obj, i) {
+                if(obj.chat_id === id){
+                    $rootScope.groups.splice(i,1);
+                }
+            });
+        }
+    }
 })
 app.controller('MessageController', function($scope, $http, API_URL, $rootScope) {
     $scope.message = {};
@@ -136,15 +234,15 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
         $scope.message.themes = response.data.themes;
         $scope.message.theme = response.data.themes[0].id;
         $scope.chatID = $rootScope.chatID;
-
+        console.log($scope.messages);
         if ($scope.makeBroadcastConnection) {
             $scope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);
         }
     }
 
-    $scope.update = function($id) {
-        $http.get(API_URL + "message" + "/" + $id)
+    $scope.update = function(chatid) {
+        $http.get(API_URL + "message" + "/" + chatid)
             .then($scope.successGetMessage, $scope.errorCallback);
     }
 

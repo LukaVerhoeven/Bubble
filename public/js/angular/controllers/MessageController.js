@@ -15,7 +15,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
         $scope.message.themes = response.data.themes;
         $scope.message.theme = response.data.themes[0].id;
         $scope.chatID = $rootScope.chatID;
-
+        
         if ($scope.makeBroadcastConnection) {
             $scope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);

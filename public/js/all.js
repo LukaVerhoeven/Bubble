@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "./";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10299,6 +10299,29 @@ return jQuery;
 
 /* WEBPACK VAR INJECTION */(function($) {var app = angular.module('bubble', ['ngSanitize']).constant('API_URL', 'http://bubble.local/api/');
 
+app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope) {
+
+    //SORTS AN OBJECT BY PARAMETER
+    $rootScope.sort_by = function (field, reverse, primer) {
+        var key = primer ? function (x) {
+            return primer(x[field]);
+        } : function (x) {
+            return x[field];
+        };
+
+        reverse = !reverse ? 1 : -1;
+
+        return function (a, b) {
+            return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+        };
+    };
+
+    //ENTER A CHAT
+    $rootScope.openChat = function (chatID, friendName) {
+        $rootScope.chatname = friendName;
+        $rootScope.chatID = chatID;
+    };
+});
 app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
 
     $scope.newFriendInput = '';
@@ -10311,17 +10334,38 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
 
     //GET FRIENDLIST
     $scope.friendList = function (response) {
+        //All your friends
         $rootScope.friendlist = response.data.friends;
+        console.log($rootScope.friendlist);
+        // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = response.data.friends;
-        console.log(response.data.groupchats);
+        // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
     };
 
-    $scope.getFriendChats = function () {
+    $rootScope.getFriendChats = function () {
         $http.get(API_URL + "getChatRooms").then($scope.friendList, $scope.errorCallback);
     };
 
-    $scope.getFriendChats();
+    $scope.getFriendRequests = function () {
+        $http.get(API_URL + "friendRequests").then($scope.showRequests, $scope.errorCallback);
+    };
+
+    $scope.showRequests = function (response) {
+        console.log(response.data.friendrequests);
+        $scope.friendRequests = response.data.friendrequests;
+    };
+
+    $scope.removeRequest = function (userid) {
+        $scope.friendRequests.forEach(function (obj, i) {
+            if (obj.user_id === userid) {
+                $scope.friendRequests.splice(i, 1);
+            }
+        });
+    };
+
+    $rootScope.getFriendChats();
+    $scope.getFriendRequests();
 
     //SEARCH NEW FRIENDS
     $scope.newfriendsearch = function (response) {
@@ -10337,7 +10381,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
     };
 
     //ADD NEW FRIEND
-    $scope.addFriend = function (friendID) {
+    $scope.addFriend = function (friendID, friendrequest) {
         var newfriend = {
             newfriend: friendID
         };
@@ -10350,17 +10394,32 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(function (response) {
+            if (friendrequest) {
+                $scope.removeRequest(friendID);
+            }
             if (response.data[0] === true) {
                 console.log(response.data[1]); // = friendship is confirmed
-                $scope.getFriendChats();
+                $rootScope.getFriendChats();
             }
         }, $scope.errorCallback);
     };
 
-    //ENTER A CHAT
-    $rootScope.openChat = function (chatID, friendName) {
-        $rootScope.chatname = friendName;
-        $rootScope.chatID = chatID;
+    //DECLINE FRIENDREQUEST
+    $scope.decline = function (friendID) {
+        var newfriend = {
+            newfriend: friendID
+        };
+        var url = API_URL + "declineFriend";
+        $http({
+            method: 'POST',
+            url: url,
+            data: $.param(newfriend),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(function (response) {
+            $scope.removeRequest(friendID);
+        }, $scope.errorCallback);
     };
 });
 app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
@@ -10370,7 +10429,7 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
 
     //ERROR
     $scope.errorCallback = function (error) {
-        console.log(error);
+        // console.log(error)
         console.log("wrong call made");
     };
 
@@ -10382,11 +10441,12 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
                 arrayToAdd.push(obj);
             }
         });
-        arrayToAdd.sort($scope.sort_by('name', false, function (a) {
+        arrayToAdd.sort($rootScope.sort_by('name', false, function (a) {
             return a.toUpperCase();
         }));
     };
 
+    // CREATES A GROUP
     $scope.createGroup = function () {
         var url = API_URL + "createGroup";
         $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname);
@@ -10397,21 +10457,57 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
-        }).then(function (response) {}, $scope.errorCallback);
+        }).then(function (response) {
+            $rootScope.getFriendChats();
+        }, $scope.errorCallback);
     };
 
-    $scope.sort_by = function (field, reverse, primer) {
-        var key = primer ? function (x) {
-            return primer(x[field]);
-        } : function (x) {
-            return x[field];
-        };
+    //ACCEPT GROUP INVITE
+    $scope.accept = function (chatid) {
+        var url = API_URL + "accept";
+        $http({
+            method: 'POST',
+            url: url,
+            data: $.param({ chatid: chatid }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(function (response) {}, $scope.errorCallback);
+        $scope.update(chatid, true);
+    };
 
-        reverse = !reverse ? 1 : -1;
+    //DECLINE GROUP INVITE
+    $scope.decline = function (chatid) {
+        var url = API_URL + "decline";
+        $http({
+            method: 'POST',
+            url: url,
+            data: $.param({ chatid: chatid }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(function (response) {}, $scope.errorCallback);
+        $scope.update(chatid, false);
+    };
 
-        return function (a, b) {
-            return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
-        };
+    // UPDATE GROUPS AFTER ACCEPTING OR DECLING GROUPREQUEST
+    $scope.update = function (id, accept) {
+        if (accept) {
+            $rootScope.groups.forEach(function (obj, i) {
+                if (obj.chat_id === id) {
+                    obj.confirmed = 1;
+                }
+            });
+            $rootScope.groups.sort($rootScope.sort_by('chat_name', false, function (a) {
+                return a.toUpperCase();
+            }));
+        } else {
+            $rootScope.groups.forEach(function (obj, i) {
+                if (obj.chat_id === id) {
+                    $rootScope.groups.splice(i, 1);
+                }
+            });
+        }
     };
 });
 app.controller('MessageController', function ($scope, $http, API_URL, $rootScope) {
@@ -10431,15 +10527,15 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         $scope.message.themes = response.data.themes;
         $scope.message.theme = response.data.themes[0].id;
         $scope.chatID = $rootScope.chatID;
-
+        console.log($scope.messages);
         if ($scope.makeBroadcastConnection) {
             $scope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);
         }
     };
 
-    $scope.update = function ($id) {
-        $http.get(API_URL + "message" + "/" + $id).then($scope.successGetMessage, $scope.errorCallback);
+    $scope.update = function (chatid) {
+        $http.get(API_URL + "message" + "/" + chatid).then($scope.successGetMessage, $scope.errorCallback);
     };
 
     //SEND A MESSAGE
@@ -10538,14 +10634,12 @@ app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_preventDefault__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_preventDefault___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__helpers_preventDefault__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_addFriend__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plugins_Pusher__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__plugins_Pusher___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__plugins_Pusher__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_angular__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_angular_sanitize__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_angular_sanitize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_angular_sanitize__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_laravel_echo__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_laravel_echo__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_angular__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular_sanitize__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular_sanitize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_angular_sanitize__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_laravel_echo__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_laravel_echo__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -10555,9 +10649,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
+// import pusher from './plugins/Pusher';
 
 
-
+// import angularSanitize from 'angular-sanitize';
 // import VueChat from './components/_vueChat';
 
 
@@ -10604,12 +10699,12 @@ $(document).ready(function () {
 
 
 
-window.Echo = new __WEBPACK_IMPORTED_MODULE_7_laravel_echo___default.a({
+window.Echo = new __WEBPACK_IMPORTED_MODULE_6_laravel_echo___default.a({
     cluster: 'eu',
     broadcaster: 'pusher',
-    key: 'f2e5a3d97d76db1562dd'
+    key: '02588819c60d53b60c81'
 });
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(15)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(14)))
 
 /***/ }),
 /* 3 */
@@ -44904,49 +44999,6 @@ module.exports = PreventDefault;
 
 /***/ }),
 /* 13 */
-/***/ (function(module, exports) {
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Pusher = function () {
-				function Pusher() {
-								_classCallCheck(this, Pusher);
-
-								this.init();
-				}
-
-				_createClass(Pusher, [{
-								key: "init",
-								value: function init() {
-												//DEBUGGER PUSHER
-												Pusher.logToConsole = true;
-												Pusher.log = function (message) {
-																if (window.console && window.console.log) {
-																				window.console.log(message);
-																}
-												};
-
-												// var pusher = new Pusher('f2e5a3d97d76db1562dd', {
-												//   cluster: 'eu',
-												//   encrypted: true
-												// });
-
-												// var channel = pusher.subscribe('chatroom');
-												// channel.bind('UpdateChat', function(data) {
-												//  		alert(data.message);
-												// });
-								}
-				}]);
-
-				return Pusher;
-}();
-
-module.exports = Pusher;
-
-/***/ }),
-/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {var asyncGenerator = function () {
@@ -45720,7 +45772,7 @@ module.exports = Echo;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports) {
 
 var g;
@@ -45747,7 +45799,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(2);

@@ -15,15 +15,15 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
         $scope.message.themes = response.data.themes;
         $scope.message.theme = response.data.themes[0].id;
         $scope.chatID = $rootScope.chatID;
-
+        console.log($scope.messages);
         if ($scope.makeBroadcastConnection) {
             $scope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);
         }
     }
 
-    $scope.update = function($id) {
-        $http.get(API_URL + "message" + "/" + $id)
+    $scope.update = function(chatid) {
+        $http.get(API_URL + "message" + "/" + chatid)
             .then($scope.successGetMessage, $scope.errorCallback);
     }
 
@@ -65,7 +65,6 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
     $scope.broadcast = function(chatid) {
         var chatroom = 'chatroom.' + chatid;
         console.log(`chatroom.${chatid}`);
-        console.log(Echo)
 
         $scope.scrollDown();
         Echo.join(`chatroom.${chatid}`)

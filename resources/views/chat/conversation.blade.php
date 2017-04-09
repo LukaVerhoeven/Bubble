@@ -3,8 +3,11 @@
 	<!-- messages -->
 	<div class="chat-box">
 		<div class="chat">
-			<div ng-repeat="message in messages" class="message section card">
-				@{{ message.text }}
+			<div class="message-wrapper" ng-repeat="message in messages">
+				<p>@{{ message.name }}</p>
+				<div class="message section card">
+					@{{ message.text }}
+				</div>
 			</div>
 		</div>
 	</div>

@@ -25,10 +25,14 @@ Route::post('/api/getThemes/{id}', 'MessageController@getThemes');
 Route::get('/api/searchNewFriend/{letters?}', 'FriendController@searchNewFriend');
 Route::get('/api/friends', 'FriendController@getFriendList');
 Route::post('/api/addFriend', 'FriendController@addFriend');
+Route::post('/api/declineFriend', 'FriendController@decline');
+Route::get('/api/friendRequests', 'FriendController@getFriendRequests');
 Route::get('/api/searchFriend/{id?}', 'FriendController@searchFriend');
 
 //groups
 Route::post('/api/createGroup', 'GroupController@createGroup');
+Route::post('/api/accept', 'GroupController@accept');
+Route::post('/api/decline', 'GroupController@decline');
 
 Auth::routes();
 // Route::get('logout','auth\LoginController@logout');

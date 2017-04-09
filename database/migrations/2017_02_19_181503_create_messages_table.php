@@ -18,10 +18,12 @@ class CreateMessagesTable extends Migration
           $table->string('text');
           $table->integer('theme_id')->unsigned();
           $table->integer('chat_id')->unsigned();
+          $table->integer('user_id')->unsigned();
           $table->timestamps();
 
           $table->foreign('theme_id')->references('id')->on('themes')->onDelete('cascade');
           $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');
+          $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

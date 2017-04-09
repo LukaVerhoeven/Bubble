@@ -10,7 +10,7 @@
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	</head>
 	<body>
-
+		<div ng-controller="GlobalController"></div>
 		<!-- Sidebar -->
 		<div class="side-nav fixed " id="sidebar">
 			<div class="no-pad sidebar">
@@ -91,15 +91,19 @@
 		<script>
 			window.Laravel = { 'csrfToken' : '{{ csrf_token() }}' };
 		</script>
-		{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> --}}
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		{{-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> --}}
-		<script src="https://js.pusher.com/4.0/pusher.min.js"></script>
+		{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.6.4/angular-sanitize.js"></script> --}}
+
+		<script src="//js.pusher.com/4.0/pusher.min.js"></script>
 		<script src="/js/all.js"></script>
 		<script src="/js/materialize.js"></script>
 		{{-- <script src="/js/angular.js"></script> --}}
-	{{-- 	<script src="{{ asset('js/angular/app.js') }}"></script>
-    	<script src="{{ asset('js/angular/controllers/MessageController.js') }}"></script>
+		{{-- <script src="{{ asset('js/angular/app.js') }}"></script> --}}
+    {{-- 	<script src="{{ asset('js/angular/controllers/MessageController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/FriendController.js') }}"></script>
-    	<script src="{{ asset('js/angular/controllers/NavController.js') }}"></script> --}}
+    	<script src="{{ asset('js/angular/controllers/NavController.js') }}"></script>
+    	<script src="{{ asset('js/angular/controllers/GlobalController.js') }}"></script>
+    	<script src="{{ asset('js/angular/controllers/GroupController.js') }}"></script> --}}
 	</body>
 </html>

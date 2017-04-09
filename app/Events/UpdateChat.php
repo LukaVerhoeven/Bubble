@@ -43,6 +43,6 @@ class UpdateChat implements ShouldBroadcast
         // return new PrivateChannel('channel-name');
         // return new PrivateChannel('privatechat', $this->message);
         return new PresenceChannel('chatroom.' . $this->roomid);
-        // return ['my-channel'];
+        // return ['chatroom.3'];
     }
 }

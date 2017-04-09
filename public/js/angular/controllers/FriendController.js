@@ -1,4 +1,4 @@
-app.controller('FriendController', function($scope, $http, API_URL, $rootScope) {
+app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $rootScope) {
 
     $scope.newFriendInput = '';
 
@@ -10,8 +10,14 @@ app.controller('FriendController', function($scope, $http, API_URL, $rootScope) 
 
     //GET FRIENDLIST
     $scope.friendList = function(response) {
-        $scope.friendlist = response.data;
-        console.log(response.data);
+        //All your friends
+        $rootScope.friendlist = response.data.friends;
+        // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
+        $rootScope.friendsForGroup = response.data.friends;
+        // All your groups (GroupController)
+        $rootScope.groups = response.data.groupchats;
+        // TODO SORT this in backend
+        // $rootScope.groups.sort($rootScope.sort_by('chat_name', false, function(a){return a.toUpperCase()}));
     }
 
     $scope.getFriendChats = function() {
@@ -28,9 +34,10 @@ app.controller('FriendController', function($scope, $http, API_URL, $rootScope) 
     }
 
     //TODO: keypress api request--> te belastent voor de server? database?
-    $scope.updateFriendSearch = function() {
+    $scope.updateFriendSearch = function(letters) {
         //TODO: don't display blocked user ( migrate database )
-        $http.get(API_URL + "searchNewFriend")
+        $validate = $sanitize(letters)
+        $http.get(API_URL + "searchNewFriend/" + $validate)
             .then($scope.newfriendsearch, $scope.errorCallback);
     }
 
@@ -56,9 +63,5 @@ app.controller('FriendController', function($scope, $http, API_URL, $rootScope) 
             }, $scope.errorCallback);
     }
 
-    //ENTER A CHAT
-    $scope.openChat = function(chatID, friendName) {
-        $rootScope.chatname = friendName;
-        $rootScope.chatID = chatID;
-    }
+
 })

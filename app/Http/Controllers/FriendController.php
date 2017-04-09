@@ -38,32 +38,54 @@ class FriendController extends Controller
 
     public function addFriend(Request $request)
     {
-	    $user = Auth::user();
-	    
-        $newFriendID = $request->input('newfriend');
-        $friendRequested = User::where('id', $newFriendID)->first();
+        try {
+    	    $user = Auth::user();
+            $newFriendID = $request->input('newfriend');
+            $friendRequested = User::where('id', $newFriendID)->first();
 
-        //if user already requested this friendship
-        $userAlreadyRequested = Friendship::where('user_id', $user->id)->where('friend_id', $friendRequested->id)->first();
-        //if the friend already requested for a friendship => friendship get confirmed
-        $friendrequest = Friendship::where('user_id', $friendRequested->id)->where('friend_id', $user->id)->first();
+            //if user already requested this friendship
+            $userAlreadyRequested = Friendship::where('user_id', $user->id)->where('friend_id', $friendRequested->id)->first();
+            //if the friend already requested for a friendship => friendship get confirmed
+            $friendrequest = Friendship::where('user_id', $friendRequested->id)->where('friend_id', $user->id)->first();
 
-        if ($userAlreadyRequested) {
-            return 'friendship is already requested';
-        }elseif ($friendrequest) {
-            //CONFIRM FRIEND REQUEST
-            Friendship::confirm($friendrequest);
+            if ($userAlreadyRequested) {
+                return 'friendship is already requested';
+            }elseif ($friendrequest) {
+                //CONFIRM FRIEND REQUEST
+                Friendship::confirm($friendrequest);
 
-            //CREATE 2 WAY FRIENDSHIP
-            Friendship::create($user , $friendRequested, 1);
+                //CREATE 2 WAY FRIENDSHIP
+                Friendship::create($user , $friendRequested, 1);
 
-            return array(true,'friendship is confirmed');
-        }else{
-            Friendship::create($user , $friendRequested, 0);
-            return 'friendship is requested';
+                return array(true,'friendship is confirmed');
+            }else{
+                Friendship::create($user , $friendRequested, 0);
+                return 'friendship is requested';
+            }
+        } catch (Exception $e) {
+            return 'something went wrong with the friendrequest';
         }
 
-        return 'something went wrong with the friendrequest';
+    }
+
+    public function decline(Request $request)
+    {
+        $user = Auth::user();
+        $newFriendID = $request->input('newfriend');
+        $friendRequested = User::where('id', $newFriendID)->first();
+        $friendship = Friendship::where('user_id', $friendRequested->id)->where('friend_id', $user->id)->first();
+        $friendship->delete();
+        return 'request declined';
+    }
+
+    public function getFriendRequests()
+    {
+        $user = Auth::user();
+        $friendrequests = Friendship::where('friendships.friend_id',$user->id)
+                        ->join('users','users.id','friendships.user_id')
+                        ->select('friendships.*','users.name')
+                        ->where('friendships.confirmed',0)->get();
+        return compact('friendrequests');
     }
     
 }

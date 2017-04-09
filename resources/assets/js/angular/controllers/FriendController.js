@@ -10,18 +10,40 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     //GET FRIENDLIST
     $scope.friendList = function(response) {
+        //All your friends
         $rootScope.friendlist = response.data.friends;
+        // console.log($rootScope.friendlist);
+        // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = response.data.friends;
-        console.log(response.data.groupchats);
+        // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
     }
 
-    $scope.getFriendChats = function() {
+    $rootScope.getFriendChats = function() {
         $http.get(API_URL + "getChatRooms")
             .then($scope.friendList, $scope.errorCallback);
     }
 
-    $scope.getFriendChats();
+    $scope.getFriendRequests = function() {
+        $http.get(API_URL + "friendRequests")
+            .then($scope.showRequests, $scope.errorCallback);
+    }
+
+    $scope.showRequests = function(response) {
+        // console.log(response.data.friendrequests);
+        $scope.friendRequests = response.data.friendrequests;
+    }
+
+    $scope.removeRequest = function(userid) {
+       $scope.friendRequests.forEach(function (obj, i) {
+            if(obj.user_id === userid){
+                $scope.friendRequests.splice(i,1);
+            }
+        });
+    }
+     
+    $rootScope.getFriendChats();
+    $scope.getFriendRequests();
 
     //SEARCH NEW FRIENDS
     $scope.newfriendsearch = function(response) {
@@ -38,7 +60,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     }
 
     //ADD NEW FRIEND
-    $scope.addFriend = function(friendID) {
+    $scope.addFriend = function(friendID,friendrequest) {
         var newfriend = {
             newfriend: friendID
         };
@@ -52,16 +74,32 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
                 }
             })
             .then(function(response) {
+                if(friendrequest){
+                    $scope.removeRequest(friendID);
+                }
                 if (response.data[0] === true) {
                     console.log(response.data[1]); // = friendship is confirmed
-                    $scope.getFriendChats();
+                    $rootScope.getFriendChats();
                 }
             }, $scope.errorCallback);
     }
 
-    //ENTER A CHAT
-    $rootScope.openChat = function(chatID, friendName) {
-        $rootScope.chatname = friendName;
-        $rootScope.chatID = chatID;
+    //DECLINE FRIENDREQUEST
+    $scope.decline = function(friendID) {
+        var newfriend = {
+            newfriend: friendID
+        };
+        var url = API_URL + "declineFriend";
+        $http({
+                method: 'POST',
+                url: url,
+                data: $.param(newfriend),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(function(response) {
+                $scope.removeRequest(friendID);
+            }, $scope.errorCallback);
     }
 })

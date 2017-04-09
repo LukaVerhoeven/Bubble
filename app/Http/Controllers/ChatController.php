@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UsersInChat;
+use App\Friendship;
 use Auth;
 use DB;
 
@@ -38,7 +39,7 @@ class ChatController extends Controller
 
         $chatID = array();
         $groupchats = array();
-        $chats = UsersInChat::where('users_in_chats.user_id', $user->id)->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')->get();
+        $chats = UsersInChat::where('users_in_chats.user_id', $user->id)->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')->orderBy('chats.chat_name', 'asc')->get();
         foreach ($chats as $chat) {
            array_push($chatID, $chat->id);
            if ($chat->function === "groupschat") {
@@ -53,9 +54,17 @@ class ChatController extends Controller
                 ->whereIn('chats.id',$chatID)
                 ->where('users.id','!=', $user->id)
                 ->where('function', '=', 'friendchat')
-                ->orderBy('users.name', 'desc')
+                ->orderBy('users.name', 'asc')
                 ->get();
+
                 
         return compact('friends','groupchats');
+    }
+
+    public function getFriendRequests()
+    {
+        $user = Auth::user();
+        $getFriendrequests = Friendship::where('friend_id',$user->id)->get();
+        return compact('getFriendrequests');
     }
 }
