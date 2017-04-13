@@ -9,9 +9,17 @@
 @import "components/sidebar/sidebar-header";
 @import "components/sidebar/friends";
 
+//Content
 @import "components/content/content-div";
 @import "components/content/content-nav";
+// chat
 @import "components/content/chat/content-chat";
 @import "components/content/chat/content-filter";
+// settings
+@import "components/content/settings/settings-div";
+
+// Helpers
+@import "Helpers/helpers";
+
 // Bootstrap
 /* @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap"; */

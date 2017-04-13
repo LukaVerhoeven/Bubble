@@ -1,7 +1,7 @@
 app.controller('MessageController', function($scope, $http, API_URL, $rootScope) {
     $scope.message = {};
     $scope.message.theme = '1';
-    $scope.makeBroadcastConnection = false;
+    $rootScope.makeBroadcastConnection = false;
 
     //ERROR
     $scope.errorCallback = function(error) {
@@ -14,15 +14,19 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
         $scope.messages = response.data.messages;
         $scope.message.themes = response.data.themes;
         $scope.message.theme = response.data.themes[0].id;
+        $scope.username = response.data.username;
         $scope.chatID = $rootScope.chatID;
-        console.log($scope.messages);
-        if ($scope.makeBroadcastConnection) {
-            $scope.makeBroadcastConnection = false;
+        if ($rootScope.makeBroadcastConnection) {
+            // If you are already in a chatroom. First leave this one. => than make a new broadcast connection.
+            if($scope.currentChatroom){
+                Echo.leave($scope.currentChatroom);
+            }
+            $rootScope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);
         }
     }
 
-    $scope.update = function(chatid) {
+    $rootScope.updateChat = function(chatid) {
         $http.get(API_URL + "message" + "/" + chatid)
             .then($scope.successGetMessage, $scope.errorCallback);
     }
@@ -51,19 +55,11 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
         }
     }
 
-    //OPEN CHAT
-    $rootScope.$watch(function() {
-        return $rootScope.chatID;
-    }, function() {
-        if ($rootScope.chatID) {
-            $scope.makeBroadcastConnection = true;
-            $scope.update($rootScope.chatID);
-        }
-    }, true);
+
 
     //BROADCAST CONNECTION
     $scope.broadcast = function(chatid) {
-        var chatroom = 'chatroom.' + chatid;
+        $scope.currentChatroom = `chatroom.${chatid}`;
         console.log(`chatroom.${chatid}`);
 
         $scope.scrollDown();
@@ -85,7 +81,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
                 $scope.$apply(function() {
                     $scope.messages.push({
                         text: e.message.text,
-                        theme_id: e.message.theme
+                        theme_id: e.message.theme,
+                        name: e.user.name
                     });
                 });
             });

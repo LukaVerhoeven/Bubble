@@ -27,10 +27,6 @@
         cluster:'eu',
         encrypted:false,
     });
-    var channel = pusher.subscribe('test-channel');
-    channel.bind('room', function(data) {
-        console.log(data);
-    });
 </script>
 
 </head>

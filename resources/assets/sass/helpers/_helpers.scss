@@ -1,0 +1,11 @@
+$gutter: .75rem;
+#bubble{
+	// extra = when the element above has a drop shadow
+	.top-gutter-double-extra{
+		padding-top: $gutter*2+.1;
+	}
+
+	.bottom-gutter-double{
+		padding-bottom: $gutter*2;
+	}
+}

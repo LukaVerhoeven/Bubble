@@ -2,8 +2,6 @@
 
 namespace App\Events;
 
-use App\User;
-use App\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -12,19 +10,19 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class UpdateChat implements ShouldBroadcast
+class UserEvents implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
-    public $user;
-    public $roomid;
+    public $userid;
+    public $event;
+    public $data;
 
-    public function __construct(Message $message, User $user, $RoomId)
+    public function __construct($userid, $event, $object)
     {
-        $this->message = $message;
-        $this->user = $user;
-        $this->roomid = $RoomId;
+        $this->userid = $userid;
+        $this->event = $event;
+        $this->data = $object;
     }
 
     /**
@@ -34,6 +32,6 @@ class UpdateChat implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('chatroom.' . $this->roomid);
+        return new PresenceChannel('user.' . $this->userid);
     }
 }

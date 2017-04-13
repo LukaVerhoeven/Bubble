@@ -8,6 +8,10 @@
 			margin-right: $filter-theme-width;
 			overflow-y: scroll;
 			// padding-bottom: 5rem;
+
+			.message{
+				z-index: -1;
+			}
 		}
 	}
 

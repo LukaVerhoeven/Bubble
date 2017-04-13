@@ -12,7 +12,7 @@ class GroupController extends Controller
 {
     public function createGroup(Request $request)
     {	
-		 $this->validate($request, [
+		$this->validate($request, [
             'chatname'		=>   'string',
         ]);
 
@@ -29,6 +29,7 @@ class GroupController extends Controller
             	$friendInChat = new UsersInChat;
     	        $friendInChat->user_id = $value['userid'];
     	        $friendInChat->Chat()->associate($chat);
+                $friendInChat->admin = 0;
                 $friendInChat->confirmed = 0;
     	        $friendInChat->save();
             }

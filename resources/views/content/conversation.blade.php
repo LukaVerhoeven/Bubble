@@ -4,7 +4,8 @@
 	<div class="chat-box">
 		<div class="chat">
 			<div class="message-wrapper" ng-repeat="message in messages">
-				<p>@{{ message.name }}</p>
+				<p ng-if="message.name != username">@{{ message.name }}</p>
+				<p ng-if="message.name === username">You</p>
 				<div class="message section card">
 					@{{ message.text }}
 				</div>

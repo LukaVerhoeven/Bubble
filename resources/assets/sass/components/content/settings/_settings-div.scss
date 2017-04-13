@@ -1,0 +1,20 @@
+#chat-settings {
+	.margin-div {
+		height: 100%;
+	}
+
+	.settings-layout {
+		height: 100%;
+		margin: 0;
+
+		.card-content {
+			p {
+				float: left;
+			}
+
+			.right {
+				float: right;
+			}
+		}
+	}
+}

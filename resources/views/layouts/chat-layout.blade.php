@@ -9,7 +9,7 @@
 		<link href="/css/all.css" rel="stylesheet" type="text/css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	</head>
-	<body>
+	<body id="bubble">
 		<div ng-controller="GlobalController"></div>
 		<!-- Sidebar -->
 		<div class="side-nav fixed " id="sidebar">
@@ -48,8 +48,8 @@
 				<section class="side-nav-content row">
 					<div id="profilesettings" class="col s12 no-pad tab-item">settings </div>
 					<div id="profile" class="col s12 no-pad tab-item">profile </div>
-					@include('chat.friends')
-					@include('chat.groups')
+					@include('sidebar.friends')
+					@include('sidebar.groups')
 				</section>
 
 			</div>
@@ -66,7 +66,7 @@
 							<ul class="tabs tabs-transparent valign-wrapper">
 								<li class="tab col s4 conversation-tab"><a class="active" href="#chat-section"><i class="small material-icons  col s2 offset-s3">chatbubble</i><span class="col s2" > @{{ chatname }} </span></a></li>
 								<li class="tab col s4 theme-tab"><a href="#test2"><i class="small material-icons  col s2 offset-s3">loyalty</i><span class="col s2">Theme</span></a></li>
-								<li class="tab col s4 settings-tab"><a href="#test3"><i class="small material-icons  col s2 offset-s3">settings</i><span class="col s2">settings</span></a></li>
+								<li class="tab col s4 settings-tab"><a href="#chat-settings"><i class="small material-icons  col s2 offset-s3">settings</i><span class="col s2">settings</span></a></li>
 							</ul>
 						</div>
 					</nav>
@@ -75,13 +75,13 @@
 					<section class="content-body">
 
 						<!-- tab1 conversation-->
-						@include('chat.conversation')
+						@include('content.conversation')
 
 						<!-- tab2 themes -->
 						<div id="test2" class="col s12 tab-item">Test 2 </div>
 
 						<!-- tab3 setting -->
-						<div id="test3" class="col s12 tab-item">Test 4 </div>
+						@include('content.chat-settings')
 					</section>
 
 				</div>

@@ -11,12 +11,16 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     //GET FRIENDLIST
     $scope.friendList = function(response) {
         //All your friends
+        console.log(response.data);
         $rootScope.friendlist = response.data.friends;
         // console.log($rootScope.friendlist);
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
+        // make User-broadcast connection
+        $scope.userid = response.data.userid;
+        $rootScope.broadcastUser($scope.userid);
     }
 
     $rootScope.getFriendChats = function() {
@@ -30,14 +34,14 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     }
 
     $scope.showRequests = function(response) {
-        // console.log(response.data.friendrequests);
-        $scope.friendRequests = response.data.friendrequests;
+        console.log(response.data.friendrequests);
+        $rootScope.friendRequests = response.data.friendrequests;
     }
 
     $scope.removeRequest = function(userid) {
-       $scope.friendRequests.forEach(function (obj, i) {
+       $rootScope.friendRequests.forEach(function (obj, i) {
             if(obj.user_id === userid){
-                $scope.friendRequests.splice(i,1);
+                $rootScope.friendRequests.splice(i,1);
             }
         });
     }

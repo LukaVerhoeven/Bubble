@@ -10324,6 +10324,37 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         $rootScope.chatname = friendName;
         $rootScope.chatID = chatID;
     };
+
+    //OPEN CHAT
+    $rootScope.$watch(function () {
+        return $rootScope.chatID;
+    }, function () {
+        if ($rootScope.chatID) {
+            $rootScope.makeBroadcastConnection = true;
+            $rootScope.updateChat($rootScope.chatID);
+        }
+    }, true);
+
+    // Make a broadcast connection for the user to create Real-time action. (ex. friendrequest)
+    $rootScope.broadcastUser = function (userid) {
+        console.log('user.' + userid);
+
+        Echo.join('user.' + userid).here(function (users) {
+            console.log(users);
+            // this.usersInRoom = users;
+        }).joining(function (user) {
+            console.log(user);
+            // this.usersInRoom.push(user);
+        }).leaving(function (user) {
+            console.log(user);
+            // this.usersInRoom = this.usersInRoom.filter(u => u != user);
+        }).listen('UserEvents', function (e) {
+            console.log(e);
+            $scope.$apply(function () {
+                $rootScope.friendRequests.push(e.data);
+            });
+        });
+    };
 });
 app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
 
@@ -10338,12 +10369,16 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
     //GET FRIENDLIST
     $scope.friendList = function (response) {
         //All your friends
+        console.log(response.data);
         $rootScope.friendlist = response.data.friends;
         // console.log($rootScope.friendlist);
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
+        // make User-broadcast connection
+        $scope.userid = response.data.userid;
+        $rootScope.broadcastUser($scope.userid);
     };
 
     $rootScope.getFriendChats = function () {
@@ -10355,14 +10390,14 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
     };
 
     $scope.showRequests = function (response) {
-        // console.log(response.data.friendrequests);
-        $scope.friendRequests = response.data.friendrequests;
+        console.log(response.data.friendrequests);
+        $rootScope.friendRequests = response.data.friendrequests;
     };
 
     $scope.removeRequest = function (userid) {
-        $scope.friendRequests.forEach(function (obj, i) {
+        $rootScope.friendRequests.forEach(function (obj, i) {
             if (obj.user_id === userid) {
-                $scope.friendRequests.splice(i, 1);
+                $rootScope.friendRequests.splice(i, 1);
             }
         });
     };
@@ -10516,7 +10551,7 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
 app.controller('MessageController', function ($scope, $http, API_URL, $rootScope) {
     $scope.message = {};
     $scope.message.theme = '1';
-    $scope.makeBroadcastConnection = false;
+    $rootScope.makeBroadcastConnection = false;
 
     //ERROR
     $scope.errorCallback = function (error) {
@@ -10529,15 +10564,19 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         $scope.messages = response.data.messages;
         $scope.message.themes = response.data.themes;
         $scope.message.theme = response.data.themes[0].id;
+        $scope.username = response.data.username;
         $scope.chatID = $rootScope.chatID;
-        console.log($scope.messages);
-        if ($scope.makeBroadcastConnection) {
-            $scope.makeBroadcastConnection = false;
+        if ($rootScope.makeBroadcastConnection) {
+            // If you are already in a chatroom. First leave this one. => than make a new broadcast connection.
+            if ($scope.currentChatroom) {
+                Echo.leave($scope.currentChatroom);
+            }
+            $rootScope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);
         }
     };
 
-    $scope.update = function (chatid) {
+    $rootScope.updateChat = function (chatid) {
         $http.get(API_URL + "message" + "/" + chatid).then($scope.successGetMessage, $scope.errorCallback);
     };
 
@@ -10565,19 +10604,9 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         }
     };
 
-    //OPEN CHAT
-    $rootScope.$watch(function () {
-        return $rootScope.chatID;
-    }, function () {
-        if ($rootScope.chatID) {
-            $scope.makeBroadcastConnection = true;
-            $scope.update($rootScope.chatID);
-        }
-    }, true);
-
     //BROADCAST CONNECTION
     $scope.broadcast = function (chatid) {
-        var chatroom = 'chatroom.' + chatid;
+        $scope.currentChatroom = 'chatroom.' + chatid;
         console.log('chatroom.' + chatid);
 
         $scope.scrollDown();
@@ -10595,7 +10624,8 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
             $scope.$apply(function () {
                 $scope.messages.push({
                     text: e.message.text,
-                    theme_id: e.message.theme
+                    theme_id: e.message.theme,
+                    name: e.user.name
                 });
             });
         });
@@ -10609,6 +10639,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         }, 1);
     };
 });
+app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API_URL, $rootScope) {});
 app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 
     $scope.$watch(function () {

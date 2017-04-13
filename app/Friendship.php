@@ -44,8 +44,6 @@ class Friendship extends Model
             $friendship->save();
 
             if ($isConfirmed) {
-            	// $chatUser1 = New UsersInChat;
-            	// $chatUser2 = New UsersInChat;
             	$chat = New Chat;
                 
             	$chat->chat_name = 'friendchat';
@@ -55,15 +53,16 @@ class Friendship extends Model
                 Theme::create($chat,'general','white');
                 UsersInChat::create($user,$chat);
                 UsersInChat::create($friendRequested,$chat);
-
-            	// $chatUser1->User()->associate($user);
-            	// $chatUser1->Chat()->associate($chat);
-            	// $chatUser1->save();
-
-            	// $chatUser2->User()->associate($friendRequested);
-            	// $chatUser2->Chat()->associate($chat);
-            	// $chatUser2->save();
+            }else{
+                // return a friendrequest that can be broadcasted
+                return response()->json([
+                    'confirmed' => $friendship->confirmed,
+                    'name' => $user->name,
+                    'is_blocked' => $friendship->is_blocked ,
+                    'user_id' => $user->id
+                ]);
             }
+
     }
 
     protected function confirm($friendrequest) {

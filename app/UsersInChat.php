@@ -28,6 +28,7 @@ class UsersInChat extends Model
   		$chatUser = New UsersInChat;
     	$chatUser->User()->associate($user);
     	$chatUser->Chat()->associate($chat);
+    	$chatUser->admin = 1;
     	$chatUser->confirmed = 1;
     	$chatUser->save();
   	}

@@ -19,6 +19,10 @@ Broadcast::channel('chatroom.{id}', function ($user) {
     return $user;
 });
 
+Broadcast::channel('user.{id}', function ($user) {
+    return $user;
+});
+
 // Broadcast::channel('chatroom', function ($user) {
 //     return $user;
 // });

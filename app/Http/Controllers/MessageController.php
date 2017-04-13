@@ -18,6 +18,7 @@ class MessageController extends Controller
         }
         else {
             $user = Auth::user();
+            $username = $user->name;
 
             try {
                 $messages = Message::where('messages.chat_id', $id)
@@ -25,7 +26,7 @@ class MessageController extends Controller
                 ->orderBy('messages.id','asc')
                 ->select('messages.id','messages.chat_id','messages.theme_id', 'messages.text', 'users.name')->get();
                 $themes = Theme::where('chat_id', $id)->get();
-                return compact('messages', 'themes');
+                return compact('messages', 'themes','username');
             } catch (Exception $e) {
                 return 'something went wrong retrieving the chat';
             }
@@ -35,6 +36,12 @@ class MessageController extends Controller
    	public function store(Request $request, $id)
     {
         try {
+
+            $this->validate($request, [
+                'theme'      =>   'integer',
+                'chat_id'      =>   'integer'
+            ]);
+            
             $user = Auth::user();
             $theme = Theme::where('id', $request->input('theme'))->where('chat_id', $id)->first();
             $message = New Message;

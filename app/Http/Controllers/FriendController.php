@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\User;
 use App\Friendship;
+use App\Events\UserEvents;
 
 class FriendController extends Controller
 {
@@ -59,7 +60,9 @@ class FriendController extends Controller
 
                 return array(true,'friendship is confirmed');
             }else{
-                Friendship::create($user , $friendRequested, 0);
+                //SEND FRIEND_REQUEST
+                $request = Friendship::create($user , $friendRequested, 0);
+                broadcast(new UserEvents($newFriendID , "friendrequest" , $request->getData()))->toOthers();
                 return 'friendship is requested';
             }
         } catch (Exception $e) {

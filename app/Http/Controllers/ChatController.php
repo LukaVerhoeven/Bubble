@@ -28,10 +28,10 @@ class ChatController extends Controller
     public function getChatRooms()
     {
         $user = Auth::user();
+        $userid = $user->id;
 
         //returns All Chats and the users in it ( without the user that is logged in)
 
-        
         // TODO This query doet 2 keer this=> in totaal 4 calls => delete dit allemaal
         // DB::enableQueryLog();
         // $chats = UsersInChat::with('friendchat')->where('user_id', $user->id )->get();
@@ -58,13 +58,8 @@ class ChatController extends Controller
                 ->get();
 
                 
-        return compact('friends','groupchats');
+        return compact('friends','groupchats','userid');
     }
 
-    public function getFriendRequests()
-    {
-        $user = Auth::user();
-        $getFriendrequests = Friendship::where('friend_id',$user->id)->get();
-        return compact('getFriendrequests');
-    }
+
 }

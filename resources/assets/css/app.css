@@ -232,6 +232,10 @@ body {
   overflow-y: scroll;
 }
 
+#content .chat-box .chat .message {
+  z-index: -1;
+}
+
 #content .chat-input {
   position: relative;
   bottom: 5rem;
@@ -276,6 +280,31 @@ body {
   width: inherit;
   height: 100%;
   padding: 0;
+}
+
+#chat-settings .margin-div {
+  height: 100%;
+}
+
+#chat-settings .settings-layout {
+  height: 100%;
+  margin: 0;
+}
+
+#chat-settings .settings-layout .card-content p {
+  float: left;
+}
+
+#chat-settings .settings-layout .card-content .right {
+  float: right;
+}
+
+#bubble .top-gutter-double-extra {
+  padding-top: 1.6rem;
+}
+
+#bubble .bottom-gutter-double {
+  padding-bottom: 1.5rem;
 }
 
 /* @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap"; */

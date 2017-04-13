@@ -17,6 +17,7 @@ class CreateUsersInChatTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('chat_id')->unsigned();
+            $table->boolean('admin');
             $table->boolean('confirmed');
             $table->timestamps();
 
