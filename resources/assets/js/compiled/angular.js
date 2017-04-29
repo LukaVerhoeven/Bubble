@@ -6,8 +6,8 @@ var app = angular.module('bubble',['ngSanitize'])
         
 
 app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) {
-
-    //SORTS AN OBJECT BY PARAMETER
+    // GLOBAL FUNCTIONS
+    // SORTS AN OBJECT BY PARAMETER
     $rootScope.sort_by = function (field, reverse, primer) {
         var key = primer ? 
         function(x) {return primer(x[field])} : 
@@ -20,13 +20,63 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         } 
     }
 
-    //ENTER A CHAT
-    $rootScope.openChat = function(chatID, friendName) {
-        $rootScope.chatname = friendName;
-        $rootScope.chatID = chatID;
+    // ERROR
+    $rootScope.errorCallback = function(error) {
+        // console.log(error);
+        console.log("wrong call made");
     }
 
-    //OPEN CHAT
+    //POST FUNCTION
+    $rootScope.postRequest = function(data ,url ,responseAction) {
+        var url = API_URL + url;
+        $http({
+                method: 'POST',
+                url: url,
+                data: $.param(data),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(function(response) {
+                $scope.postResponse(responseAction);
+            }, $rootScope.errorCallback);
+    };
+
+    // RESPONSE FUNCTION
+    $rootScope.postResponse = function(responseAction) {
+        // calls a function with the name 'responseAction' if this one exists
+        if(angular.isFunction($scope[responseAction])){
+            $scope[responseAction]();
+        }
+    };
+
+    // REMOVE AN ELEMENT FROM AN OBJECT
+    $rootScope.removeObjectElement = function(data, value) {
+        data.forEach(function (obj, i) {
+            for (var key in obj) {
+                if(obj[key] == value){
+                    console.log(i, data);
+                    data.splice(i,1);
+                }
+            }
+        });
+    }
+
+    // MULTICONTROLLER FUNCTIONS
+    // ENTER A CHAT
+    $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin) {
+        // Chat
+        $rootScope.chatname = friendName;
+        console.log($rootScope.chatname, friendName);
+        $rootScope.chatID = chatID;
+        $rootScope.friendID = friendID;
+        // Settings
+        $rootScope.chatFunction = chatFunction;
+        $rootScope.groupFriends = friends;
+        $rootScope.isChatAdmin = userIsAdmin;
+    }
+
+    // OPEN CHAT
     $rootScope.$watch(function() {
         return $rootScope.chatID;
     }, function() {
@@ -38,49 +88,55 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
 
     // Make a broadcast connection for the user to create Real-time action. (ex. friendrequest)
     $rootScope.broadcastUser = function(userid) {
-        console.log(`user.${userid}`);
 
         Echo.join(`user.${userid}`)
             .here((users) => {
-                console.log(users);
                 // this.usersInRoom = users;
             })
             .joining((user) => {
-                console.log(user);
                 // this.usersInRoom.push(user);
             })
             .leaving((user) => {
-                console.log(user);
                 // this.usersInRoom = this.usersInRoom.filter(u => u != user);
             })
             .listen('UserEvents', (e) => {
-                console.log(e);
-                $scope.$apply(function() {
+                 $scope.$apply(function() {
                     $rootScope.friendRequests.push(e.data);
                 });
             });
     };
+
+
+
+})
+app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
+    //DELETE FRIEND Confirmed
+    $rootScope.deleteFriendConfirmed = function() {
+        $rootScope.postRequest($rootScope.friendDeleteData ,'deleteFriend', 'removeFriend' );
+         $scope.Close();
+    }
+
+	//DELETE FRIEND Declined
+    $scope.Close = function() {
+    	$('#Alerts').removeClass('open');
+        $('.alertbox').removeClass('open');
+    }
+
 })
 app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $rootScope) {
 
     $scope.newFriendInput = '';
 
-    //ERROR
-    $scope.errorCallback = function(error) {
-        // console.log(error);
-        console.log("wrong call made");
-    }
-
-    //GET FRIENDLIST
+    // GET FRIENDLIST AND GROUPCHATS
     $scope.friendList = function(response) {
         //All your friends
-        console.log(response.data);
+        // console.log(response.data);
         $rootScope.friendlist = response.data.friends;
-        // console.log($rootScope.friendlist);
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
+        console.log($rootScope.groups);
         // make User-broadcast connection
         $scope.userid = response.data.userid;
         $rootScope.broadcastUser($scope.userid);
@@ -88,16 +144,15 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     $rootScope.getFriendChats = function() {
         $http.get(API_URL + "getChatRooms")
-            .then($scope.friendList, $scope.errorCallback);
+            .then($scope.friendList, $rootScope.errorCallback);
     }
 
     $scope.getFriendRequests = function() {
         $http.get(API_URL + "friendRequests")
-            .then($scope.showRequests, $scope.errorCallback);
+            .then($scope.showRequests, $rootScope.errorCallback);
     }
 
     $scope.showRequests = function(response) {
-        console.log(response.data.friendrequests);
         $rootScope.friendRequests = response.data.friendrequests;
     }
 
@@ -112,21 +167,21 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     $rootScope.getFriendChats();
     $scope.getFriendRequests();
 
-    //SEARCH NEW FRIENDS
+    // SEARCH NEW FRIENDS
     $scope.newfriendsearch = function(response) {
         $scope.searchedfriends = response.data;
         // console.log($scope.searchedfriends);
     }
 
-    //TODO: keypress api request--> te belastent voor de server? database?
+    // TODO: keypress api request--> te belastent voor de server? database?
     $scope.updateFriendSearch = function(letters) {
         //TODO: don't display blocked user ( migrate database )
         $validate = $sanitize(letters)
         $http.get(API_URL + "searchNewFriend/" + $validate)
-            .then($scope.newfriendsearch, $scope.errorCallback);
+            .then($scope.newfriendsearch, $rootScope.errorCallback);
     }
 
-    //ADD NEW FRIEND
+    // ADD NEW FRIEND
     $scope.addFriend = function(friendID,friendrequest) {
         var newfriend = {
             newfriend: friendID
@@ -146,14 +201,15 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
                 }
                 if (response.data[0] === true) {
                     console.log(response.data[1]); // = friendship is confirmed
+                    // TODO fix dit front-end gewijs of maak nieuwe functie update friendchat
                     $rootScope.getFriendChats();
                 }
-            }, $scope.errorCallback);
+            }, $rootScope.errorCallback);
     }
 
-    //DECLINE FRIENDREQUEST
+    // DECLINE FRIENDREQUEST
     $scope.decline = function(friendID) {
-        var newfriend = {
+        var friendID = {
             newfriend: friendID
         };
         var url = API_URL + "declineFriend";
@@ -167,19 +223,29 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
             })
             .then(function(response) {
                 $scope.removeRequest(friendID);
-            }, $scope.errorCallback);
+            }, $rootScope.errorCallback);
+    }
+
+    //DELETE FRIEND
+    $rootScope.deleteFriend = function() {
+        var data = {
+            newfriend : $rootScope.friendID,
+            chatID : $rootScope.chatID
+        };
+        $rootScope.friendDeleteData = data;
+        $('#Alerts').addClass('open');
+        $('#DeleteFriendAlert').addClass('open');
+    }
+
+    // REMOVE FRIEND FROM FRIENDLIST (visualy)
+    $rootScope.removeFriend = function() {
+         $rootScope.removeObjectElement($rootScope.friendlist, $rootScope.chatID);
     }
 })
 app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $rootScope) {
 
     $scope.newGroup = {};
     $scope.newGroup.friends = [];
-
-    //ERROR
-    $scope.errorCallback = function(error) {
-        // console.log(error)
-        console.log("wrong call made");
-    }
 
     //ADD AND REMOVE FRIENDS TO THE NEW GROUP
     $scope.toggleFriendToGroup = function(id, array, arrayToAdd){
@@ -192,7 +258,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         arrayToAdd.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
     }
 
-    // CREATES A GROUP
+    //CREATES A GROUP
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
         $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
@@ -205,7 +271,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
             }
         }).then(function(response) {
             $rootScope.getFriendChats();
-        }, $scope.errorCallback);
+        }, $rootScope.errorCallback);
     }
 
     //ACCEPT GROUP INVITE
@@ -242,7 +308,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         $scope.update(chatid, false);
     }
 
-    // UPDATE GROUPS AFTER ACCEPTING OR DECLING GROUPREQUEST
+    //UPDATE GROUPS AFTER ACCEPTING OR DECLING GROUPREQUEST
     $scope.update = function (id , accept) {
         if (accept) {
             $rootScope.groups.forEach(function (obj, i) {
@@ -265,12 +331,6 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
     $scope.message.theme = '1';
     $rootScope.makeBroadcastConnection = false;
 
-    //ERROR
-    $scope.errorCallback = function(error) {
-        // console.log(error);
-        console.log("wrong call made");
-    }
-
     //UPDATE CHAT
     $scope.successGetMessage = function(response) {
         $scope.messages = response.data.messages;
@@ -290,7 +350,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
 
     $rootScope.updateChat = function(chatid) {
         $http.get(API_URL + "message" + "/" + chatid)
-            .then($scope.successGetMessage, $scope.errorCallback);
+            .then($scope.successGetMessage, $rootScope.errorCallback);
     }
 
     //SEND A MESSAGE
@@ -312,7 +372,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
                     }
                 }).then(function(response) {
                     $scope.scrollDown();
-                }, $scope.errorCallback);
+                }, $rootScope.errorCallback);
             }
         }
     }
@@ -339,7 +399,6 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
                 // this.usersInRoom = this.usersInRoom.filter(u => u != user);
             })
             .listen('UpdateChat', (e) => {
-                console.log(e);
                 $scope.$apply(function() {
                     $scope.messages.push({
                         text: e.message.text,

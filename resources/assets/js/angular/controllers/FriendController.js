@@ -2,22 +2,16 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     $scope.newFriendInput = '';
 
-    //ERROR
-    $scope.errorCallback = function(error) {
-        // console.log(error);
-        console.log("wrong call made");
-    }
-
-    //GET FRIENDLIST
+    // GET FRIENDLIST AND GROUPCHATS
     $scope.friendList = function(response) {
         //All your friends
-        console.log(response.data);
+        // console.log(response.data);
         $rootScope.friendlist = response.data.friends;
-        // console.log($rootScope.friendlist);
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
+        console.log($rootScope.groups);
         // make User-broadcast connection
         $scope.userid = response.data.userid;
         $rootScope.broadcastUser($scope.userid);
@@ -25,16 +19,15 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     $rootScope.getFriendChats = function() {
         $http.get(API_URL + "getChatRooms")
-            .then($scope.friendList, $scope.errorCallback);
+            .then($scope.friendList, $rootScope.errorCallback);
     }
 
     $scope.getFriendRequests = function() {
         $http.get(API_URL + "friendRequests")
-            .then($scope.showRequests, $scope.errorCallback);
+            .then($scope.showRequests, $rootScope.errorCallback);
     }
 
     $scope.showRequests = function(response) {
-        console.log(response.data.friendrequests);
         $rootScope.friendRequests = response.data.friendrequests;
     }
 
@@ -49,21 +42,21 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     $rootScope.getFriendChats();
     $scope.getFriendRequests();
 
-    //SEARCH NEW FRIENDS
+    // SEARCH NEW FRIENDS
     $scope.newfriendsearch = function(response) {
         $scope.searchedfriends = response.data;
         // console.log($scope.searchedfriends);
     }
 
-    //TODO: keypress api request--> te belastent voor de server? database?
+    // TODO: keypress api request--> te belastent voor de server? database?
     $scope.updateFriendSearch = function(letters) {
         //TODO: don't display blocked user ( migrate database )
         $validate = $sanitize(letters)
         $http.get(API_URL + "searchNewFriend/" + $validate)
-            .then($scope.newfriendsearch, $scope.errorCallback);
+            .then($scope.newfriendsearch, $rootScope.errorCallback);
     }
 
-    //ADD NEW FRIEND
+    // ADD NEW FRIEND
     $scope.addFriend = function(friendID,friendrequest) {
         var newfriend = {
             newfriend: friendID
@@ -83,14 +76,15 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
                 }
                 if (response.data[0] === true) {
                     console.log(response.data[1]); // = friendship is confirmed
+                    // TODO fix dit front-end gewijs of maak nieuwe functie update friendchat
                     $rootScope.getFriendChats();
                 }
-            }, $scope.errorCallback);
+            }, $rootScope.errorCallback);
     }
 
-    //DECLINE FRIENDREQUEST
+    // DECLINE FRIENDREQUEST
     $scope.decline = function(friendID) {
-        var newfriend = {
+        var friendID = {
             newfriend: friendID
         };
         var url = API_URL + "declineFriend";
@@ -104,6 +98,22 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
             })
             .then(function(response) {
                 $scope.removeRequest(friendID);
-            }, $scope.errorCallback);
+            }, $rootScope.errorCallback);
+    }
+
+    //DELETE FRIEND
+    $rootScope.deleteFriend = function() {
+        var data = {
+            newfriend : $rootScope.friendID,
+            chatID : $rootScope.chatID
+        };
+        $rootScope.friendDeleteData = data;
+        $('#Alerts').addClass('open');
+        $('#DeleteFriendAlert').addClass('open');
+    }
+
+    // REMOVE FRIEND FROM FRIENDLIST (visualy)
+    $rootScope.removeFriend = function() {
+         $rootScope.removeObjectElement($rootScope.friendlist, $rootScope.chatID);
     }
 })

@@ -3,12 +3,6 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     $scope.newGroup = {};
     $scope.newGroup.friends = [];
 
-    //ERROR
-    $scope.errorCallback = function(error) {
-        // console.log(error)
-        console.log("wrong call made");
-    }
-
     //ADD AND REMOVE FRIENDS TO THE NEW GROUP
     $scope.toggleFriendToGroup = function(id, array, arrayToAdd){
         array.forEach(function (obj, i) {
@@ -20,7 +14,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         arrayToAdd.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
     }
 
-    // CREATES A GROUP
+    //CREATES A GROUP
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
         $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
@@ -33,7 +27,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
             }
         }).then(function(response) {
             $rootScope.getFriendChats();
-        }, $scope.errorCallback);
+        }, $rootScope.errorCallback);
     }
 
     //ACCEPT GROUP INVITE
@@ -70,7 +64,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         $scope.update(chatid, false);
     }
 
-    // UPDATE GROUPS AFTER ACCEPTING OR DECLING GROUPREQUEST
+    //UPDATE GROUPS AFTER ACCEPTING OR DECLING GROUPREQUEST
     $scope.update = function (id , accept) {
         if (accept) {
             $rootScope.groups.forEach(function (obj, i) {

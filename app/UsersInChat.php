@@ -8,6 +8,7 @@ use Auth;
 class UsersInChat extends Model
 {
 	protected $fillable = ['user_id', 'chat_id'];
+
 	public function user()
 	{
 		return $this->belongsTo('App\User','user_id');

@@ -47,125 +47,45 @@ $input-color-placeholder: lighten($text-color, 30%);
 $panel-default-heading-bg: #fff;
  */
 
-#sidebar {
-  width: 28rem;
+#bubble .top-gutter-double-extra {
+  padding-top: 1.6rem;
 }
 
-#sidebar .sidebar {
-  height: 100%;
-  float: left;
-  width: 100%;
-  overflow-y: hidden;
+#bubble .bottom-gutter-double {
+  padding-bottom: 1.5rem;
 }
 
-#sidebar .sidebar header {
-  position: absolute;
-  z-index: 100;
-  width: 100%;
-}
-
-#sidebar .sidebar header .profile-info {
-  padding: 1.5rem 0rem;
-  color: white;
-}
-
-#sidebar .sidebar header .profile-info .img-overflow {
-  overflow: hidden;
-  width: 6.5rem;
-  height: 6.5rem;
-}
-
-#sidebar .sidebar header .profile-info .img-overflow .profile-pic {
-  margin: 0 auto;
-  min-width: 100%;
-  height: 100%;
-  width: auto;
-}
-
-#sidebar .sidebar header .profile-info .bubble-username {
-  display: block;
-  font-size: 1.5rem;
-  margin-bottom: 0;
-  margin-top: 1.1rem;
-}
-
-#sidebar .sidebar header .profile-info .bubble-email {
-  display: block;
-  font-size: 1.3rem;
-  margin-top: 8px;
-}
-
-#sidebar .sidebar header nav div:not(.indicator),
-#sidebar .sidebar header nav ul {
-  height: 100%;
-}
-
-#sidebar .sidebar header nav div:not(.indicator) .tab,
-#sidebar .sidebar header nav ul .tab {
-  width: 20%;
-}
-
-#sidebar .sidebar header nav div:not(.indicator) .tab a.active i,
-#sidebar .sidebar header nav ul .tab a.active i {
-  color: #fff !important;
-}
-
-#sidebar .sidebar .side-nav-content {
+#Alerts {
+  position: fixed;
   height: 100%;
   width: 100%;
-  padding-top: 50%;
-  float: left;
+  z-index: -2;
 }
 
-#sidebar .sidebar .side-nav-content .tab-item {
-  display: inline-block;
+#Alerts.open {
+  z-index: 1000;
+}
+
+#Alerts .alertbox {
+  opacity: 0;
+}
+
+#Alerts .alertbox.open {
+  opacity: 1;
+  position: fixed;
+  width: 100%;
   height: 100%;
+  background: rgba(0, 0, 0, 0.32);
 }
 
-#friends .friends,
-#groups .friends {
-  height: 80%;
-  overflow: hidden;
-  overflow-y: scroll;
-  z-index: -20;
-  -webkit-transition: height .8s ease-in-out;
-  transition: height .8s ease-in-out;
-}
-
-#friends .friends.minimized,
-#groups .friends.minimized {
-  height: 0;
-}
-
-#friends .bottom,
-#groups .bottom {
-  position: absolute;
-  background-color: white;
-  bottom: 0;
-  height: 13rem;
-  padding-top: 0;
-  overflow: hidden;
-  overflow-y: hidden;
-  -webkit-transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
-  transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
-}
-
-#friends .bottom.full,
-#groups .bottom.full {
-  height: 100%;
-  padding-top: 143px;
-}
-
-#friends .bottom .search-friends,
-#groups .bottom .search-friends {
-  -webkit-transition: margin-top .8s ease-in-out;
-  transition: margin-top .8s ease-in-out;
-  z-index: 0;
-}
-
-#friends .bottom .search-new-friends,
-#groups .bottom .search-new-friends {
-  margin-top: 10px;
+#Alerts .alertbox.open .modal-content {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  width: 50%;
+  margin: auto;
+  text-align: center;
 }
 
 html,
@@ -299,12 +219,125 @@ body {
   float: right;
 }
 
-#bubble .top-gutter-double-extra {
-  padding-top: 1.6rem;
+#sidebar {
+  width: 28rem;
 }
 
-#bubble .bottom-gutter-double {
-  padding-bottom: 1.5rem;
+#sidebar .sidebar {
+  height: 100%;
+  float: left;
+  width: 100%;
+  overflow-y: hidden;
+}
+
+#sidebar .sidebar header {
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+}
+
+#sidebar .sidebar header .profile-info {
+  padding: 1.5rem 0rem;
+  color: white;
+}
+
+#sidebar .sidebar header .profile-info .img-overflow {
+  overflow: hidden;
+  width: 6.5rem;
+  height: 6.5rem;
+}
+
+#sidebar .sidebar header .profile-info .img-overflow .profile-pic {
+  margin: 0 auto;
+  min-width: 100%;
+  height: 100%;
+  width: auto;
+}
+
+#sidebar .sidebar header .profile-info .bubble-username {
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: 0;
+  margin-top: 1.1rem;
+}
+
+#sidebar .sidebar header .profile-info .bubble-email {
+  display: block;
+  font-size: 1.3rem;
+  margin-top: 8px;
+}
+
+#sidebar .sidebar header nav div:not(.indicator),
+#sidebar .sidebar header nav ul {
+  height: 100%;
+}
+
+#sidebar .sidebar header nav div:not(.indicator) .tab,
+#sidebar .sidebar header nav ul .tab {
+  width: 20%;
+}
+
+#sidebar .sidebar header nav div:not(.indicator) .tab a.active i,
+#sidebar .sidebar header nav ul .tab a.active i {
+  color: #fff !important;
+}
+
+#sidebar .sidebar .side-nav-content {
+  height: 100%;
+  width: 100%;
+  padding-top: 50%;
+  float: left;
+}
+
+#sidebar .sidebar .side-nav-content .tab-item {
+  display: inline-block;
+  height: 100%;
+}
+
+#friends .friends,
+#groups .friends {
+  height: 80%;
+  overflow: hidden;
+  overflow-y: scroll;
+  z-index: -20;
+  -webkit-transition: height .8s ease-in-out;
+  transition: height .8s ease-in-out;
+}
+
+#friends .friends.minimized,
+#groups .friends.minimized {
+  height: 0;
+}
+
+#friends .bottom,
+#groups .bottom {
+  position: absolute;
+  background-color: white;
+  bottom: 0;
+  height: 13rem;
+  padding-top: 0;
+  overflow: hidden;
+  overflow-y: hidden;
+  -webkit-transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
+  transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
+}
+
+#friends .bottom.full,
+#groups .bottom.full {
+  height: 100%;
+  padding-top: 143px;
+}
+
+#friends .bottom .search-friends,
+#groups .bottom .search-friends {
+  -webkit-transition: margin-top .8s ease-in-out;
+  transition: margin-top .8s ease-in-out;
+  z-index: 0;
+}
+
+#friends .bottom .search-new-friends,
+#groups .bottom .search-new-friends {
+  margin-top: 10px;
 }
 
 /* @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap"; */

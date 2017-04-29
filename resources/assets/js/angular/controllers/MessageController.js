@@ -3,12 +3,6 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
     $scope.message.theme = '1';
     $rootScope.makeBroadcastConnection = false;
 
-    //ERROR
-    $scope.errorCallback = function(error) {
-        // console.log(error);
-        console.log("wrong call made");
-    }
-
     //UPDATE CHAT
     $scope.successGetMessage = function(response) {
         $scope.messages = response.data.messages;
@@ -28,7 +22,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
 
     $rootScope.updateChat = function(chatid) {
         $http.get(API_URL + "message" + "/" + chatid)
-            .then($scope.successGetMessage, $scope.errorCallback);
+            .then($scope.successGetMessage, $rootScope.errorCallback);
     }
 
     //SEND A MESSAGE
@@ -50,7 +44,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
                     }
                 }).then(function(response) {
                     $scope.scrollDown();
-                }, $scope.errorCallback);
+                }, $rootScope.errorCallback);
             }
         }
     }
@@ -77,7 +71,6 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
                 // this.usersInRoom = this.usersInRoom.filter(u => u != user);
             })
             .listen('UpdateChat', (e) => {
-                console.log(e);
                 $scope.$apply(function() {
                     $scope.messages.push({
                         text: e.message.text,

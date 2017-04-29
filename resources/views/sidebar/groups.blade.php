@@ -8,7 +8,7 @@
 			</li>
 		</ul>
 		<ul ng-repeat="group in groups | filter:searchgroup" ng-if="group.function === 'groupschat'">
-			<li data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , group.chat_name)"  ng-if="group.confirmed"> @{{group.chat_name}} </li>
+			<li data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , 0 , group.chat_name, 'groupschat', group.friends , group.userIsAdmin)"  ng-if="group.confirmed"> @{{group.chat_name}} </li>
 		</ul>
 	</div>
 

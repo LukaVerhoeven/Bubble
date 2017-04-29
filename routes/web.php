@@ -26,6 +26,7 @@ Route::get('/api/searchNewFriend/{letters?}', 'FriendController@searchNewFriend'
 Route::get('/api/friends', 'FriendController@getFriendList');
 Route::post('/api/addFriend', 'FriendController@addFriend');
 Route::post('/api/declineFriend', 'FriendController@decline');
+Route::post('/api/deleteFriend', 'FriendController@delete');
 Route::get('/api/friendRequests', 'FriendController@getFriendRequests');
 Route::get('/api/searchFriend/{id?}', 'FriendController@searchFriend');
 

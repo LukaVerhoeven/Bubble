@@ -8,7 +8,7 @@
 			</li>
 		</ul>
 		<ul ng-repeat="friend in friendlist | filter:searchfriend">
-			<li data-id="@{{friend.userid}}" ng-click="openChat(friend.chatid , friend.name)"> @{{friend.name}} </li>
+			<li data-id="@{{friend.userid}}" ng-click="openChat(friend.chatid , friend.userid , friend.name , 'friendchat', null, 1)"> @{{friend.name}} </li>
 		</ul>
 	</div>
 

@@ -6,9 +6,13 @@
 
 // Variables
 @import "variables";
-@import "components/sidebar/sidebar-header";
-@import "components/sidebar/friends";
 
+// Helpers
+@import "Helpers/mixins";
+@import "Helpers/helpers";
+
+// Components
+@import "components/alertbox";
 //Content
 @import "components/content/content-div";
 @import "components/content/content-nav";
@@ -17,9 +21,9 @@
 @import "components/content/chat/content-filter";
 // settings
 @import "components/content/settings/settings-div";
-
-// Helpers
-@import "Helpers/helpers";
+// sidebar
+@import "components/sidebar/sidebar-header";
+@import "components/sidebar/friends";
 
 // Bootstrap
 /* @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap"; */

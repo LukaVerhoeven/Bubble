@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
+use App\Chat;
 use App\User;
 use App\Friendship;
+use App\UsersInChat;
 use App\Events\UserEvents;
 
 class FriendController extends Controller
@@ -79,6 +81,30 @@ class FriendController extends Controller
         $friendship = Friendship::where('user_id', $friendRequested->id)->where('friend_id', $user->id)->first();
         $friendship->delete();
         return 'request declined';
+    }
+
+    public function delete(Request $request)
+    {
+        $user = Auth::user();
+        $newFriendID = $request->input('newfriend');
+        $chatid = $request->input('chatID');
+
+        // retreive data
+        $friendRequested = User::where('id', $newFriendID)->first();
+        $chat = Chat::where('id', $chatid)->first();
+        $usersinchat = UsersInChat::where('chat_id', $chatid)->get();
+        $friendship = Friendship::whereIn('user_id', [$friendRequested->id, $user->id])
+                                ->whereIn('friend_id', [$friendRequested->id, $user->id])
+                                ->get();
+        // delete data
+        $chat->delete(); //TODO Soft delete the chat
+        $friendship[0]->delete();
+        $friendship[1]->delete();
+        foreach ($usersinchat as $user) {
+            $user->delete(); //TODO Soft delete the chat
+        }
+
+        return 'friend deleted';
     }
 
     public function getFriendRequests()
