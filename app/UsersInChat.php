@@ -32,5 +32,6 @@ class UsersInChat extends Model
     	$chatUser->admin = 1;
     	$chatUser->confirmed = 1;
     	$chatUser->save();
+    	return $chatUser;
   	}
 }

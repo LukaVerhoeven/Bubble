@@ -10297,28 +10297,14 @@ return jQuery;
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function($) {var app = angular.module('bubble', ['ngSanitize'])
+/* WEBPACK VAR INJECTION */(function($) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var app = angular.module('bubble', ['ngSanitize'])
 // .constant('API_URL','http://bubble.local/api/');
 // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
 .constant('API_URL', 'http://bubble-lukaverhoeven.c9users.io/api/');
-
 app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope) {
     // GLOBAL FUNCTIONS
-    // SORTS AN OBJECT BY PARAMETER
-    $rootScope.sort_by = function (field, reverse, primer) {
-        var key = primer ? function (x) {
-            return primer(x[field]);
-        } : function (x) {
-            return x[field];
-        };
-
-        reverse = !reverse ? 1 : -1;
-
-        return function (a, b) {
-            return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
-        };
-    };
-
     // ERROR
     $rootScope.errorCallback = function (error) {
         // console.log(error);
@@ -10348,16 +10334,137 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         }
     };
 
-    // REMOVE AN ELEMENT FROM AN OBJECT
-    $rootScope.removeObjectElement = function (data, value) {
+    // ARRAYS AND OBJECTS
+    // SORTS AN OBJECT BY PARAMETER
+    $rootScope.sort_by = function (field, reverse, primer) {
+        var key = primer ? function (x) {
+            return primer(x[field]);
+        } : function (x) {
+            return x[field];
+        };
+
+        reverse = !reverse ? 1 : -1;
+
+        return function (a, b) {
+            return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+        };
+    };
+
+    // REMOVE AN ELEMENT FROM AN OBJECT By value
+    $rootScope.adjustObjectElement = function (data, value, keyElement, action, editValue, editKey) {
         data.forEach(function (obj, i) {
             for (var key in obj) {
-                if (obj[key] == value) {
-                    console.log(i, data);
-                    data.splice(i, 1);
+                // search on specific key
+                if (keyElement) {
+                    console.log(key, keyElement);
+                    if (key === keyElement) {
+                        if (obj[key] == value) {
+                            // remove
+                            if (action === 'remove') {
+                                data.splice(i, 1);
+                            }
+                            // edit
+                            if (action === 'edit') {
+                                console.log(obj[editKey]);
+                                obj[editKey] = editValue;
+                            }
+                        }
+                    }
+                } else {
+                    // search all elements
+                    if (obj[key] == value) {
+                        // remove
+                        if (action === 'remove') {
+                            data.splice(i, 1);
+                        }
+                        // edit
+                        if (action === 'edit') {
+                            obj[editKey] = editValue;
+                        }
+                    }
                 }
             }
         });
+    };
+
+    // REMOVE AN ELEMENT FROM AN OBJECT by value and return new 
+    $rootScope.adjustElementNewArray = function (data, value, keyElement, action, editValue, editKey) {
+        var newObject = data.slice(0, data.lenght); // copy the array into a new variable
+        $rootScope.adjustObjectElement(newObject, value, keyElement, action, editValue, editKey);
+        return newObject;
+    };
+
+    // REMOVE AN ELEMENT FROM AN OBJECT by value in Array
+    $rootScope.adjustArrayFromObject = function (data, value, keyElement, action, editValue, editKey, adjustAllObjects) {
+        var doAdjust,
+            arrayFound = false;
+        var prevI = 0;
+        var elementValue, keyvalue, array, prevI;
+        data.forEach(function (obj, i) {
+            for (var key in obj) {
+                // reset array found every time you check a new object
+                if (prevI < i) {
+                    prevI = i;
+                    arrayFound = false;
+                }
+                // Check if you can adjust the array in every object or if we can adjust the array of a specific object
+                if (adjustAllObjects) {
+                    // Check if this is specific object
+                    if (_typeof(obj[key]) === 'object' || obj[key].constructor === Array) {
+                        array = $rootScope.ObjToArray(obj[key]);
+                        arrayFound = true;
+                    }
+                    if (key == keyElement[0] && obj[key] == value[0]) {
+                        doAdjust = true;
+                        elementValue = value[1];
+                        keyvalue = keyElement[1];
+                    }
+                } else {
+                    // adjust the array of every object
+                    if (_typeof(obj[key]) === 'object' || obj[key].constructor === Array) {
+                        doAdjust, arrayFound = true;
+                        elementValue = value;
+                        keyvalue = keyElement;
+                        array = $rootScope.ObjToArray(obj[key]);
+                    }
+                }
+                // If doAdjust is true => we adjust the array of the object
+                if (doAdjust && arrayFound) {
+                    doAdjust, arrayFound = false;
+                    if (action === 'remove') {
+                        var isSameObj = $rootScope.adjustElementNewArray(array, elementValue, keyvalue, action, editValue, editKey);
+                        if (array.length !== isSameObj.length) {
+                            data.splice(i, 1);
+                        }
+                    }if (action === 'edit') {
+                        $rootScope.adjustObjectElement(array, elementValue, keyvalue, action, editValue, editKey);
+                    }
+                }
+            }
+        });
+    };
+
+    // REMOVE AN ELEMENT FROM AN OBJECT by value in Array and return new 
+    $rootScope.adjustArrayElementNewArray = function (data, value, keyElement, action, editValue, editKey, adjustAllObjects) {
+        var newObject = data.slice(0, data.lenght); // copy the array into a new variable
+        $rootScope.adjustArrayFromObject(newObject, value, keyElement, action, editKey, adjustAllObjects);
+        return newObject;
+    };
+
+    // CONVERT OBJECT TO AN ARRAY
+    $rootScope.ObjToArray = function (obj) {
+        var array = $.map(obj, function (value, index) {
+            return [value];
+        });
+        return array;
+    };
+
+    $rootScope.ArrToObj = function (arr) {
+        var rv = {};
+        for (var i = 0; i < arr.length; ++i) {
+            rv[i] = arr[i];
+        }
+        return rv;
     };
 
     // MULTICONTROLLER FUNCTIONS
@@ -10365,7 +10472,6 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
     $rootScope.openChat = function (chatID, friendID, friendName, chatFunction, friends, userIsAdmin) {
         // Chat
         $rootScope.chatname = friendName;
-        console.log($rootScope.chatname, friendName);
         $rootScope.chatID = chatID;
         $rootScope.friendID = friendID;
         // Settings
@@ -10394,9 +10500,23 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         }).leaving(function (user) {
             // this.usersInRoom = this.usersInRoom.filter(u => u != user);
         }).listen('UserEvents', function (e) {
-            $scope.$apply(function () {
-                $rootScope.friendRequests.push(e.data);
-            });
+            if (e.data.type === 'grouprequest') {
+                $scope.$apply(function () {
+                    $rootScope.groups.push(e.data);
+                });
+            }
+            if (e.data.type === 'friendrequest') {
+                $scope.$apply(function () {
+                    $rootScope.friendRequests.push(e.data);
+                });
+            }
+            console.log(e.data);
+            if (e.data.type === 'groupaccept') {
+                console.log(e.data);
+                $scope.$apply(function () {
+                    $rootScope.userConfirmed(e.data.userid, e.data.chatid);
+                });
+            }
         });
     };
 });
@@ -10407,7 +10527,14 @@ app.controller('AlertController', function ($scope, $http, API_URL, $rootScope) 
         $scope.Close();
     };
 
-    //DELETE FRIEND Declined
+    $scope.addFriendToGroupAlert = function (chatID) {
+        var data = {
+            newfriend: $rootScope.friendID,
+            chatid: chatID
+        };
+        $rootScope.postRequest(data, 'addFriendToGroup', '');
+    };
+    //CLOSE ALERT
     $scope.Close = function () {
         $('#Alerts').removeClass('open');
         $('.alertbox').removeClass('open');
@@ -10419,7 +10546,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
 
     // GET FRIENDLIST AND GROUPCHATS
     $scope.friendList = function (response) {
-        //All your friends
+        // All your friends
         // console.log(response.data);
         $rootScope.friendlist = response.data.friends;
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
@@ -10428,8 +10555,8 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         $rootScope.groups = response.data.groupchats;
         console.log($rootScope.groups);
         // make User-broadcast connection
-        $scope.userid = response.data.userid;
-        $rootScope.broadcastUser($scope.userid);
+        $rootScope.Authuserid = response.data.userid;
+        $rootScope.broadcastUser($scope.Authuserid);
     };
 
     $rootScope.getFriendChats = function () {
@@ -10517,14 +10644,15 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
             newfriend: $rootScope.friendID,
             chatID: $rootScope.chatID
         };
+        // open the alert to confirm the delete
         $rootScope.friendDeleteData = data;
         $('#Alerts').addClass('open');
         $('#DeleteFriendAlert').addClass('open');
     };
 
-    // REMOVE FRIEND FROM FRIENDLIST (visualy)
+    // REMOVE FRIEND FROM FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.removeFriend = function () {
-        $rootScope.removeObjectElement($rootScope.friendlist, $rootScope.chatID);
+        $rootScope.adjustObjectElement($rootScope.friendlist, $rootScope.chatID, 'chatid', 'remove', 0, 0);
     };
 });
 app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
@@ -10548,7 +10676,7 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
     //CREATES A GROUP
     $scope.createGroup = function () {
         var url = API_URL + "createGroup";
-        $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname);
+        // $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
         $http({
             method: 'POST',
             url: url,
@@ -10558,16 +10686,25 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
             }
         }).then(function (response) {
             $rootScope.getFriendChats();
+            // remove all friends added to group front-end
+            $rootScope.friendsForGroup = $rootScope.friendlist;
+            $scope.newGroup.friends = [];
+            $('#createGroupsName').val('');
         }, $rootScope.errorCallback);
     };
 
     //ACCEPT GROUP INVITE
-    $scope.accept = function (chatid) {
+    $scope.accept = function (chatid, friends) {
+        friends = $rootScope.ObjToArray(friends);
         var url = API_URL + "accept";
+        var data = {
+            chatid: chatid,
+            friends: friends
+        };
         $http({
             method: 'POST',
             url: url,
-            data: $.param({ chatid: chatid }),
+            data: $.param(data),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -10606,6 +10743,17 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
                     $rootScope.groups.splice(i, 1);
                 }
             });
+        }
+    };
+
+    // Real-time update chat. When user accept chat-invite
+    $rootScope.userConfirmed = function (userid, chatid) {
+        $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, userid], ['chat_id', 'user_id'], 'edit', 1, 'confirmed', true);
+        console.log($rootScope.groups);
+        if ($rootScope.groupFriends) {
+            var groupFriends = $rootScope.ObjToArray($rootScope.groupFriends);
+            $rootScope.adjustObjectElement(groupFriends, userid, 'user_id', 'edit', 1, 'confirmed');
+            $rootScope.groupFriends = $rootScope.ArrToObj(groupFriends);
         }
     };
 });
@@ -10693,7 +10841,16 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         }, 1);
     };
 });
-app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API_URL, $rootScope) {});
+app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
+    // ADD FRIEND TO NEW GROUP (Send to alert)
+    $scope.addFriendToGroup = function () {
+        // get the groups were you'r friend isn't already in
+        $rootScope.groupsWithoutFriend = $rootScope.adjustArrayElementNewArray($rootScope.groups, $rootScope.friendID, 'user_id', 'remove', 0, 0, false);
+        // send data to alert
+        $('#Alerts').addClass('open');
+        $('#addFriendToGroupAlert').addClass('open');
+    };
+});
 app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 
     $scope.$watch(function () {

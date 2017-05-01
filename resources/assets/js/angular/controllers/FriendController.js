@@ -4,7 +4,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     // GET FRIENDLIST AND GROUPCHATS
     $scope.friendList = function(response) {
-        //All your friends
+        // All your friends
         // console.log(response.data);
         $rootScope.friendlist = response.data.friends;
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
@@ -13,8 +13,8 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         $rootScope.groups = response.data.groupchats;
         console.log($rootScope.groups);
         // make User-broadcast connection
-        $scope.userid = response.data.userid;
-        $rootScope.broadcastUser($scope.userid);
+        $rootScope.Authuserid = response.data.userid;
+        $rootScope.broadcastUser($scope.Authuserid);
     }
 
     $rootScope.getFriendChats = function() {
@@ -107,13 +107,14 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
             newfriend : $rootScope.friendID,
             chatID : $rootScope.chatID
         };
+        // open the alert to confirm the delete
         $rootScope.friendDeleteData = data;
         $('#Alerts').addClass('open');
         $('#DeleteFriendAlert').addClass('open');
     }
 
-    // REMOVE FRIEND FROM FRIENDLIST (visualy)
+    // REMOVE FRIEND FROM FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.removeFriend = function() {
-         $rootScope.removeObjectElement($rootScope.friendlist, $rootScope.chatID);
+         $rootScope.adjustObjectElement($rootScope.friendlist, $rootScope.chatID,'chatid', 'remove',0,0);
     }
 })

@@ -34,10 +34,9 @@ Route::get('/api/searchFriend/{id?}', 'FriendController@searchFriend');
 Route::post('/api/createGroup', 'GroupController@createGroup');
 Route::post('/api/accept', 'GroupController@accept');
 Route::post('/api/decline', 'GroupController@decline');
+Route::post('/api/addFriendToGroup', 'GroupController@addFriendToGroup');
 
 Auth::routes();
 // Route::get('logout','auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index');
-
-

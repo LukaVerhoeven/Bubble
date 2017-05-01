@@ -56,19 +56,17 @@ class Friendship extends Model
             }else{
                 // return a friendrequest that can be broadcasted
                 return response()->json([
+                    'type' => 'friendrequest',
                     'confirmed' => $friendship->confirmed,
                     'name' => $user->name,
                     'is_blocked' => $friendship->is_blocked ,
                     'user_id' => $user->id
                 ]);
             }
-
     }
 
     protected function confirm($friendrequest) {
             $friendrequest->confirmed = 1;
             $friendrequest->save();
     }
-
-
 }

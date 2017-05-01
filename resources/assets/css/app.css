@@ -68,6 +68,7 @@ $panel-default-heading-bg: #fff;
 
 #Alerts .alertbox {
   opacity: 0;
+  height: 0;
 }
 
 #Alerts .alertbox.open {

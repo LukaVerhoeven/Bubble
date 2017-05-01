@@ -4,7 +4,7 @@
 		<ul ng-repeat="group in groups" ng-if="group.function === 'groupschat'">
 			<li class="grey lighten-3" data-id="@{{group.chat_id}}" ng-if="!group.confirmed"> @{{group.chat_name}} 
 				<a class="btn waves-effect waves-light red" ng-click="decline(group.chat_id)">Decline</a> 
-				<a class="btn waves-effect waves-light" ng-click="accept(group.chat_id)">Accept</a>
+				<a class="btn waves-effect waves-light" ng-click="accept(group.chat_id, group.friends)">Accept</a>
 			</li>
 		</ul>
 		<ul ng-repeat="group in groups | filter:searchgroup" ng-if="group.function === 'groupschat'">
@@ -28,7 +28,7 @@
 		</nav>
 		<a class="js-add-group btn waves-effect waves-light">Create Group</a>
 		<div class="title-wrapper">
-			<input type="text" placeholder="Chatname" ng-model="newGroup.chatname">
+			<input id="createGroupsName" type="text" placeholder="Chatname" ng-model="newGroup.chatname">
 		</div>
 		<!-- TODO filter laten werken ( endless scroll fixen ?) -->
 		<nav class="search-new-friends">

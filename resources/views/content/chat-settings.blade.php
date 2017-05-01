@@ -12,7 +12,7 @@
 	          	</div>
 	        </div>
 	        <div class="card-content col s12" ng-if="chatFunction === 'friendchat'">
-    	   		<p>invite to group</p><a class="waves-effect waves-light btn right">add to group +</a>
+    	   		<p>invite to group</p><a ng-click="addFriendToGroup()" class="waves-effect waves-light btn right">add to group +</a>
 	        </div>
 	        <div class="card-content col s12" ng-if="chatFunction === 'groupschat'">
     	   		<p>Add friend to group</p><a class="waves-effect waves-light btn right">invite friend +</a>
@@ -46,7 +46,7 @@
 		        	</div>
 		        </div>
 		        <!-- tables -->
-		        <div class="card-content col s12" ng-repeat="(key, friend) in groupFriends">
+		        <div class="card-content col s12" ng-repeat="(key, friend) in groupFriends" ng-if="friend.confirmed">
 		        	<p>@{{ friend.name }}</p>
 		        	<div class="right" ng-if="isChatAdmin">
 	        		    <p>

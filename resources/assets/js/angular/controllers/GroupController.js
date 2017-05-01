@@ -17,7 +17,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     //CREATES A GROUP
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
-        $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
+        // $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
         $http({
             method: 'POST',
             url: url,
@@ -27,16 +27,25 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
             }
         }).then(function(response) {
             $rootScope.getFriendChats();
+            // remove all friends added to group front-end
+            $rootScope.friendsForGroup = $rootScope.friendlist;
+            $scope.newGroup.friends = [];
+            $('#createGroupsName').val('');
         }, $rootScope.errorCallback);
     }
 
     //ACCEPT GROUP INVITE
-    $scope.accept = function (chatid) {
+    $scope.accept = function (chatid, friends) {
+        friends = $rootScope.ObjToArray(friends);
         var url = API_URL + "accept";
+        var data = {
+            chatid : chatid,
+            friends : friends
+        };
         $http({
             method: 'POST',
             url: url,
-            data: $.param({chatid : chatid}) ,
+            data: $.param(data) ,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -79,6 +88,18 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
                     $rootScope.groups.splice(i,1);
                 }
             });
+        }
+    }
+
+    // Real-time update chat. When user accept chat-invite
+    $rootScope.userConfirmed = function (userid, chatid) {
+        $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, userid], ['chat_id', 'user_id'], 'edit', 1, 'confirmed', true);
+        console.log($rootScope.groups);
+        if($rootScope.groupFriends){
+            var groupFriends = $rootScope.ObjToArray($rootScope.groupFriends);
+            $rootScope.adjustObjectElement(groupFriends ,userid, 'user_id', 'edit', 1, 'confirmed');
+            $rootScope.groupFriends = $rootScope.ArrToObj(groupFriends);
+            
         }
     }
 })
