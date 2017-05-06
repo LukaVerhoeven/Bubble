@@ -115,6 +115,6 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     // REMOVE FRIEND FROM FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.removeFriend = function() {
-         $rootScope.adjustObjectElement($rootScope.friendlist, $rootScope.chatID,'chatid', 'remove',0,0);
+         $rootScope.adjustObjectElement($rootScope.friendlist, $rootScope.chatID,'chatid', 'remove',1,0,0);
     }
 })

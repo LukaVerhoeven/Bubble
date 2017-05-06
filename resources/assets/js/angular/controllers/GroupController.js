@@ -26,7 +26,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(function(response) {
-            $rootScope.getFriendChats();
+            $rootScope.getFriendChats(); //TODO do this asynchrone front-end
             // remove all friends added to group front-end
             $rootScope.friendsForGroup = $rootScope.friendlist;
             $scope.newGroup.friends = [];
@@ -54,15 +54,20 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
             
         }, $scope.errorCallback);
         $scope.update(chatid, true);
+        console.log($rootScope.groups);
     }
 
     //DECLINE GROUP INVITE
-    $scope.decline = function (chatid) {
+    $scope.decline = function (chatid, friends) {
         var url = API_URL + "decline";
+        var data = {
+            chatid : chatid,
+            friends: friends
+        }
         $http({
             method: 'POST',
             url: url,
-            data: $.param({chatid : chatid}) ,
+            data: $.param(data) ,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -92,14 +97,30 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     }
 
     // Real-time update chat. When user accept chat-invite
-    $rootScope.userConfirmed = function (userid, chatid) {
-        $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, userid], ['chat_id', 'user_id'], 'edit', 1, 'confirmed', true);
-        console.log($rootScope.groups);
-        if($rootScope.groupFriends){
-            var groupFriends = $rootScope.ObjToArray($rootScope.groupFriends);
-            $rootScope.adjustObjectElement(groupFriends ,userid, 'user_id', 'edit', 1, 'confirmed');
-            $rootScope.groupFriends = $rootScope.ArrToObj(groupFriends);
-            
+    $rootScope.userConfirmed = function (userid, chatid, user) {
+        $rootScope.IsEdited = false;
+        $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, userid], ['chat_id', 'user_id'], 'edit', 1, 'confirmed',1,0);
+        if(!$rootScope.IsEdited){
+            console.log($rootScope.groups);
+            $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, user], ['chat_id', 'friends'], 'update', 0, 0,1,0);
+            $rootScope.ArrayInObjectsort_by('name', false, function(a){return a.toUpperCase()}, $rootScope.groups)
+            if($rootScope.groupFriends){
+                $rootScope.groupFriends.push(user);
+                $rootScope.groupFriends.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
+            }
+        }else{
+            if($rootScope.groupFriends){
+                var groupFriends = $rootScope.ObjToArray($rootScope.groupFriends);
+                $rootScope.adjustObjectElement(groupFriends ,userid, 'user_id', 'edit', 1, 'confirmed', 0);
+            }
+            $rootScope.IsEdited = false;
         }
+    }
+
+    // REMOVE GROUP VISUALY called when allert is confirmed
+    $rootScope.removeGroup = function() {
+        $("#chat-section").trigger("click");
+        $rootScope.adjustObjectElement($rootScope.groups, $rootScope.chatID,'chat_id', 'remove',0,0,0);
+        $rootScope.resetChat();
     }
 })

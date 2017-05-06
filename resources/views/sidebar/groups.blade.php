@@ -3,7 +3,7 @@
 	<div class="js-hide-groups js-scrolldown friends col s12">
 		<ul ng-repeat="group in groups" ng-if="group.function === 'groupschat'">
 			<li class="grey lighten-3" data-id="@{{group.chat_id}}" ng-if="!group.confirmed"> @{{group.chat_name}} 
-				<a class="btn waves-effect waves-light red" ng-click="decline(group.chat_id)">Decline</a> 
+				<a class="btn waves-effect waves-light red" ng-click="decline(group.chat_id, group.friends)">Decline</a> 
 				<a class="btn waves-effect waves-light" ng-click="accept(group.chat_id, group.friends)">Accept</a>
 			</li>
 		</ul>

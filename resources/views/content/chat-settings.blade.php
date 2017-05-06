@@ -15,7 +15,7 @@
     	   		<p>invite to group</p><a ng-click="addFriendToGroup()" class="waves-effect waves-light btn right">add to group +</a>
 	        </div>
 	        <div class="card-content col s12" ng-if="chatFunction === 'groupschat'">
-    	   		<p>Add friend to group</p><a class="waves-effect waves-light btn right">invite friend +</a>
+    	   		<p>Add friend to group</p><a ng-click="inviteFriendToGroup()" class="waves-effect waves-light btn right">invite friend +</a>
 	        </div>
 	        <div class="card-content col s12" ng-if="chatFunction === 'friendchat'">
 	        	<p>Delete friend</p><a ng-click="deleteFriend()" class="waves-effect waves-light btn red right">delete</a>
@@ -24,7 +24,7 @@
 	        	<p>Delete group</p><a class="waves-effect waves-light btn red right">delete</a>
 	        </div>
 	        <div class="card-content col s12" ng-if="chatFunction === 'groupschat'">
-	        	<p>Leave group</p><a class="waves-effect waves-light btn red right">Leave</a>
+	        	<p>Leave group</p><a ng-click="LeaveGroup()" class="waves-effect waves-light btn red right">Leave</a>
 	        </div>
         <!-- Theme-option -->
 	        <div class="card-content col s12">

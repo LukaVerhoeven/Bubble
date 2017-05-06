@@ -59,15 +59,15 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
         $scope.scrollDown();
         Echo.join(`chatroom.${chatid}`)
             .here((users) => {
-                console.log(users);
+                // console.log(users);
                 // this.usersInRoom = users;
             })
             .joining((user) => {
-                console.log(user);
+                // console.log(user);
                 // this.usersInRoom.push(user);
             })
             .leaving((user) => {
-                console.log(user);
+                // console.log(user);
                 // this.usersInRoom = this.usersInRoom.filter(u => u != user);
             })
             .listen('UpdateChat', (e) => {

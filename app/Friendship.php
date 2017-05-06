@@ -48,6 +48,7 @@ class Friendship extends Model
                 
             	$chat->chat_name = 'friendchat';
                 $chat->function = 'friendchat';
+                $chat->is_deleted = 0;
             	$chat->save();
 
                 Theme::create($chat,'general','white');

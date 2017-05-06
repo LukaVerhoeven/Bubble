@@ -97,11 +97,12 @@ class FriendController extends Controller
                                 ->whereIn('friend_id', [$friendRequested->id, $user->id])
                                 ->get();
         // delete data
-        $chat->delete(); //TODO Soft delete the chat
+        $chat->is_deleted = 1;
         $friendship[0]->delete();
         $friendship[1]->delete();
-        foreach ($usersinchat as $user) {
-            $user->delete(); //TODO Soft delete the chat
+        foreach ($usersinchat as $chatuser) {
+            $chatuser->is_deleted = 1;
+            // broadcast(new UserEvents($chatuser->id , "deletefriend" , $user->id)->toOthers();
         }
 
         return 'friend deleted';
