@@ -18,11 +18,79 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
         $('#inviteFriendToGroupAlert').addClass('open');
     }
 
-    // ADD FRIEND TO NEW GROUP (Send to alert)
+    // LEAVE GROUP (Send to alert)
     $scope.LeaveGroup = function() {
-        // send data to alert
-        // $rootScope.friendIdsInGroup = $rootScope.adjustElementNewArray($rootScope.groupFriends, 0,'user_id', 'retreive',0,0,0);
+        // open alert
+        var blockAction = $scope.minimumAdmins();
+        if(!blockAction){
+            $('#Alerts').addClass('open');
+            $('#LeaveGroupschatAlert').addClass('open');
+        }
+    }
+
+    // ADD FRIEND TO NEW GROUP (Send to alert)
+    $scope.toggleAdmin = function(becomeAdmin, userid, key) {
+        becomeAdmin = 1 - becomeAdmin;
+        $scope.adminkey = key;
+        if(!becomeAdmin){
+            var blockAction = $scope.minimumAdmins();
+        }
+        if(!blockAction){
+            var data = {
+                userid  : userid,
+                admin   : becomeAdmin,
+                chatid  : $rootScope.chatID,
+                friends : $rootScope.groupFriends
+            };
+            $rootScope.postRequest(data ,'toggleAdmin', '');
+            $rootScope.switchAdmin( userid,  $rootScope.chatID,  becomeAdmin, 0);
+        }
+    }
+
+    // DELETE USER FROM GROUP (Send to alert)
+    $scope.deleteUserFromGroup = function(userid) {
+        // open alert
+        var blockAction = $scope.minimumAdmins();
+        if(!blockAction){
+            $rootScope.toDeleteUserId = userid;
+            $('#Alerts').addClass('open');
+            $('#deleteUserFromGroupAlert').addClass('open');
+        }
+    }
+
+    // DELETE GROUP
+    $scope.deleteGroup = function(userid) {
+        // open alert
+        $rootScope.toDeleteUserId = userid;
         $('#Alerts').addClass('open');
-        $('#LeaveGroupschatAlert').addClass('open');
+        $('#deleteGroupAlert').addClass('open');
+    }
+
+    // CHECK IF THE CHAT HAS MINIMUM 1 ADMIN
+    $scope.minimumAdmins = function(){
+        var allAdmins = $rootScope.adjustElementNewArray($rootScope.groupFriends, 1,'admin', 'retreive',0,0,0);
+        allAdmins = $rootScope.filterArray(allAdmins,1);
+        var blockAction = allAdmins.length < 2;
+        if(blockAction){
+            $('#Alerts').addClass('open');
+            $('#minimunAdminsAlert').addClass('open');
+        }
+        // prevent checkbox from being unchecked
+        var checkBoxes = $('#filled-in-box'+ $scope.adminkey);
+        checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+        return blockAction;
+    }
+
+    // EDIT GROUP NAME
+    $scope.editchatname = function(newChatName) {
+        if(newChatName){
+            var data = {
+                newname : newChatName,
+                chatid  : $rootScope.chatID,
+                friends : $rootScope.groupFriends
+            };
+            $rootScope.postRequest(data ,'renameChat', '');
+            $rootScope.renameChat(newChatName, $rootScope.chatID);
+        }
     }
 })

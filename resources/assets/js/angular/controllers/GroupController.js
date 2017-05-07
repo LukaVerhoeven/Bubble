@@ -101,7 +101,6 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         $rootScope.IsEdited = false;
         $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, userid], ['chat_id', 'user_id'], 'edit', 1, 'confirmed',1,0);
         if(!$rootScope.IsEdited){
-            console.log($rootScope.groups);
             $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, user], ['chat_id', 'friends'], 'update', 0, 0,1,0);
             $rootScope.ArrayInObjectsort_by('name', false, function(a){return a.toUpperCase()}, $rootScope.groups)
             if($rootScope.groupFriends){
@@ -109,7 +108,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
                 $rootScope.groupFriends.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
             }
         }else{
-            if($rootScope.groupFriends){
+            if($rootScope.chatID === chatid){
                 var groupFriends = $rootScope.ObjToArray($rootScope.groupFriends);
                 $rootScope.adjustObjectElement(groupFriends ,userid, 'user_id', 'edit', 1, 'confirmed', 0);
             }
@@ -119,8 +118,27 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
 
     // REMOVE GROUP VISUALY called when allert is confirmed
     $rootScope.removeGroup = function() {
-        $("#chat-section").trigger("click");
         $rootScope.adjustObjectElement($rootScope.groups, $rootScope.chatID,'chat_id', 'remove',0,0,0);
         $rootScope.resetChat();
     }
+
+    $rootScope.switchAdmin = function(userid, chatid, isAdmin, isAdjustedUser) {
+        $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, userid], ['chat_id', 'user_id'], 'edit', isAdmin, 'admin', 1, 0);
+        if(isAdjustedUser){
+            $rootScope.adjustObjectElement($rootScope.groups, chatid, 'chat_id', 'edit', isAdmin, 'userIsAdmin', 0);
+        }
+        if ($rootScope.chatID === chatid) {
+            $rootScope.adjustObjectElement($rootScope.groupFriends, userid, 'user_id', 'edit', isAdmin, 'admin', 0);
+            if($rootScope.chatID == chatid && isAdjustedUser){
+                $rootScope.isChatAdmin = isAdmin;
+            }
+        }
+    }
+
+      $rootScope.renameChat = function(newname, chatid) {
+            $rootScope.adjustObjectElement($rootScope.groups, chatid, 'chat_id', 'edit', newname, 'chat_name', 0);
+            if ($rootScope.chatID === chatid) {
+                $rootScope.chatname = newname
+            }
+      }
 })

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use App\UsersInChat;
 use App\Friendship;
@@ -23,6 +24,25 @@ class ChatController extends Controller
     public function index()
     {
         return view('layouts.chat-layout');
+    }
+
+    public function profileImage(Request $request)
+    {   
+        try {
+            $this->validate($request, [
+                'fileToUpload'    =>   'image',
+            ]);
+            $image = $request->file('fileToUpload');
+            $destinationPath = public_path('img/profileImage');
+            $unique_name = md5($image->getClientOriginalName() . time()).'.'. $image->getClientOriginalExtension();
+            $image->move($destinationPath, $unique_name);
+            $user = Auth::user();
+            $user->profile_image = $destinationPath . '/' . $unique_name;
+            $user->save();
+        } catch (Exception $e) {
+            
+        }
+
     }
 
     public function getChatRooms()

@@ -3,11 +3,18 @@
 		<div class="settings-layout card">
 		<!-- Main options -->
         	<div class="card-content col s12 ">
-		        <p>Nickname</p>
-		        <div class="right">
+		        <p ng-if="chatFunction === 'friendchat'">Nickname</p>
+		        <p ng-if="chatFunction === 'groupschat'">Groupsname</p>
+		        <div class="right" id="editChatName">
 		          	<p>@{{ chatname }}</p>
-		          	<a class="btn-floating btn red">
-			     	 	<i class="material-icons">mode_edit</i>
+		          	<a class="btn-floating btn red editChatNameButton">
+			     	 	<i class="material-icons ">mode_edit</i>
+			    	</a>
+	          	</div>
+	          	<div class="right hide" id="editChatNameInput">
+		          	<input type="text" placeholder="@{{chatname}}" ng-model="newChatName">
+		          	<a class=" btn-floating btn editChatNameButton" ng-click="editchatname(newChatName)">
+			     	 	<i class="material-icons">done</i>
 			    	</a>
 	          	</div>
 	        </div>
@@ -21,7 +28,7 @@
 	        	<p>Delete friend</p><a ng-click="deleteFriend()" class="waves-effect waves-light btn red right">delete</a>
 	        </div>
 	        <div class="card-content col s12" ng-if="chatFunction === 'groupschat' && isChatAdmin">
-	        	<p>Delete group</p><a class="waves-effect waves-light btn red right">delete</a>
+	        	<p>Delete group</p><a ng-click="deleteGroup()" class="waves-effect waves-light btn red right">delete</a>
 	        </div>
 	        <div class="card-content col s12" ng-if="chatFunction === 'groupschat'">
 	        	<p>Leave group</p><a ng-click="LeaveGroup()" class="waves-effect waves-light btn red right">Leave</a>
@@ -50,12 +57,12 @@
 		        	<p>@{{ friend.name }}</p>
 		        	<div class="right" ng-if="isChatAdmin">
 	        		    <p>
-					      <input type="checkbox" class="filled-in" id="filled-in-box@{{key}}" checked="checked" ng-if="friend.admin"/>
-					      <input type="checkbox" class="filled-in" id="filled-in-box@{{key}}" ng-if="!friend.admin"/>
+					      <input type="checkbox" class="filled-in" id="filled-in-box@{{key}}" checked="checked" ng-if="friend.admin" ng-click="toggleAdmin(friend.admin, friend.user_id, key)"/>
+					      <input type="checkbox" class="filled-in" id="filled-in-box@{{key}}" ng-if="!friend.admin" ng-click="toggleAdmin(friend.admin, friend.user_id, key)"/>
 					      <label for="filled-in-box@{{key}}"></label>
 					    </p>
 					      <p>
-					      <a><i class="small material-icons col s2 red-text">delete</i></a>
+					      <a><i class="small material-icons col s2 red-text" ng-click="deleteUserFromGroup(friend.user_id)">delete</i></a>
 					    </p>
 		        	</div>
 		        </div>

@@ -19,7 +19,7 @@
 					<!-- profile info -->
 					<div class="valign-wrapper profile-info">
 						<div class="col s4 no-pad  img-overflow circle center fixed">
-							<img class="profile-pic " src="/img/pirate.jpg" alt="">
+							<img class="profile-pic " src="{{ Auth::user()->profile_image }}" alt="">
 						</div>
 						<div class="col s8 fixed"si>
 							<h1 class="bubble-username">{{ Auth::user()->name }}</h1>
@@ -47,7 +47,7 @@
 				<!-- sidebar content -->
 				<section class="side-nav-content row">
 					<div id="profilesettings" class="col s12 no-pad tab-item">settings </div>
-					<div id="profile" class="col s12 no-pad tab-item">profile </div>
+					@include('sidebar.profile')
 					@include('sidebar.friends')
 					@include('sidebar.groups')
 				</section>
@@ -65,7 +65,7 @@
 						<div class="nav-content red darken-1">
 							<ul class="tabs tabs-transparent valign-wrapper">
 								<li class="tab col s4 conversation-tab"><a class="active" href="#chat-section"><i class="small material-icons  col s2 offset-s3">chatbubble</i><span class="col s2" > @{{ chatname }} </span></a></li>
-								<li class="tab col s4 theme-tab"><a href="#test2"><i class="small material-icons  col s2 offset-s3">loyalty</i><span class="col s2">Theme</span></a></li>
+								<li class="tab col s4 theme-tab"><a href="#themes"><i class="small material-icons  col s2 offset-s3">loyalty</i><span class="col s2">Theme</span></a></li>
 								<li class="tab col s4 settings-tab"><a href="#chat-settings"><i class="small material-icons  col s2 offset-s3">settings</i><span class="col s2">settings</span></a></li>
 							</ul>
 						</div>
@@ -78,7 +78,7 @@
 						@include('content.conversation')
 
 						<!-- tab2 themes -->
-						<div id="test2" class="col s12 tab-item">Test 2 </div>
+						@include('content.themes')
 
 						<!-- tab3 setting -->
 						@include('content.chat-settings')
@@ -92,7 +92,7 @@
 		<script>
 			window.Laravel = { 'csrfToken' : '{{ csrf_token() }}' };
 		</script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> --}}
 		{{-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> --}}
 		{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.6.4/angular-sanitize.js"></script> --}}
 

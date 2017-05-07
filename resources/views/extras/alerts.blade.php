@@ -36,6 +36,35 @@
 	    <a class="btn waves-effect waves-light red" ng-click="Close()">No!</a>
 	  </div>
     </div>
+    <!-- minimunAdmins required dialogbox-->
+	<div id="minimunAdminsAlert" class="alertbox" ng-click="Close()">
+	  <!-- Modal content -->
+	  <div class="modal-content" ng-click="$event.stopPropagation()">
+	    <span class="close">&times;</span>
+        <p>There need to be at least 1 admin in a chat.</p>
+	    <a class="btn waves-effect waves-light" ng-click="Close()">I understand</a>
+	  </div>
+    </div>
+    <!-- deleteGroup dialogbox-->
+	<div id="deleteGroupAlert" class="alertbox" ng-click="Close()">
+	  <!-- Modal content -->
+	  <div class="modal-content" ng-click="$event.stopPropagation()">
+	    <span class="close">&times;</span>
+        <p>Are you sure you want to delete this group?</p>
+	    <a class="btn waves-effect waves-light" ng-click="deleteGroupConfirm()">I'm sure</a>
+	    <a class="btn waves-effect waves-light red" ng-click="Close()">No!</a>
+	  </div>
+    </div>
+	<!-- deleteUserFromGroup dialogbox-->
+	<div id="deleteUserFromGroupAlert" class="alertbox" ng-click="Close()">
+	  <!-- Modal content -->
+	  <div class="modal-content" ng-click="$event.stopPropagation()">
+	    <span class="close">&times;</span>
+        <p>Are you sure you want to delete this user?</p>
+	    <a class="btn waves-effect waves-light" ng-click="deleteUserFromGroupConfirm()">I'm sure</a>
+	    <a class="btn waves-effect waves-light red" ng-click="Close()">No!</a>
+	  </div>
+    </div>
 	<!-- inviteFriendToGroup dialogbox-->
 	<div id="inviteFriendToGroupAlert" class="alertbox" ng-click="Close()">
 	  <!-- Modal content -->

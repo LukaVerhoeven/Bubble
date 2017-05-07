@@ -38,6 +38,7 @@ class GroupController extends Controller
                 $friendInChat = new UsersInChat;
                 $friendInChat->user_id = $value['userid'];
                 $friendInChat->Chat()->associate($chat);
+                $friendInChat->nickname = $value['name'];
                 $friendInChat->admin = 0;
                 $friendInChat->confirmed = 0;
                 $friendInChat->is_deleted = 0;
@@ -48,9 +49,8 @@ class GroupController extends Controller
         }
 
         $data = response()->json([
-            'type' => 'grouprequest',
             'friends' => $UsersInChat,
-            'chat_id' => $chat->id,
+            'chat_id' => (int)$chat->id,
             'userIsAdmin' => 0 ,
             'chat_name' => $chat->chat_name,
             'function' => 'groupschat',
@@ -74,9 +74,8 @@ class GroupController extends Controller
 
         // Broadcast user confirmed
         $data = response()->json([
-            'type'   => 'groupaccept',
-            'userid' => $user->id,
-            'chatid' => $chatid,
+            'userid' => (int)$user->id,
+            'chatid' => (int)$chatid,
             'user'   => $UserInchat
         ]);
 
@@ -93,25 +92,33 @@ class GroupController extends Controller
     public function decline(Request $request)
     {   
         $this->validate($request, [
-            'chatid'      =>   'integer',
+            'chatid'    =>   'integer',
+            'userid'    =>   'integer',
             'friends'   =>   'Array'
         ]);
         $chatid = $request->input('chatid');
         $friends = $request->input('friends');
-        $user = Auth::user();
-        UsersInChat::deleteUsersInChat($user->id, $chatid);
+        $userid = (int)$request->input('userid');
+        if($userid){
+        // delete user from group
+            UsersInChat::deleteUsersInChat($userid, $chatid);
+        }else{
+        // leave group or decline request
+            $user = Auth::user();
+            $userid = $user->id;
+            UsersInChat::deleteUsersInChat($user->id, $chatid);
+        }
         $data = response()->json([
-            'type'     => 'leavegroup',
-            'userid'   => $user->id,
+            'userid'   => (int)$userid,
             'chatid'   => (int)$chatid
         ]);
 
         $noDuplicates = array();
         foreach ($friends as $friend) {
-            $userid = (int)$friend['user_id'];
-            if(!in_array($userid, $noDuplicates)){
-                broadcast(new UserEvents($userid , "leavegroup" , $data->getData()))->toOthers();
-                array_push($noDuplicates, $userid);
+            $id = (int)$friend['user_id'];
+            if(!in_array($id, $noDuplicates)){
+                broadcast(new UserEvents($id , "leavegroup" , $data->getData()))->toOthers();
+                array_push($noDuplicates, $id);
             }
         }
     }
@@ -143,6 +150,7 @@ class GroupController extends Controller
                 $UserInchat = New UsersInChat;
                 $UserInchat->user_id = $friendid;
                 $UserInchat->chat_id = $chatid;
+                $UserInchat->nickname = $friendName;
                 $UserInchat->admin = 0;
                 $UserInchat->confirmed = 0;
                 $UserInchat->is_deleted = 0;
@@ -151,7 +159,6 @@ class GroupController extends Controller
             $UserInchat = collect($UserInchat)->put("name", $friendName);
             $friends = collect($friends)->push($UserInchat);
             $data = response()->json([
-                'type' => 'grouprequest',
                 'friends' => $friends,
                 'chat_id' => (int)$chatid,
                 'userIsAdmin' => 0 ,
@@ -165,5 +172,107 @@ class GroupController extends Controller
         } catch (Exception $e) {
             return 'something went wrong';
         }
+    }
+
+    public function toggleAdmin(Request $request)
+    {   
+        try {
+            $this->validate($request, [
+                'userid'    =>   'integer',
+                'admin'     =>   'integer',
+                'chatid'    =>   'integer',
+                'friends'   =>   'Array'
+            ]);
+
+            $userid = $request->input('userid');
+            $chatid = $request->input('chatid');
+            $isAdmin = $request->input('admin');
+            $friends = $request->input('friends');
+            $UserInchat = UsersInChat::where('chat_id', $chatid)->where('user_id', $userid)->first();
+            $UserInchat->admin = $isAdmin;
+            $UserInchat->save();
+
+            $data = response()->json([
+                'admin'    => (int)$isAdmin,
+                'chatid'   => (int)$chatid,
+                'userid'   => (int)$userid
+            ]);
+
+            $noDuplicates = array();
+            foreach ($friends as $friend) {
+                $userid = (int)$friend['user_id'];
+                if(!in_array($userid, $noDuplicates)){
+                    broadcast(new UserEvents($userid , "toggleAdmin" , $data->getData()))->toOthers();
+                    array_push($noDuplicates, $userid);
+                }
+            }
+        } catch (Exception $e) {
+            return "something went wrong";
+        }
+
+    }
+
+    public function delete(Request $request)
+    {   
+        try {
+            $this->validate($request, [
+                'chatid'    =>   'integer',
+                'friends'   =>   'Array'
+            ]);
+
+            $chatid = $request->input('chatid');
+            $friends = $request->input('friends');
+            UsersInChat::where('chat_id', $chatid)->update(['is_deleted' => 1]);
+            Chat::where('id', $chatid)->update(['is_deleted' => 1]);
+
+            $data = response()->json([
+                'chatid'   => (int)$chatid
+            ]);
+
+            $noDuplicates = array();
+            foreach ($friends as $friend) {
+                $userid = (int)$friend['user_id'];
+                if(!in_array($userid, $noDuplicates)){
+                    broadcast(new UserEvents($userid , "chatdeleted" , $data->getData()))->toOthers();
+                    array_push($noDuplicates, $userid);
+                }
+            }
+        } catch (Exception $e) {
+            return "something went wrong";
+        }
+
+    }
+
+    public function renameChat(Request $request)
+    {   
+        try {
+            $this->validate($request, [
+                'newname'    =>   'string',
+                'chatid'    =>   'integer',
+                'friends'   =>   'Array'
+            ]);
+
+            $newname = $request->input('newname');
+            $chatid = $request->input('chatid');
+            $friends = $request->input('friends');
+            Chat::where('id', $chatid)->update(['chat_name' => $newname]);
+
+            $data = response()->json([
+                'newname'  => $newname,
+                'chatid'   => (int)$chatid
+            ]);
+
+            $noDuplicates = array();
+            foreach ($friends as $friend) {
+                $userid = (int)$friend['user_id'];
+                if(!in_array($userid, $noDuplicates)){
+                    broadcast(new UserEvents($userid , "renamechat" , $data->getData()))->toOthers();
+                    array_push($noDuplicates, $userid);
+                }
+            }
+        } catch (Exception $e) {
+            return "something went wrong";
+        }
+
     }
 }

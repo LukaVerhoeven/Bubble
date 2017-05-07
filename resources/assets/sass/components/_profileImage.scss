@@ -1,0 +1,15 @@
+#bubble{
+	.img-overflow {
+		overflow: hidden;
+		width: 6.5rem;
+		height: 6.5rem;
+		margin:0 auto;
+
+		.profile-pic {
+			margin: 0 auto;
+			min-width: 100%;
+			height: 100%;
+			width: auto;
+		}
+	}	
+}

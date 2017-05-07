@@ -51,6 +51,27 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
         $scope.Close();
     }
 
+    // REMOVE USER FROM GROUPCHAT CONFIRMED
+    $rootScope.deleteUserFromGroupConfirm = function (){
+        var data = {
+            chatid      : $rootScope.chatID,
+            userid      : $rootScope.toDeleteUserId,
+            friends     : $rootScope.groupFriends
+        };
+        $rootScope.postRequest(data ,'decline', '');
+        $scope.Close();
+    }
+
+    // DELETE GROUPCHAT CONFIRMED
+    $rootScope.deleteGroupConfirm = function (){
+        var data = {
+            chatid      : $rootScope.chatID,
+            friends     : $rootScope.groupFriends
+        };
+        $rootScope.postRequest(data ,'deleteGroup', '');
+        $scope.Close();
+    }
+
     //CLOSE ALERT
     $scope.Close = function() {
         $('#Alerts').removeClass('open');

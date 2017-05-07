@@ -32,6 +32,16 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
 
     // ARRAYS AND OBJECTS
     $rootScope.IsEdited = false;
+
+    // Filter an array on specific value. ex ([1,2], 1) => [1]
+    $rootScope.filterArray = function (array, value) {
+        var filteredArray = array.filter(checkvalue);
+        function checkvalue(element) {
+            return element == value;
+        }
+        return filteredArray;
+    }
+
     // SORTS AN OBJECT BY PARAMETER
     $rootScope.sort_by = function (field, reverse, primer) {
         var key = primer ? 
@@ -198,7 +208,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     if(action === 'edit'){
                         $rootScope.adjustObjectElement(array , elementValue , keyvalue, action, editValue, editKey,CheckMultipleValues);
                     }
-                    if(action === 'update'){
+                    if(action === 'update'){ //add new element then update
                         var newArray = [];
                         newArray = array.slice(0, array.lenght)
                         newArray.push(elementValue);
@@ -252,9 +262,14 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     }
 
     $rootScope.resetChat = function() {
+        $(".conversation-tab a")[0].click();
         // Chat
         $rootScope.chatname = 'CHAT';
-        $rootScope.chatID, $rootScope.friendID, $rootScope.chatFunction, $rootScope.groupFriends, $rootScope.isChatAdmin = null;
+        $rootScope.chatID        = null;
+        $rootScope.friendID      = null;
+        $rootScope.chatFunction  = null;      
+        $rootScope.groupFriends  = null;
+        $rootScope.isChatAdmin   = null;
     }
 
     // OPEN CHAT
@@ -281,33 +296,57 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
 
             })
             .listen('UserEvents', (e) => {
-                if(e.data.type === 'grouprequest'){
+                if(e.event === 'grouprequest'){
                     $scope.$apply(function() {
                         $rootScope.groups.push(e.data);
                     });
                 }
-                if(e.data.type === 'friendrequest'){
+                if(e.event === 'friendrequest'){
                     $scope.$apply(function() {
                         $rootScope.friendRequests.push(e.data);
                     });
                 }
-                console.log(e.data);
-                if(e.data.type === 'groupaccept'){
+                console.log();
+                if(e.event === 'groupaccept'){
                     $scope.$apply(function() {
                         $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
+                    }); 
+                }
+                if(e.event === 'leavegroup'){
+                    $scope.$apply(function() {
+                        if($rootScope.Authuserid === e.data.userid){
+                            $rootScope.resetChat();
+                            $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                        }else{
+                            $rootScope.adjustArrayFromObject($rootScope.groups, [e.data.chatid, e.data.userid], ['chat_id', 'user_id'], 'remove', 0, 'friends', 1, 0);
+                            if ($rootScope.chatID === e.data.chatid) {
+                                $rootScope.adjustObjectElement($rootScope.groupFriends, e.data.userid, 'user_id', 'remove', 0, 0, 0);
+                            }
+                        }                        
                     });
                 }
-                if(e.data.type === 'leavegroup'){
+                if(e.event === 'toggleAdmin'){
                     $scope.$apply(function() {
-                        $rootScope.adjustArrayFromObject($rootScope.groups, [e.data.chatid, e.data.userid], ['chat_id', 'user_id'], 'remove', 0, 'friends', 1, 0);
-                        if ($rootScope.groupFriends) {
-                            $rootScope.adjustObjectElement($rootScope.groupFriends, e.data.userid, 'user_id', 'remove', 0, 0, 0, 0);
+                        if($rootScope.Authuserid === e.data.userid){
+                            $rootScope.switchAdmin( e.data.userid,  e.data.chatid,  e.data.admin, 1);
+                        }else{
+                            $rootScope.switchAdmin( e.data.userid,  e.data.chatid,  e.data.admin, 0);
                         }
+                    });
+                }
+                if(e.event === 'chatdeleted'){
+                    $scope.$apply(function() {
+                        $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                        if ($rootScope.chatID === e.data.chatid) {
+                            $rootScope.resetChat();
+                        }
+                    });
+                }
+                if(e.event === 'renamechat'){
+                    $scope.$apply(function() {
+                       $rootScope.renameChat(e.data.newname, e.data.chatid);
                     });
                 }
             });
     };
-
-
-
 })

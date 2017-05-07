@@ -3,6 +3,7 @@ import externalLink from './helpers/externalLink';
 import AutoScrollDownChat from './helpers/autoScrollDownChat';
 import PreventDefault from './helpers/preventDefault';
 import addFriend from './components/addFriend';
+import chatSettings from './pages/chatSettings';
 // import pusher from './plugins/Pusher';
 import angular from 'angular';
 import angularSanitize from 'angular-sanitize';
@@ -33,6 +34,8 @@ class App {
         this.externallink = new externalLink();
         this.preventdefault = new PreventDefault();
         this.autoscrolldownchat = new AutoScrollDownChat();
+        // pages
+        this.chatsettings = new chatSettings();
     }
 
     start() {

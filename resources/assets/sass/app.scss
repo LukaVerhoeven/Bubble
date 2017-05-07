@@ -13,6 +13,7 @@
 
 // Components
 @import "components/alertbox";
+@import "components/profileImage";
 //Content
 @import "components/content/content-div";
 @import "components/content/content-nav";
@@ -24,6 +25,7 @@
 // sidebar
 @import "components/sidebar/sidebar-header";
 @import "components/sidebar/friends";
+@import "components/sidebar/profile";
 
 // Bootstrap
 /* @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap"; */

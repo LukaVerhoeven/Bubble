@@ -35,8 +35,13 @@ Route::post('/api/createGroup', 'GroupController@createGroup');
 Route::post('/api/accept', 'GroupController@accept');
 Route::post('/api/decline', 'GroupController@decline');
 Route::post('/api/addFriendToGroup', 'GroupController@addFriendToGroup');
+Route::post('/api/toggleAdmin', 'GroupController@toggleAdmin');
+Route::post('/api/deleteGroup', 'GroupController@delete');
+Route::post('/api/renameChat', 'GroupController@renameChat');
 
+// User
 Auth::routes();
+Route::post('/api/profileImage', 'ChatController@profileImage');
 // Route::get('logout','auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index');

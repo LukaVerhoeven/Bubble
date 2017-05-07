@@ -16,18 +16,6 @@
 				padding: 1.5rem 0rem;
 				color: white;
 
-				.img-overflow {
-					overflow: hidden;
-					width: 6.5rem;
-					height: 6.5rem;
-
-					.profile-pic {
-						margin: 0 auto;
-						min-width: 100%;
-						height: 100%;
-						width: auto;
-					}
-				}
 				.bubble-username {
 					display: block;
 					font-size: $font-large;

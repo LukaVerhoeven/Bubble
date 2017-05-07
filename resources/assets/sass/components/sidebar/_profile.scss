@@ -1,0 +1,27 @@
+$profile-size: 9rem;
+#profile{
+	.img-overflow{
+		margin-top: 4vw;
+		width: $profile-size;
+		height: $profile-size;
+		cursor: pointer;
+		
+		.edit-overlay{
+			position: absolute;
+			min-width: $profile-size;
+			height: $profile-size;
+		}
+		
+		#profilepicUpload{
+			display: none;
+		}
+		
+		&:hover{
+			.edit-overlay{
+				background-color: red;
+				border-radius: 50%;
+				opacity: 0.5;
+			}
+		}
+	}
+}

@@ -1,13 +1,13 @@
 <div id="groups" class="col s12 no-pad tab-item" ng-controller="GroupController">
 	<!-- groups -->
 	<div class="js-hide-groups js-scrolldown friends col s12">
-		<ul ng-repeat="group in groups" ng-if="group.function === 'groupschat'">
+		<ul ng-repeat="group in groups" ng-if="group.function === 'groupschat' && !is_deleted">
 			<li class="grey lighten-3" data-id="@{{group.chat_id}}" ng-if="!group.confirmed"> @{{group.chat_name}} 
 				<a class="btn waves-effect waves-light red" ng-click="decline(group.chat_id, group.friends)">Decline</a> 
 				<a class="btn waves-effect waves-light" ng-click="accept(group.chat_id, group.friends)">Accept</a>
 			</li>
 		</ul>
-		<ul ng-repeat="group in groups | filter:searchgroup" ng-if="group.function === 'groupschat'">
+		<ul ng-repeat="group in groups | filter:searchgroup" ng-if="group.function === 'groupschat' && !is_deleted">
 			<li data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , 0 , group.chat_name, 'groupschat', group.friends , group.userIsAdmin)"  ng-if="group.confirmed"> @{{group.chat_name}} </li>
 		</ul>
 	</div>

@@ -1,7 +1,61 @@
 var app = angular.module('bubble',['ngSanitize'])
-        .constant('API_URL','http://bubble.local/api/');
+        // .constant('API_URL','http://bubble.local/api/');
         // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
-        // .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
+        .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
+var fileReader = function ($q, $log) {
+
+    var onLoad = function(reader, deferred, scope) {
+        return function () {
+            scope.$apply(function () {
+                deferred.resolve(reader.result);
+            });
+        };
+    };
+
+    var onError = function (reader, deferred, scope) {
+        return function () {
+            scope.$apply(function () {
+                deferred.reject(reader.result);
+            });
+        };
+    };
+
+    var onProgress = function(reader, scope) {
+        return function (event) {
+            scope.$broadcast("fileProgress",
+                {
+                    total: event.total,
+                    loaded: event.loaded
+                });
+        };
+    };
+
+    var getReader = function(deferred, scope) {
+        var reader = new FileReader();
+        reader.onload = onLoad(reader, deferred, scope);
+        reader.onerror = onError(reader, deferred, scope);
+        reader.onprogress = onProgress(reader, scope);
+        return reader;
+    };
+
+    var readAsDataURL = function (file, scope) {
+        var deferred = $q.defer();
+         
+        var reader = getReader(deferred, scope);         
+        reader.readAsDataURL(file);
+         
+        return deferred.promise;
+    };
+
+    return {
+        readAsDataUrl: readAsDataURL  
+    };
+};
+
+app.factory("fileReader",
+               ["$q", "$log", fileReader]);
+
+
 app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) {
     // GLOBAL FUNCTIONS
     // ERROR
@@ -36,6 +90,16 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
 
     // ARRAYS AND OBJECTS
     $rootScope.IsEdited = false;
+
+    // Filter an array on specific value. ex ([1,2], 1) => [1]
+    $rootScope.filterArray = function (array, value) {
+        var filteredArray = array.filter(checkvalue);
+        function checkvalue(element) {
+            return element == value;
+        }
+        return filteredArray;
+    }
+
     // SORTS AN OBJECT BY PARAMETER
     $rootScope.sort_by = function (field, reverse, primer) {
         var key = primer ? 
@@ -202,7 +266,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     if(action === 'edit'){
                         $rootScope.adjustObjectElement(array , elementValue , keyvalue, action, editValue, editKey,CheckMultipleValues);
                     }
-                    if(action === 'update'){
+                    if(action === 'update'){ //add new element then update
                         var newArray = [];
                         newArray = array.slice(0, array.lenght)
                         newArray.push(elementValue);
@@ -256,9 +320,14 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     }
 
     $rootScope.resetChat = function() {
+        $(".conversation-tab a")[0].click();
         // Chat
         $rootScope.chatname = 'CHAT';
-        $rootScope.chatID, $rootScope.friendID, $rootScope.chatFunction, $rootScope.groupFriends, $rootScope.isChatAdmin = null;
+        $rootScope.chatID        = null;
+        $rootScope.friendID      = null;
+        $rootScope.chatFunction  = null;      
+        $rootScope.groupFriends  = null;
+        $rootScope.isChatAdmin   = null;
     }
 
     // OPEN CHAT
@@ -285,35 +354,59 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
 
             })
             .listen('UserEvents', (e) => {
-                if(e.data.type === 'grouprequest'){
+                if(e.event === 'grouprequest'){
                     $scope.$apply(function() {
                         $rootScope.groups.push(e.data);
                     });
                 }
-                if(e.data.type === 'friendrequest'){
+                if(e.event === 'friendrequest'){
                     $scope.$apply(function() {
                         $rootScope.friendRequests.push(e.data);
                     });
                 }
-                console.log(e.data);
-                if(e.data.type === 'groupaccept'){
+                console.log();
+                if(e.event === 'groupaccept'){
                     $scope.$apply(function() {
                         $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
+                    }); 
+                }
+                if(e.event === 'leavegroup'){
+                    $scope.$apply(function() {
+                        if($rootScope.Authuserid === e.data.userid){
+                            $rootScope.resetChat();
+                            $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                        }else{
+                            $rootScope.adjustArrayFromObject($rootScope.groups, [e.data.chatid, e.data.userid], ['chat_id', 'user_id'], 'remove', 0, 'friends', 1, 0);
+                            if ($rootScope.chatID === e.data.chatid) {
+                                $rootScope.adjustObjectElement($rootScope.groupFriends, e.data.userid, 'user_id', 'remove', 0, 0, 0);
+                            }
+                        }                        
                     });
                 }
-                if(e.data.type === 'leavegroup'){
+                if(e.event === 'toggleAdmin'){
                     $scope.$apply(function() {
-                        $rootScope.adjustArrayFromObject($rootScope.groups, [e.data.chatid, e.data.userid], ['chat_id', 'user_id'], 'remove', 0, 'friends', 1, 0);
-                        if ($rootScope.groupFriends) {
-                            $rootScope.adjustObjectElement($rootScope.groupFriends, e.data.userid, 'user_id', 'remove', 0, 0, 0, 0);
+                        if($rootScope.Authuserid === e.data.userid){
+                            $rootScope.switchAdmin( e.data.userid,  e.data.chatid,  e.data.admin, 1);
+                        }else{
+                            $rootScope.switchAdmin( e.data.userid,  e.data.chatid,  e.data.admin, 0);
                         }
+                    });
+                }
+                if(e.event === 'chatdeleted'){
+                    $scope.$apply(function() {
+                        $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                        if ($rootScope.chatID === e.data.chatid) {
+                            $rootScope.resetChat();
+                        }
+                    });
+                }
+                if(e.event === 'renamechat'){
+                    $scope.$apply(function() {
+                       $rootScope.renameChat(e.data.newname, e.data.chatid);
                     });
                 }
             });
     };
-
-
-
 })
 app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
     //DELETE FRIEND Confirmed
@@ -365,6 +458,27 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
         };
         $rootScope.removeGroup();
         $rootScope.postRequest(data ,'decline', '');
+        $scope.Close();
+    }
+
+    // REMOVE USER FROM GROUPCHAT CONFIRMED
+    $rootScope.deleteUserFromGroupConfirm = function (){
+        var data = {
+            chatid      : $rootScope.chatID,
+            userid      : $rootScope.toDeleteUserId,
+            friends     : $rootScope.groupFriends
+        };
+        $rootScope.postRequest(data ,'decline', '');
+        $scope.Close();
+    }
+
+    // DELETE GROUPCHAT CONFIRMED
+    $rootScope.deleteGroupConfirm = function (){
+        var data = {
+            chatid      : $rootScope.chatID,
+            friends     : $rootScope.groupFriends
+        };
+        $rootScope.postRequest(data ,'deleteGroup', '');
         $scope.Close();
     }
 
@@ -599,7 +713,6 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         $rootScope.IsEdited = false;
         $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, userid], ['chat_id', 'user_id'], 'edit', 1, 'confirmed',1,0);
         if(!$rootScope.IsEdited){
-            console.log($rootScope.groups);
             $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, user], ['chat_id', 'friends'], 'update', 0, 0,1,0);
             $rootScope.ArrayInObjectsort_by('name', false, function(a){return a.toUpperCase()}, $rootScope.groups)
             if($rootScope.groupFriends){
@@ -607,7 +720,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
                 $rootScope.groupFriends.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
             }
         }else{
-            if($rootScope.groupFriends){
+            if($rootScope.chatID === chatid){
                 var groupFriends = $rootScope.ObjToArray($rootScope.groupFriends);
                 $rootScope.adjustObjectElement(groupFriends ,userid, 'user_id', 'edit', 1, 'confirmed', 0);
             }
@@ -617,10 +730,29 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
 
     // REMOVE GROUP VISUALY called when allert is confirmed
     $rootScope.removeGroup = function() {
-        $("#chat-section").trigger("click");
         $rootScope.adjustObjectElement($rootScope.groups, $rootScope.chatID,'chat_id', 'remove',0,0,0);
         $rootScope.resetChat();
     }
+
+    $rootScope.switchAdmin = function(userid, chatid, isAdmin, isAdjustedUser) {
+        $rootScope.adjustArrayFromObject($rootScope.groups, [chatid, userid], ['chat_id', 'user_id'], 'edit', isAdmin, 'admin', 1, 0);
+        if(isAdjustedUser){
+            $rootScope.adjustObjectElement($rootScope.groups, chatid, 'chat_id', 'edit', isAdmin, 'userIsAdmin', 0);
+        }
+        if ($rootScope.chatID === chatid) {
+            $rootScope.adjustObjectElement($rootScope.groupFriends, userid, 'user_id', 'edit', isAdmin, 'admin', 0);
+            if($rootScope.chatID == chatid && isAdjustedUser){
+                $rootScope.isChatAdmin = isAdmin;
+            }
+        }
+    }
+
+      $rootScope.renameChat = function(newname, chatid) {
+            $rootScope.adjustObjectElement($rootScope.groups, chatid, 'chat_id', 'edit', newname, 'chat_name', 0);
+            if ($rootScope.chatID === chatid) {
+                $rootScope.chatname = newname
+            }
+      }
 })
 app.controller('MessageController', function($scope, $http, API_URL, $rootScope) {
     $scope.message = {};
@@ -733,13 +865,148 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
         $('#inviteFriendToGroupAlert').addClass('open');
     }
 
-    // ADD FRIEND TO NEW GROUP (Send to alert)
+    // LEAVE GROUP (Send to alert)
     $scope.LeaveGroup = function() {
-        // send data to alert
-        // $rootScope.friendIdsInGroup = $rootScope.adjustElementNewArray($rootScope.groupFriends, 0,'user_id', 'retreive',0,0,0);
-        $('#Alerts').addClass('open');
-        $('#LeaveGroupschatAlert').addClass('open');
+        // open alert
+        var blockAction = $scope.minimumAdmins();
+        if(!blockAction){
+            $('#Alerts').addClass('open');
+            $('#LeaveGroupschatAlert').addClass('open');
+        }
     }
+
+    // ADD FRIEND TO NEW GROUP (Send to alert)
+    $scope.toggleAdmin = function(becomeAdmin, userid, key) {
+        becomeAdmin = 1 - becomeAdmin;
+        $scope.adminkey = key;
+        if(!becomeAdmin){
+            var blockAction = $scope.minimumAdmins();
+        }
+        if(!blockAction){
+            var data = {
+                userid  : userid,
+                admin   : becomeAdmin,
+                chatid  : $rootScope.chatID,
+                friends : $rootScope.groupFriends
+            };
+            $rootScope.postRequest(data ,'toggleAdmin', '');
+            $rootScope.switchAdmin( userid,  $rootScope.chatID,  becomeAdmin, 0);
+        }
+    }
+
+    // DELETE USER FROM GROUP (Send to alert)
+    $scope.deleteUserFromGroup = function(userid) {
+        // open alert
+        var blockAction = $scope.minimumAdmins();
+        if(!blockAction){
+            $rootScope.toDeleteUserId = userid;
+            $('#Alerts').addClass('open');
+            $('#deleteUserFromGroupAlert').addClass('open');
+        }
+    }
+
+    // DELETE GROUP
+    $scope.deleteGroup = function(userid) {
+        // open alert
+        $rootScope.toDeleteUserId = userid;
+        $('#Alerts').addClass('open');
+        $('#deleteGroupAlert').addClass('open');
+    }
+
+    // CHECK IF THE CHAT HAS MINIMUM 1 ADMIN
+    $scope.minimumAdmins = function(){
+        var allAdmins = $rootScope.adjustElementNewArray($rootScope.groupFriends, 1,'admin', 'retreive',0,0,0);
+        allAdmins = $rootScope.filterArray(allAdmins,1);
+        var blockAction = allAdmins.length < 2;
+        if(blockAction){
+            $('#Alerts').addClass('open');
+            $('#minimunAdminsAlert').addClass('open');
+        }
+        // prevent checkbox from being unchecked
+        var checkBoxes = $('#filled-in-box'+ $scope.adminkey);
+        checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+        return blockAction;
+    }
+
+    // EDIT GROUP NAME
+    $scope.editchatname = function(newChatName) {
+        if(newChatName){
+            var data = {
+                newname : newChatName,
+                chatid  : $rootScope.chatID,
+                friends : $rootScope.groupFriends
+            };
+            $rootScope.postRequest(data ,'renameChat', '');
+            $rootScope.renameChat(newChatName, $rootScope.chatID);
+        }
+    }
+})
+app.controller('ProfileController', function($scope, $http, API_URL, $rootScope, fileReader) {
+    $scope.uploadImage = function(image){
+        // var t = $('#profilepicUpload').val();
+        // var profilepic = [image['0']];
+        // var formData = new FormData($("#profilepicUpload")[0]);
+        var fromdata = new FormData();
+        var file = image['0'];
+         var text = $('#myInputField');  
+  var myObj = {title: 'Some title', content: text};  
+        fromdata.append("texta", 'drol');
+        fromdata.append("fileToUpload", file);
+        var reader  = new FileReader();
+        var imagefile;
+       reader.onload = function (e) {
+            // console.log(e.target.result);
+        };
+        reader.addEventListener("load", function (e) {
+            imagefile = reader.result;
+            console.log(e);
+            console.log(data);
+        }, false);
+        reader.readAsDataURL(file);
+
+        console.log(window.URL.createObjectURL(file), file,  fromdata);
+            var data = {
+                image :  file,
+            };
+            console.log(data)
+            $.ajax({
+              url: API_URL + 'profileImage',
+              type: 'POST',
+              data: fromdata,
+              processData: false,
+              contentType: false,
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+            });
+            // $rootScope.postRequest(data ,'profileImage', '');
+        
+    }
+
+    $scope.getFile = function () {
+        $scope.progress = 0;
+        fileReader.readAsDataUrl($scope.file, $scope)
+                      .then(function(result) {
+                          $scope.uploadImage(result);
+                      });
+    };
+})
+
+app.directive("ngFileSelect",function(){
+  return {
+    link: function($scope,el){
+      
+      el.bind("change", function(e){
+      
+        $scope.file = (e.srcElement || e.target).files[0];
+        $scope.getFile();
+      })
+    }
+  }
+})
+app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
+
+
 })
 app.controller('NavController', function($scope, $http, API_URL, $rootScope) {
 

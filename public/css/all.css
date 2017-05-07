@@ -9134,6 +9134,20 @@ $panel-default-heading-bg: #fff;
   text-align: center;
 }
 
+#bubble .img-overflow {
+  overflow: hidden;
+  width: 6.5rem;
+  height: 6.5rem;
+  margin: 0 auto;
+}
+
+#bubble .img-overflow .profile-pic {
+  margin: 0 auto;
+  min-width: 100%;
+  height: 100%;
+  width: auto;
+}
+
 html,
 body {
   height: 100vh;
@@ -9287,19 +9301,6 @@ body {
   color: white;
 }
 
-#sidebar .sidebar header .profile-info .img-overflow {
-  overflow: hidden;
-  width: 6.5rem;
-  height: 6.5rem;
-}
-
-#sidebar .sidebar header .profile-info .img-overflow .profile-pic {
-  margin: 0 auto;
-  min-width: 100%;
-  height: 100%;
-  width: auto;
-}
-
 #sidebar .sidebar header .profile-info .bubble-username {
   display: block;
   font-size: 1.5rem;
@@ -9384,6 +9385,29 @@ body {
 #friends .bottom .search-new-friends,
 #groups .bottom .search-new-friends {
   margin-top: 10px;
+}
+
+#profile .img-overflow {
+  margin-top: 4vw;
+  width: 9rem;
+  height: 9rem;
+  cursor: pointer;
+}
+
+#profile .img-overflow .edit-overlay {
+  position: absolute;
+  min-width: 9rem;
+  height: 9rem;
+}
+
+#profile .img-overflow #profilepicUpload {
+  display: none;
+}
+
+#profile .img-overflow:hover .edit-overlay {
+  background-color: red;
+  border-radius: 50%;
+  opacity: 0.5;
 }
 
 /* @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap"; */

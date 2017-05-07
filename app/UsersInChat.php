@@ -29,6 +29,7 @@ class UsersInChat extends Model
   		$chatUser = New UsersInChat;
     	$chatUser->User()->associate($user);
     	$chatUser->Chat()->associate($chat);
+      $chatUser->nickname = $user->name;
     	$chatUser->admin = 1;
     	$chatUser->confirmed = 1;
     	$chatUser->is_deleted = 0;
