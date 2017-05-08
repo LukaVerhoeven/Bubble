@@ -10299,70 +10299,19 @@ return jQuery;
 
 /* WEBPACK VAR INJECTION */(function($) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var app = angular.module('bubble', ['ngSanitize'])
-// .constant('API_URL','http://bubble.local/api/');
+var app = angular.module('bubble', ['ngSanitize']).constant('API_URL', 'http://bubble.local/api/');
 // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
-.constant('API_URL', 'http://bubble-lukaverhoeven.c9users.io/api/');
-var fileReader = function fileReader($q, $log) {
-
-    var onLoad = function onLoad(reader, deferred, scope) {
-        return function () {
-            scope.$apply(function () {
-                deferred.resolve(reader.result);
-            });
-        };
-    };
-
-    var onError = function onError(reader, deferred, scope) {
-        return function () {
-            scope.$apply(function () {
-                deferred.reject(reader.result);
-            });
-        };
-    };
-
-    var onProgress = function onProgress(reader, scope) {
-        return function (event) {
-            scope.$broadcast("fileProgress", {
-                total: event.total,
-                loaded: event.loaded
-            });
-        };
-    };
-
-    var getReader = function getReader(deferred, scope) {
-        var reader = new FileReader();
-        reader.onload = onLoad(reader, deferred, scope);
-        reader.onerror = onError(reader, deferred, scope);
-        reader.onprogress = onProgress(reader, scope);
-        return reader;
-    };
-
-    var readAsDataURL = function readAsDataURL(file, scope) {
-        var deferred = $q.defer();
-
-        var reader = getReader(deferred, scope);
-        reader.readAsDataURL(file);
-
-        return deferred.promise;
-    };
-
-    return {
-        readAsDataUrl: readAsDataURL
-    };
-};
-
-app.factory("fileReader", ["$q", "$log", fileReader]);
-
+// .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
 app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope) {
-    // GLOBAL FUNCTIONS
+    //************ GLOBAL FUNCTIONS ************
     // ERROR
     $rootScope.errorCallback = function (error) {
         // console.log(error);
         console.log("wrong call made");
     };
 
-    //POST FUNCTION
+    //************ HTTP FUNCTIONS ************
+    // POST FUNCTION
     $rootScope.postRequest = function (data, url, responseAction) {
         var url = API_URL + url;
         $http({
@@ -10385,7 +10334,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         }
     };
 
-    // ARRAYS AND OBJECTS
+    //************ ARRAYS AND OBJECTS ************
     $rootScope.IsEdited = false;
 
     // Filter an array on specific value. ex ([1,2], 1) => [1]
@@ -10602,9 +10551,14 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         return rv;
     };
 
-    // MULTICONTROLLER FUNCTIONS
+    // ************ MULTICONTROLLER FUNCTIONS ************
     // ENTER A CHAT
     $rootScope.openChat = function (chatID, friendID, friendName, chatFunction, friends, userIsAdmin) {
+        // Get messages and enter chatBroadcast channel
+        if (chatID != $rootScope.chatID) {
+            $rootScope.makeBroadcastConnection = true;
+            $rootScope.updateChat(chatID);
+        }
         // Chat
         $rootScope.chatname = friendName;
         $rootScope.chatID = chatID;
@@ -10631,17 +10585,17 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         $rootScope.chatFunction = null;
         $rootScope.groupFriends = null;
         $rootScope.isChatAdmin = null;
+        $rootScope.messages = null;
     };
 
     // OPEN CHAT
-    $rootScope.$watch(function () {
-        return $rootScope.chatID;
-    }, function () {
-        if ($rootScope.chatID) {
-            $rootScope.makeBroadcastConnection = true;
-            $rootScope.updateChat($rootScope.chatID);
-        }
-    }, true);
+    // $rootScope.$watch(function() {
+    //     return $rootScope.chatID;
+    // }, function() {
+    //     if ($rootScope.chatID) {
+
+    //     }
+    // }, true);
 
     // Make a broadcast connection for the user to create Real-time action. (ex. friendrequest)
     $rootScope.broadcastUser = function (userid) {
@@ -10659,7 +10613,6 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                     $rootScope.friendRequests.push(e.data);
                 });
             }
-            console.log();
             if (e.event === 'groupaccept') {
                 $scope.$apply(function () {
                     $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
@@ -10700,13 +10653,24 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                     $rootScope.renameChat(e.data.newname, e.data.chatid);
                 });
             }
+            if (e.event === 'deletefriend') {
+                $scope.$apply(function () {
+                    $rootScope.removeFriend(e.data);
+                });
+            }
+            if (e.event === 'acceptfriend') {
+                $scope.$apply(function () {
+                    $rootScope.addFriend(e.data);
+                });
+            }
         });
     };
 });
 app.controller('AlertController', function ($scope, $http, API_URL, $rootScope) {
     //DELETE FRIEND Confirmed
     $rootScope.deleteFriendConfirmed = function () {
-        $rootScope.postRequest($rootScope.friendDeleteData, 'deleteFriend', 'removeFriend');
+        $rootScope.postRequest($rootScope.friendDeleteData, 'deleteFriend', '');
+        $rootScope.removeFriend($rootScope.chatID);
         $scope.Close();
     };
 
@@ -10796,10 +10760,10 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
-        console.log($rootScope.groups);
+        console.log($rootScope.friendlist);
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
-        $rootScope.broadcastUser($scope.Authuserid);
+        $rootScope.broadcastUser($rootScope.Authuserid);
     };
 
     $rootScope.getFriendChats = function () {
@@ -10812,6 +10776,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
 
     $scope.showRequests = function (response) {
         $rootScope.friendRequests = response.data.friendrequests;
+        console.log($rootScope.friendRequests);
     };
 
     $scope.removeRequest = function (userid) {
@@ -10854,11 +10819,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         }).then(function (response) {
             if (friendrequest) {
                 $scope.removeRequest(friendID);
-            }
-            if (response.data[0] === true) {
-                console.log(response.data[1]); // = friendship is confirmed
-                // TODO fix dit front-end gewijs of maak nieuwe functie update friendchat
-                $rootScope.getFriendChats();
+                $rootScope.addFriend(response.data);
             }
         }, $rootScope.errorCallback);
     };
@@ -10894,8 +10855,16 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
     };
 
     // REMOVE FRIEND FROM FRIENDLIST (visualy) called when allert is confirmed
-    $rootScope.removeFriend = function () {
-        $rootScope.adjustObjectElement($rootScope.friendlist, $rootScope.chatID, 'chatid', 'remove', 1, 0, 0);
+    $rootScope.removeFriend = function (chatid) {
+        $rootScope.adjustObjectElement($rootScope.friendlist, chatid, 'chatid', 'remove', 1, 0, 0);
+        if ($rootScope.chatID == chatid) {
+            $rootScope.resetChat();
+        }
+    };
+
+    // ADD FRIEND TO FRIENDLIST (visualy) called when allert is confirmed
+    $rootScope.addFriend = function (user) {
+        $rootScope.friendlist.push(user);
     };
 });
 app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
@@ -11051,10 +11020,11 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
 
     //UPDATE CHAT
     $scope.successGetMessage = function (response) {
-        $scope.messages = response.data.messages;
+        $rootScope.messages = response.data.messages;
         $scope.message.themes = response.data.themes;
         $scope.message.theme = response.data.themes[0].id;
-        $scope.username = response.data.username;
+        $scope.message.profileImage = response.data.profileImage;
+        console.log($rootScope.messages);
         $scope.chatID = $rootScope.chatID;
         if ($rootScope.makeBroadcastConnection) {
             // If you are already in a chatroom. First leave this one. => than make a new broadcast connection.
@@ -11067,6 +11037,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
     };
 
     $rootScope.updateChat = function (chatid) {
+        console.log(chatid);
         $http.get(API_URL + "message" + "/" + chatid).then($scope.successGetMessage, $rootScope.errorCallback);
     };
 
@@ -11111,11 +11082,17 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
             // this.usersInRoom = this.usersInRoom.filter(u => u != user);
         }).listen('UpdateChat', function (e) {
             $scope.$apply(function () {
-                $scope.messages.push({
+                $rootScope.messages.push({
                     text: e.message.text,
-                    theme_id: e.message.theme,
-                    name: e.user.name
+                    theme_id: e.message.theme_id,
+                    name: e.user.name,
+                    user_id: e.message.user_id,
+                    profile_image: e.message.profile_image
                 });
+            });
+        }).listen('ProfileImage', function (e) {
+            $scope.$apply(function () {
+                $rootScope.adjustObjectElement($rootScope.messages, e.userid, 'user_id', 'edit', e.profileImage, 'profile_image', 0);
             });
         });
     };
@@ -11224,34 +11201,13 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
         }
     };
 });
-app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope, fileReader) {
+app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope) {
     $scope.uploadImage = function (image) {
-        // var t = $('#profilepicUpload').val();
-        // var profilepic = [image['0']];
-        // var formData = new FormData($("#profilepicUpload")[0]);
         var fromdata = new FormData();
         var file = image['0'];
-        var text = $('#myInputField');
-        var myObj = { title: 'Some title', content: text };
-        fromdata.append("texta", 'drol');
         fromdata.append("fileToUpload", file);
-        var reader = new FileReader();
-        var imagefile;
-        reader.onload = function (e) {
-            // console.log(e.target.result);
-        };
-        reader.addEventListener("load", function (e) {
-            imagefile = reader.result;
-            console.log(e);
-            console.log(data);
-        }, false);
-        reader.readAsDataURL(file);
+        fromdata.append("chatid", $rootScope.chatID);
 
-        console.log(window.URL.createObjectURL(file), file, fromdata);
-        var data = {
-            image: file
-        };
-        console.log(data);
         $.ajax({
             url: API_URL + 'profileImage',
             type: 'POST',
@@ -11262,30 +11218,29 @@ app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        // $rootScope.postRequest(data ,'profileImage', '');
-    };
-
-    $scope.getFile = function () {
-        $scope.progress = 0;
-        fileReader.readAsDataUrl($scope.file, $scope).then(function (result) {
-            $scope.uploadImage(result);
-        });
+        var url = window.URL.createObjectURL(file);
+        $('.profile-pic').attr('src', url);
     };
 });
 
-app.directive("ngFileSelect", function () {
-    return {
-        link: function link($scope, el) {
+// app.directive("ngFileSelect",function(){
+//   return {
+//     link: function($scope,el){
 
-            el.bind("change", function (e) {
+//       el.bind("change", function(e){
 
-                $scope.file = (e.srcElement || e.target).files[0];
-                $scope.getFile();
-            });
-        }
+//         $scope.file = (e.srcElement || e.target).files[0];
+//         $scope.uploadImage();
+//       })
+//     }
+//   }
+// })
+app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) {
+    $scope.createNewTheme = function () {
+        console.log($scope.NewTheme);
+        $rootScope.postRequest($scope.NewTheme, 'NewTheme', '');
     };
 });
-app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) {});
 app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 
     $scope.$watch(function () {
@@ -11329,6 +11284,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 
+// import ParentSelector from './helpers/parentSelector';
 
 
 // import pusher from './plugins/Pusher';
@@ -11362,6 +11318,7 @@ var App = function () {
         this.externallink = new __WEBPACK_IMPORTED_MODULE_0__helpers_externalLink___default.a();
         this.preventdefault = new __WEBPACK_IMPORTED_MODULE_2__helpers_preventDefault___default.a();
         this.autoscrolldownchat = new __WEBPACK_IMPORTED_MODULE_1__helpers_autoScrollDownChat___default.a();
+        // this.parentselector = new ParentSelector();
         // pages
         this.chatsettings = new __WEBPACK_IMPORTED_MODULE_4__pages_chatSettings___default.a();
     }

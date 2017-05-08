@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use App\Events\ProfileImage;
 use App\UsersInChat;
 use App\Friendship;
 use Auth;
@@ -31,16 +33,25 @@ class ChatController extends Controller
         try {
             $this->validate($request, [
                 'fileToUpload'    =>   'image',
+                'chatid'          =>   'integer',
             ]);
             $image = $request->file('fileToUpload');
-            $destinationPath = public_path('img/profileImage');
-            $unique_name = md5($image->getClientOriginalName() . time()).'.'. $image->getClientOriginalExtension();
-            $image->move($destinationPath, $unique_name);
-            $user = Auth::user();
-            $user->profile_image = $destinationPath . '/' . $unique_name;
-            $user->save();
+            $chatid = (int)$request->input('chatid');
+            if($image){
+                $unique_name = md5($image->getClientOriginalName() . time()).'.'. $image->getClientOriginalExtension();
+                $image->storeAs('public', $unique_name);
+                $destinationPath = Storage::url($unique_name);
+                $user = Auth::user();
+                $user->profile_image = $destinationPath;
+                $user->save();
+                broadcast(new ProfileImage($destinationPath , $user->id , $chatid))->toOthers();
+          
+                return $destinationPath;
+            }else{
+                return "no image send";
+            }
         } catch (Exception $e) {
-            
+            return "something went wrong";
         }
 
     }
@@ -58,7 +69,7 @@ class ChatController extends Controller
                 ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
                 ->where('chats.is_deleted','!=', 1)->get(); // fields from users table
 
-        // Retreive all chatID's and get all the groupschats out of it
+        // Retreive all chatID's for the friendschats and get all the groupschats out of it
         foreach ($chats as $chat) {
            array_push($chatID, $chat->id);
            if ($chat->function === "groupschat") {

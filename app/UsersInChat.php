@@ -48,12 +48,24 @@ class UsersInChat extends Model
         $friendInChat = $friendInChat->forget('chat');
         return $friendInChat;
     }
-  	// public static function friendInChat($chatid){
-  	// 	$users = UsersInChat::select('users.*')
-   //                      ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
-   //                      ->join('users', 'users.id', '=', 'users_in_chats.user_id')
-   //                      ->where('chats.id', '=', $chatid)
-   //                      ->where('users_in_chats.is_deleted','!=', 1)->get();
-   //  	return $users;
-  	// }
+
+    public static function getDeletedFriendship($userIDs){
+        $deletedUsers = UsersInChat::select('users_in_chats.id','users_in_chats.chat_id','users_in_chats.is_deleted', 'users_in_chats.user_id')
+            ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
+            ->where('chats.function', '=', 'friendchat')
+            ->whereIn('users_in_chats.user_id', $userIDs)
+            ->where('users_in_chats.is_deleted', 1)
+            ->where('chats.is_deleted', 1)->get();
+        $return = null;
+        if(!$deletedUsers->isEmpty()){
+            $deletedChat = Chat::where('id', $deletedUsers->first()->chat_id)->first();
+            $userids = array();
+            foreach ($deletedUsers as $user) {
+                array_push($userids, $user->id);
+            }
+            $users = UsersInChat::whereIn('id', $userids)->get();
+            $return = array($users, $deletedChat);
+        }
+        return $return;
+    }
 }

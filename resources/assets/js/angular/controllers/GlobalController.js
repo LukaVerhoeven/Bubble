@@ -1,12 +1,13 @@
 app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) {
-    // GLOBAL FUNCTIONS
+    //************ GLOBAL FUNCTIONS ************
     // ERROR
     $rootScope.errorCallback = function(error) {
         // console.log(error);
         console.log("wrong call made");
     }
 
-    //POST FUNCTION
+    //************ HTTP FUNCTIONS ************
+    // POST FUNCTION
     $rootScope.postRequest = function(data ,url ,responseAction) {
         var url = API_URL + url;
         $http({
@@ -30,7 +31,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         }
     };
 
-    // ARRAYS AND OBJECTS
+    //************ ARRAYS AND OBJECTS ************
     $rootScope.IsEdited = false;
 
     // Filter an array on specific value. ex ([1,2], 1) => [1]
@@ -243,9 +244,14 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         return rv;
     }
 
-    // MULTICONTROLLER FUNCTIONS
+    // ************ MULTICONTROLLER FUNCTIONS ************
     // ENTER A CHAT
     $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin) {
+        // Get messages and enter chatBroadcast channel
+        if(chatID != $rootScope.chatID){
+            $rootScope.makeBroadcastConnection = true;
+            $rootScope.updateChat(chatID);
+        }
         // Chat
         $rootScope.chatname = friendName;
         $rootScope.chatID = chatID;
@@ -270,17 +276,17 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.chatFunction  = null;      
         $rootScope.groupFriends  = null;
         $rootScope.isChatAdmin   = null;
+        $rootScope.messages      = null;
     }
 
     // OPEN CHAT
-    $rootScope.$watch(function() {
-        return $rootScope.chatID;
-    }, function() {
-        if ($rootScope.chatID) {
-            $rootScope.makeBroadcastConnection = true;
-            $rootScope.updateChat($rootScope.chatID);
-        }
-    }, true);
+    // $rootScope.$watch(function() {
+    //     return $rootScope.chatID;
+    // }, function() {
+    //     if ($rootScope.chatID) {
+            
+    //     }
+    // }, true);
 
     // Make a broadcast connection for the user to create Real-time action. (ex. friendrequest)
     $rootScope.broadcastUser = function(userid) {
@@ -306,7 +312,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         $rootScope.friendRequests.push(e.data);
                     });
                 }
-                console.log();
                 if(e.event === 'groupaccept'){
                     $scope.$apply(function() {
                         $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
@@ -345,6 +350,16 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                 if(e.event === 'renamechat'){
                     $scope.$apply(function() {
                        $rootScope.renameChat(e.data.newname, e.data.chatid);
+                    });
+                }
+                if(e.event === 'deletefriend'){
+                    $scope.$apply(function() {
+                       $rootScope.removeFriend(e.data);
+                    });
+                }
+                if(e.event === 'acceptfriend'){
+                    $scope.$apply(function() {
+                       $rootScope.addFriend(e.data);
                     });
                 }
             });

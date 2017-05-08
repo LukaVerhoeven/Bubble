@@ -35,6 +35,6 @@ class CreateUsersInChatTable extends Migration
      */
     public function down()
     {
-        Schema::drop('users_in_chat');
+        Schema::drop('users_in_chats');
     }
 }

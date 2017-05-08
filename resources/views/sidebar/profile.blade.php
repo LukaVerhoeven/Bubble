@@ -2,7 +2,7 @@
 	<div>
 		<div class="valign-wrapper profile-info">
 			<label class="col s4 no-pad  img-overflow circle center fixed" for="profilepicUpload">
-				<div class="profile-pic edit-overlay"></div>
+				<div class="edit-overlay"></div>
 				<img class="profile-pic" src="{{ Auth::user()->profile_image }}" alt="">
 				<input type="file" name="profilepicUpload" id="profilepicUpload" accept="image/*" onchange="angular.element(this).scope().uploadImage(this.files)">
 				<input type="submit" ng-click="uploadImage()">

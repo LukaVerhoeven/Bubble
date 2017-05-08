@@ -1,5 +1,5 @@
 <div id="chat-settings" class="col s12 tab-item bottom-gutter-double" ng-controller="ChatSettingsController">
-	<div class="top-gutter-double-extra margin-div col s12">
+	<div class="top-gutter-double margin-div col s12">
 		<div class="settings-layout card">
 		<!-- Main options -->
         	<div class="card-content col s12 ">
@@ -12,7 +12,7 @@
 			    	</a>
 	          	</div>
 	          	<div class="right hide" id="editChatNameInput">
-		          	<input type="text" placeholder="@{{chatname}}" ng-model="newChatName">
+		          	<input type="text" placeholder="@{{chatname}}" ng-model="newChatName" >
 		          	<a class=" btn-floating btn editChatNameButton" ng-click="editchatname(newChatName)">
 			     	 	<i class="material-icons">done</i>
 			    	</a>

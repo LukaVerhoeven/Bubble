@@ -4,10 +4,23 @@
 	<div class="chat-box">
 		<div class="chat">
 			<div class="message-wrapper" ng-repeat="message in messages">
-				<p ng-if="message.name != username">@{{ message.name }}</p>
-				<p ng-if="message.name === username">You</p>
-				<div class="message section card">
-					@{{ message.text }}
+				<div ng-if="message.user_id != Authuserid">
+					<p>@{{ message.name }}</p>
+					<div class="message section card">
+						@{{ message.text }}
+					</div>
+					<div class="col s4 no-pad  img-overflow circle left">
+						<img class="friend-pic" src="@{{ message.profile_image }}" alt="Bubble profile image" >{{-- error --}}
+					</div>
+				</div>
+				<div ng-if="message.user_id == Authuserid">
+					<p class="right-align">You</p>
+					<div class="message section card right-align">
+						@{{ message.text }}
+					</div>
+				<div class="col s4 no-pad  img-overflow circle center right">
+					<img class="profile-pic" src="{{ Auth::user()->profile_image }}" alt="Bubble profile image">
+				</div>
 				</div>
 			</div>
 		</div>
@@ -21,7 +34,7 @@
 	        <div class="input-field">
 	          <input type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)" autocomplete="off">
 	          <label class="label-icon" for="search"><i class="material-icons">note_add</i></label>
-	          <i class="material-icons send">send</i>
+	          <i class="material-icons send" ng-click="sendMessage(13)">send</i>
 	        </div>
 	      </form>
 	    </div>

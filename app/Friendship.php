@@ -36,38 +36,42 @@ class Friendship extends Model
     }
 
     protected function create($user , $friendRequested , $isConfirmed) {
-          	$friendship = New Friendship;
-            $friendship->User()->associate($user);
-            $friendship->Friend()->associate($friendRequested);
-            $friendship->is_blocked = 0;
-            $friendship->confirmed = $isConfirmed;
-            $friendship->save();
+        $friendship = Friendship::createFriendship($user , $friendRequested , $isConfirmed);
 
-            if ($isConfirmed) {
-            	$chat = New Chat;
-                
-            	$chat->chat_name = 'friendchat';
-                $chat->function = 'friendchat';
-                $chat->is_deleted = 0;
-            	$chat->save();
+        if ($isConfirmed) {
+        	$chat = New Chat;
+        	$chat->chat_name = 'friendchat';
+            $chat->function = 'friendchat';
+            $chat->is_deleted = 0;
+        	$chat->save();
 
-                Theme::create($chat,'general','white');
-                UsersInChat::create($user,$chat);
-                UsersInChat::create($friendRequested,$chat);
-            }else{
-                // return a friendrequest that can be broadcasted
-                return response()->json([
-                    'type' => 'friendrequest',
-                    'confirmed' => $friendship->confirmed,
-                    'name' => $user->name,
-                    'is_blocked' => $friendship->is_blocked ,
-                    'user_id' => $user->id
-                ]);
-            }
+            Theme::create($chat,'general','white',0 ,0);
+            UsersInChat::create($user,$chat);
+            UsersInChat::create($friendRequested,$chat);
+            return $chat->id;
+        }else{
+            // return a friendrequest that can be broadcasted
+            return response()->json([
+                'confirmed' => $friendship->confirmed,
+                'name' => $user->name,
+                'is_blocked' => $friendship->is_blocked ,
+                'user_id' => $user->id
+            ]);
+        }
+    }
+
+    protected function createFriendship($user , $friendRequested , $isConfirmed) {
+        $friendship = New Friendship;
+        $friendship->User()->associate($user);
+        $friendship->Friend()->associate($friendRequested);
+        $friendship->is_blocked = 0;
+        $friendship->confirmed = $isConfirmed;
+        $friendship->save();
+        return $friendship;
     }
 
     protected function confirm($friendrequest) {
-            $friendrequest->confirmed = 1;
-            $friendrequest->save();
+        $friendrequest->confirmed = 1;
+        $friendrequest->save();
     }
 }

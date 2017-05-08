@@ -43,7 +43,7 @@ class FriendController extends Controller
     {
         try {
     	    $user = Auth::user();
-            $newFriendID = $request->input('newfriend');
+            $newFriendID = (int)$request->input('newfriend');
             $friendRequested = User::where('id', $newFriendID)->first();
 
             //if user already requested this friendship
@@ -55,12 +55,32 @@ class FriendController extends Controller
                 return 'friendship is already requested';
             }elseif ($friendrequest) {
                 //CONFIRM FRIEND REQUEST
+                $ids = array($newFriendID,$user->id);
+                $deleteUserschats = UsersInChat::getDeletedFriendship($ids);
+                $chatDoesNotExist = collect($deleteUserschats[0])->isEmpty();
+                
                 Friendship::confirm($friendrequest);
+                if($chatDoesNotExist){
+                    //CREATE 2 WAY FRIENDSHIP
+                    $chatID = Friendship::create($user , $friendRequested, 1);
+                }else{
+                    // MAKE CHAT BACK ACTIVE
+                    $friendship = Friendship::createFriendship($user , $friendRequested , 1);
+                    $chat = $deleteUserschats[1]->first();
+                    $chat->is_deleted = 0;
+                    $chat->save();
+                    $chatID = $chat->id;
+                    foreach ($deleteUserschats[0] as $userinChat) {
+                        $userinChat->is_deleted = 0;
+                        $userinChat->save();
+                    }
+                }
 
-                //CREATE 2 WAY FRIENDSHIP
-                Friendship::create($user , $friendRequested, 1);
-
-                return array(true,'friendship is confirmed');
+                $data = array('chatid' => $chatID, 'name' => $user->name , 'userid' => $user->id);
+                $returnData = array('chatid' => $chatID, 'name' => $friendRequested->name , 'userid' => $friendRequested->id);
+                $returnData = json_encode($returnData);
+                broadcast(new UserEvents($newFriendID , "acceptfriend" , $data))->toOthers();
+                return $returnData;
             }else{
                 //SEND FRIEND_REQUEST
                 $request = Friendship::create($user , $friendRequested, 0);
@@ -87,7 +107,7 @@ class FriendController extends Controller
     {
         $user = Auth::user();
         $newFriendID = $request->input('newfriend');
-        $chatid = $request->input('chatID');
+        $chatid = (int)$request->input('chatID');
 
         // retreive data
         $friendRequested = User::where('id', $newFriendID)->first();
@@ -98,11 +118,13 @@ class FriendController extends Controller
                                 ->get();
         // delete data
         $chat->is_deleted = 1;
+        $chat->save();
         $friendship[0]->delete();
         $friendship[1]->delete();
         foreach ($usersinchat as $chatuser) {
             $chatuser->is_deleted = 1;
-            // broadcast(new UserEvents($chatuser->id , "deletefriend" , $user->id)->toOthers();
+            $chatuser->save();
+            broadcast(new UserEvents($chatuser->user_id ,"deletefriend" ,$chatid))->toOthers();
         }
 
         return 'friend deleted';
@@ -117,5 +139,4 @@ class FriendController extends Controller
                         ->where('friendships.confirmed',0)->get();
         return compact('friendrequests');
     }
-    
 }

@@ -1,0 +1,56 @@
+#themes{
+	.margin-div{
+		height: 100%;
+	}
+
+   .input-field input[type=text].ng-invalid.ng-touched {
+	    border-bottom: 1px solid #E53935;
+	    box-shadow: 0 1px 0 0 #E53935;
+
+	    &+label{
+			color: #E53935;
+	    }
+    }
+
+    .input-field input[type=text].ng-valid.ng-touched {
+	    border-bottom: 1px solid #26A69A;
+	    box-shadow: 0 1px 0 0 #26A69A;
+    }
+
+	.new-theme-color{
+		li{
+			display: inline-block;
+		}
+	}
+	.new-theme-icon,.new-theme-shortcut{
+		.no-button{
+			&, &:before, &:after{
+				opacity: 0;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				padding: 0;
+				z-index: 50;
+			}
+		}
+		
+		input:not(.ng-valid-parse)~i,input:not(.ng-valid-parse)~a{
+			color: white !important;
+		}
+
+		.ng-valid-parse~i,.ng-valid-parse~a{
+			background-color:white !important;
+			color: #26A69A;
+		}
+
+		.new-shortcut{
+			position: relative;
+		}
+
+		a{
+			padding: 0 .5rem;
+		}
+	}
+}

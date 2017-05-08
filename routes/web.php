@@ -38,6 +38,8 @@ Route::post('/api/addFriendToGroup', 'GroupController@addFriendToGroup');
 Route::post('/api/toggleAdmin', 'GroupController@toggleAdmin');
 Route::post('/api/deleteGroup', 'GroupController@delete');
 Route::post('/api/renameChat', 'GroupController@renameChat');
+// theme 
+Route::post('/api/NewTheme', 'ThemeController@create');
 
 // User
 Auth::routes();

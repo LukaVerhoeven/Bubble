@@ -17,6 +17,9 @@ class CreateThemesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('color');
+            $table->string('icon');
+            $table->string('shortcut');
+            $table->boolean('is_active');
             $table->integer('chat_id')->unsigned();
             $table->timestamps();
 

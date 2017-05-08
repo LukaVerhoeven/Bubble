@@ -2,12 +2,24 @@ $gutter: .75rem;
 
 #bubble{
 	// extra = when the element above has a drop shadow
-	.top-gutter-double-extra{
-		padding-top: $gutter*2+.1;
+	.top-gutter-double{
+		padding-top: $gutter*2;
 	}
 
 	.bottom-gutter-double{
 		padding-bottom: $gutter*2;
+	}
+
+	.top-gutter-double-margin{
+		margin-top: $gutter*2;
+	}
+	
+	.no-margin-top{
+		margin-top: 0;
+	}
+	
+	.inline-block{
+		display: inline-block;
 	}
 }
 

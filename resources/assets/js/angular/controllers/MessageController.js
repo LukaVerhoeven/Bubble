@@ -5,10 +5,11 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
 
     //UPDATE CHAT
     $scope.successGetMessage = function(response) {
-        $scope.messages = response.data.messages;
+        $rootScope.messages = response.data.messages;
         $scope.message.themes = response.data.themes;
         $scope.message.theme = response.data.themes[0].id;
-        $scope.username = response.data.username;
+        $scope.message.profileImage = response.data.profileImage;
+        console.log($rootScope.messages);
         $scope.chatID = $rootScope.chatID;
         if ($rootScope.makeBroadcastConnection) {
             // If you are already in a chatroom. First leave this one. => than make a new broadcast connection.
@@ -21,6 +22,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
     }
 
     $rootScope.updateChat = function(chatid) {
+        console.log(chatid);
         $http.get(API_URL + "message" + "/" + chatid)
             .then($scope.successGetMessage, $rootScope.errorCallback);
     }
@@ -49,8 +51,6 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
         }
     }
 
-
-
     //BROADCAST CONNECTION
     $scope.broadcast = function(chatid) {
         $scope.currentChatroom = `chatroom.${chatid}`;
@@ -72,13 +72,20 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
             })
             .listen('UpdateChat', (e) => {
                 $scope.$apply(function() {
-                    $scope.messages.push({
+                    $rootScope.messages.push({
                         text: e.message.text,
-                        theme_id: e.message.theme,
-                        name: e.user.name
+                        theme_id: e.message.theme_id,
+                        name: e.user.name,
+                        user_id: e.message.user_id,
+                        profile_image: e.message.profile_image,
                     });
                 });
-            });
+            })
+            .listen('ProfileImage', (e) => {
+                $scope.$apply(function() {
+                    $rootScope.adjustObjectElement($rootScope.messages ,e.userid, 'user_id', 'edit', e.profileImage, 'profile_image', 0);
+                });
+            });            
     };
 
     $scope.scrollDown = function(chatid) {

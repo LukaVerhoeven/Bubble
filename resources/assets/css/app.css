@@ -47,12 +47,24 @@ $input-color-placeholder: lighten($text-color, 30%);
 $panel-default-heading-bg: #fff;
  */
 
-#bubble .top-gutter-double-extra {
-  padding-top: 1.6rem;
+#bubble .top-gutter-double {
+  padding-top: 1.5rem;
 }
 
 #bubble .bottom-gutter-double {
   padding-bottom: 1.5rem;
+}
+
+#bubble .top-gutter-double-margin {
+  margin-top: 1.5rem;
+}
+
+#bubble .no-margin-top {
+  margin-top: 0;
+}
+
+#bubble .inline-block {
+  display: inline-block;
 }
 
 #Alerts {
@@ -96,7 +108,8 @@ $panel-default-heading-bg: #fff;
   margin: 0 auto;
 }
 
-#bubble .img-overflow .profile-pic {
+#bubble .img-overflow .profile-pic,
+#bubble .img-overflow .friend-pic {
   margin: 0 auto;
   min-width: 100%;
   height: 100%;
@@ -169,6 +182,8 @@ body {
 
 #content .chat-box .chat .message {
   z-index: -1;
+  display: inline-block;
+  width: 80%;
 }
 
 #content .chat-input {
@@ -232,6 +247,69 @@ body {
 
 #chat-settings .settings-layout .card-content .right {
   float: right;
+}
+
+#themes .margin-div {
+  height: 100%;
+}
+
+#themes .input-field input[type=text].ng-invalid.ng-touched {
+  border-bottom: 1px solid #E53935;
+  box-shadow: 0 1px 0 0 #E53935;
+}
+
+#themes .input-field input[type=text].ng-invalid.ng-touched + label {
+  color: #E53935;
+}
+
+#themes .input-field input[type=text].ng-valid.ng-touched {
+  border-bottom: 1px solid #26A69A;
+  box-shadow: 0 1px 0 0 #26A69A;
+}
+
+#themes .new-theme-color li {
+  display: inline-block;
+}
+
+#themes .new-theme-icon .no-button,
+#themes .new-theme-icon .no-button:before,
+#themes .new-theme-icon .no-button:after,
+#themes .new-theme-shortcut .no-button,
+#themes .new-theme-shortcut .no-button:before,
+#themes .new-theme-shortcut .no-button:after {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  z-index: 50;
+}
+
+#themes .new-theme-icon input:not(.ng-valid-parse) ~ i,
+#themes .new-theme-icon input:not(.ng-valid-parse) ~ a,
+#themes .new-theme-shortcut input:not(.ng-valid-parse) ~ i,
+#themes .new-theme-shortcut input:not(.ng-valid-parse) ~ a {
+  color: white !important;
+}
+
+#themes .new-theme-icon .ng-valid-parse ~ i,
+#themes .new-theme-icon .ng-valid-parse ~ a,
+#themes .new-theme-shortcut .ng-valid-parse ~ i,
+#themes .new-theme-shortcut .ng-valid-parse ~ a {
+  background-color: white !important;
+  color: #26A69A;
+}
+
+#themes .new-theme-icon .new-shortcut,
+#themes .new-theme-shortcut .new-shortcut {
+  position: relative;
+}
+
+#themes .new-theme-icon a,
+#themes .new-theme-shortcut a {
+  padding: 0 .5rem;
 }
 
 #sidebar {

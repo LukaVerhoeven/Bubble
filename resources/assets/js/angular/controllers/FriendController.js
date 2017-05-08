@@ -11,10 +11,10 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
-        console.log($rootScope.groups);
+        console.log($rootScope.friendlist);
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
-        $rootScope.broadcastUser($scope.Authuserid);
+        $rootScope.broadcastUser($rootScope.Authuserid);
     }
 
     $rootScope.getFriendChats = function() {
@@ -29,10 +29,11 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     $scope.showRequests = function(response) {
         $rootScope.friendRequests = response.data.friendrequests;
+        console.log($rootScope.friendRequests);
     }
 
     $scope.removeRequest = function(userid) {
-       $rootScope.friendRequests.forEach(function (obj, i) {
+        $rootScope.friendRequests.forEach(function (obj, i) {
             if(obj.user_id === userid){
                 $rootScope.friendRequests.splice(i,1);
             }
@@ -73,11 +74,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
             .then(function(response) {
                 if(friendrequest){
                     $scope.removeRequest(friendID);
-                }
-                if (response.data[0] === true) {
-                    console.log(response.data[1]); // = friendship is confirmed
-                    // TODO fix dit front-end gewijs of maak nieuwe functie update friendchat
-                    $rootScope.getFriendChats();
+                    $rootScope.addFriend(response.data);
                 }
             }, $rootScope.errorCallback);
     }
@@ -114,7 +111,15 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     }
 
     // REMOVE FRIEND FROM FRIENDLIST (visualy) called when allert is confirmed
-    $rootScope.removeFriend = function() {
-         $rootScope.adjustObjectElement($rootScope.friendlist, $rootScope.chatID,'chatid', 'remove',1,0,0);
+    $rootScope.removeFriend = function(chatid) {
+         $rootScope.adjustObjectElement($rootScope.friendlist, chatid,'chatid', 'remove',1,0,0);
+         if($rootScope.chatID == chatid){
+            $rootScope.resetChat();
+         }
+    }
+
+    // ADD FRIEND TO FRIENDLIST (visualy) called when allert is confirmed
+    $rootScope.addFriend = function(user) {
+        $rootScope.friendlist.push(user)
     }
 })

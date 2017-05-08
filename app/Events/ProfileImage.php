@@ -2,8 +2,6 @@
 
 namespace App\Events;
 
-use App\User;
-use App\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -12,18 +10,18 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class UpdateChat implements ShouldBroadcast
+class ProfileImage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
-    public $user;
+    public $profileImage;
+    public $userid;
     public $roomid;
 
-    public function __construct($message, User $user, $RoomId)
+    public function __construct($profileImage, $userid, $RoomId)
     {
-        $this->message = $message;
-        $this->user = $user;
+        $this->profileImage = $profileImage;
+        $this->userid = $userid;
         $this->roomid = $RoomId;
     }
 
