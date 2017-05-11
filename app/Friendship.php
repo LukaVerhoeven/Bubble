@@ -45,7 +45,7 @@ class Friendship extends Model
             $chat->is_deleted = 0;
         	$chat->save();
 
-            Theme::create($chat,'general','white',0 ,0);
+            Theme::create($chat,'general','white',0 ,0, 1);
             UsersInChat::create($user,$chat);
             UsersInChat::create($friendRequested,$chat);
             return $chat->id;

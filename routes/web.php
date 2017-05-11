@@ -18,7 +18,7 @@ Route::get('/', 'ChatController@index');
 Route::get('/api/getChatRooms', 'ChatController@getChatRooms');
 
 Route::get('/api/message/{id?}', 'MessageController@index');
-Route::post('/api/message/{id}', 'MessageController@store');
+Route::post('/api/message', 'MessageController@store');
 Route::post('/api/getThemes/{id}', 'MessageController@getThemes');
 
 // friends
@@ -40,6 +40,9 @@ Route::post('/api/deleteGroup', 'GroupController@delete');
 Route::post('/api/renameChat', 'GroupController@renameChat');
 // theme 
 Route::post('/api/NewTheme', 'ThemeController@create');
+Route::post('/api/updateTheme', 'ThemeController@update');
+Route::post('/api/toggleTheme', 'ThemeController@toggle');
+Route::post('/api/deleteTheme', 'ThemeController@delete');
 
 // User
 Auth::routes();

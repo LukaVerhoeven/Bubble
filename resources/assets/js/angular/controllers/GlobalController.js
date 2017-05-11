@@ -121,7 +121,13 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         }
                         // Retreive data
                         if(action === 'retreive'){
-                            retreiveData.push(obj[key]);
+                            if(value){
+                                if(obj[key] == value){
+                                    retreiveData.push(obj[editKey]);    
+                                }
+                            }else{
+                                retreiveData.push(obj[key]);
+                            }
                         }
                     }
                 }else{
@@ -248,6 +254,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     // ENTER A CHAT
     $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin) {
         // Get messages and enter chatBroadcast channel
+        $(".conversation-tab a")[0].click();
         if(chatID != $rootScope.chatID){
             $rootScope.makeBroadcastConnection = true;
             $rootScope.updateChat(chatID);

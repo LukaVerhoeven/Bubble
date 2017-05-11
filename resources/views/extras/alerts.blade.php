@@ -87,4 +87,14 @@
 	    </ul>
 	  </div>
 	</div>
+<!-- Theme alerts -->	
+	<div id="deleteThemeAlert" class="alertbox" ng-click="Close()">
+	  <!-- Modal content -->
+	  <div class="modal-content" ng-click="$event.stopPropagation()">
+	    <span class="close">&times;</span>
+        <p>Are you sure you want to delete this theme?</p>
+	    <a class="btn waves-effect waves-light" ng-click="deleteThemeConfirmed()">I'm sure</a>
+	    <a class="btn waves-effect waves-light red" ng-click="Close()">No!</a>
+	  </div>
+	</div>
 </div>

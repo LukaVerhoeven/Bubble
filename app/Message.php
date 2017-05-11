@@ -25,4 +25,20 @@ class Message extends Model
 	{
 		return $this->belongsTo('App\User','user_id');
 	}
+
+	public static function updateTheme($keywords, $themeid)
+	{
+        Message::where(function($query) use($keywords){
+            foreach($keywords as $keyword) {
+                $query->orWhere('text', 'LIKE', "%".$keyword."%");
+            }
+        })->where('force_theme',0)->update(['theme_id' => $themeid]);
+        $messages = Message::where(function($query) use($keywords){
+            foreach($keywords as $keyword) {
+                $query->orWhere('text', 'LIKE', "%".$keyword."%");
+            }
+        })->where('force_theme',0)->get();
+
+        dd($messages, $themeid, $keywords);
+	}
 }

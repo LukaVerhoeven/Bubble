@@ -125,7 +125,13 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         }
                         // Retreive data
                         if(action === 'retreive'){
-                            retreiveData.push(obj[key]);
+                            if(value){
+                                if(obj[key] == value){
+                                    retreiveData.push(obj[editKey]);    
+                                }
+                            }else{
+                                retreiveData.push(obj[key]);
+                            }
                         }
                     }
                 }else{
@@ -252,6 +258,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     // ENTER A CHAT
     $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin) {
         // Get messages and enter chatBroadcast channel
+        $(".conversation-tab a")[0].click();
         if(chatID != $rootScope.chatID){
             $rootScope.makeBroadcastConnection = true;
             $rootScope.updateChat(chatID);
@@ -444,13 +451,18 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
         $scope.Close();
     }
 
+    //DELETE THEME
+    $scope.deleteThemeConfirmed = function() {
+        $rootScope.themes.splice([$rootScope.deleteTheme.index],1);
+        $rootScope.postRequest($rootScope.deleteTheme ,'deleteTheme', '');
+        $scope.Close();
+    }
+
     //CLOSE ALERT
     $scope.Close = function() {
         $('#Alerts').removeClass('open');
         $('.alertbox').removeClass('open');
     }
-
-
 })
 app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $rootScope) {
 
@@ -729,10 +741,11 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
     //UPDATE CHAT
     $scope.successGetMessage = function(response) {
         $rootScope.messages = response.data.messages;
-        $scope.message.themes = response.data.themes;
+        $rootScope.themes = response.data.themes;
+        $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1,'is_general', 'retreive',0,'id',0)[0];
+        console.log($rootScope.themes);
         $scope.message.theme = response.data.themes[0].id;
         $scope.message.profileImage = response.data.profileImage;
-        console.log($rootScope.messages);
         $scope.chatID = $rootScope.chatID;
         if ($rootScope.makeBroadcastConnection) {
             // If you are already in a chatroom. First leave this one. => than make a new broadcast connection.
@@ -752,13 +765,14 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
 
     //SEND A MESSAGE
     $scope.sendMessage = function(keyEvent) {
+        $scope.message.chatid = $rootScope.chatID;
         if (keyEvent.which === 13) {
             var $textInput = $('#message-text');
             // if the text Input is not empty send the message
             if ($textInput.val() != "" && $rootScope.chatID) {
                 $textInput.val('');
                 //TODO: werkt alleen met rootscope nu. is het niet beter dat het met scope.chatID werkt? Anders verwijder regel 17?
-                var url = API_URL + "message/" + $rootScope.chatID;
+                var url = API_URL + "message";
 
                 $http({
                     method: 'POST',
@@ -807,6 +821,34 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope)
             .listen('ProfileImage', (e) => {
                 $scope.$apply(function() {
                     $rootScope.adjustObjectElement($rootScope.messages ,e.userid, 'user_id', 'edit', e.profileImage, 'profile_image', 0);
+                });
+            })
+            .listen('ThemeEvent', (e) => {
+                $scope.$apply(function() {
+                    if($rootScope.themes){
+                        console.log(e);
+                        if(e.event === 'create'){
+                            var objectString = $rootScope.keywordToObjectArray(e.data.keywords);
+                            e.data.keywords = objectString;
+                            $rootScope.themes.push(e.data);
+                        }
+
+                        if(e.event === 'delete'){
+                            $rootScope.adjustObjectElement($rootScope.themes, e.data, 'id', 'remove', 0, 0, 0);
+                        }
+
+                        if(e.event === 'update'){
+                            var keywords = $rootScope.ObjToArray(e.data.keywords);
+                            var objectString = $rootScope.keywordToObjectArray(keywords);
+                            e.data.keywords = objectString;
+                            $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'remove', 0, 0, 0);
+                            $rootScope.themes.push(e.data);
+                        }  
+
+                        if(e.event === 'toggle'){
+                            $rootScope.adjustObjectElement($rootScope.themes, e.data.themeid, 'id', 'edit', e.data.isActive, 'is_active', 0);
+                        }                                
+                    }
                 });
             });            
     };
@@ -914,6 +956,29 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
             $rootScope.renameChat(newChatName, $rootScope.chatID);
         }
     }
+
+    // DISABLE THEME
+    $scope.toggleTheme = function(themeid , index){
+        var isActive = 1 - $rootScope.themes[index].is_active;
+        $rootScope.toggleTheme = {};
+        $rootScope.toggleTheme.id = themeid;
+        $rootScope.toggleTheme.isActive = isActive;
+        $rootScope.toggleTheme.chatid =  $rootScope.chatID;
+        $rootScope.toggleTheme.generalID = $rootScope.generalThemeID;
+        $rootScope.postRequest($rootScope.toggleTheme ,'toggleTheme', '');
+        $rootScope.themes[index].is_active = isActive;
+    }
+
+    // ALERT TO CONFIRM DELETE THEME
+    $scope.deleteTheme = function(themeid, index){
+        $rootScope.deleteTheme = {};
+        $rootScope.deleteTheme.index = index;
+        $rootScope.deleteTheme.themeid = themeid;
+        $rootScope.deleteTheme.chatid = $rootScope.chatID;
+        $rootScope.deleteTheme.generalID = $rootScope.generalThemeID;
+        $('#Alerts').addClass('open');
+        $('#deleteThemeAlert').addClass('open');
+    }
 })
 app.controller('ProfileController', function($scope, $http, API_URL, $rootScope) {
     $scope.uploadImage = function(image){
@@ -951,8 +1016,51 @@ app.controller('ProfileController', function($scope, $http, API_URL, $rootScope)
 // })
 app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	$scope.createNewTheme = function(){
-		console.log($scope.NewTheme);
-		$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
+		$scope.NewTheme.chatid = $rootScope.chatID;
+		if($scope.NewTheme.chatid){
+			$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
+			// $scope.resetForm($scope.NewTheme);
+		}
+		console.log($rootScope.themes);
+	}
+
+	$scope.editTheme = function(theme){
+		$rootScope.postRequest(theme ,'updateTheme', '');
+	}
+
+// TODO maak loading screen ( i am creating your theme)
+// geen theme->id dus kan functie niet gberuiken ( maar wel leerijke functie dus ni weg doen)
+	// $scope.pushNewTheme = function (newCreatedTheme){
+	// 	var newTheme = JSON.parse(JSON.stringify(newCreatedTheme)); //Create unique new object
+	// 	newTheme.themeUsage = "0%";
+	// 	newTheme.is_active = 1;
+	// 	newTheme.is_deleted = 0;
+	// 	newTheme.is_general = 0;
+	// 	newTheme.keywordString = newTheme.keywordString.replace(/\s+/g, ',').toLowerCase();
+	// 	var filteredString = newTheme.keywordString.split(",").filter(function(e){return e}).join(',');
+	// 	var objectString = filteredString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
+	// 	var newJson = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+	// 	newJson = newJson.replace(/'/g, '"');
+	// 	newTheme.keywords = JSON.parse(newJson);
+	// 	$rootScope.themes.push(newTheme);
+	// }
+
+	$scope.resetForm = function(form){
+	    for (var prop in form) {
+	    	form[prop] = null;
+	    }
+	    $scope.createThemeForm.$setPristine();
+	    $scope.createThemeForm.$setUntouched();
+	}
+
+	$rootScope.keywordToObjectArray = function(keywords){
+        var keywordString = keywords.join(',');
+        var objectString = keywordString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
+        objectString = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+        objectString = objectString.replace(/'/g, '"');
+        objectString = objectString.replace(/[\u0000-\u0019]+/g,""); // remove invisible symbols
+        objectString = JSON.parse(objectString);
+        return objectString;
 	}
 })
 app.controller('NavController', function($scope, $http, API_URL, $rootScope) {

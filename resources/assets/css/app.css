@@ -152,6 +152,10 @@ body {
   padding-top: 6rem;
 }
 
+#content .nav-extended {
+  z-index: 10;
+}
+
 #content .nav-content {
   height: 6rem;
   position: relative;
@@ -239,6 +243,7 @@ body {
 #chat-settings .settings-layout {
   height: 100%;
   margin: 0;
+  overflow: scroll;
 }
 
 #chat-settings .settings-layout .card-content p {
@@ -247,6 +252,28 @@ body {
 
 #chat-settings .settings-layout .card-content .right {
   float: right;
+}
+
+#themes {
+  overflow: scroll;
+  position: relative;
+}
+
+#themes h2 {
+  font-size: 1.5em;
+  font-weight: bolder;
+  margin: 1rem;
+}
+
+#themes .new-theme {
+  overflow: hidden;
+  max-height: 6%;
+  -webkit-transition: max-height 1s ease-out;
+  transition: max-height 1s ease-out;
+}
+
+#themes .new-theme.open-slider {
+  max-height: 100%;
 }
 
 #themes .margin-div {
@@ -287,17 +314,17 @@ body {
   z-index: 50;
 }
 
-#themes .new-theme-icon input:not(.ng-valid-parse) ~ i,
-#themes .new-theme-icon input:not(.ng-valid-parse) ~ a,
-#themes .new-theme-shortcut input:not(.ng-valid-parse) ~ i,
-#themes .new-theme-shortcut input:not(.ng-valid-parse) ~ a {
+#themes .new-theme-icon input[type="radio"]:not(:checked) ~ i,
+#themes .new-theme-icon input[type="radio"]:not(:checked) ~ a,
+#themes .new-theme-shortcut input[type="radio"]:not(:checked) ~ i,
+#themes .new-theme-shortcut input[type="radio"]:not(:checked) ~ a {
   color: white !important;
 }
 
-#themes .new-theme-icon .ng-valid-parse ~ i,
-#themes .new-theme-icon .ng-valid-parse ~ a,
-#themes .new-theme-shortcut .ng-valid-parse ~ i,
-#themes .new-theme-shortcut .ng-valid-parse ~ a {
+#themes .new-theme-icon [type="radio"]:checked ~ i,
+#themes .new-theme-icon [type="radio"]:checked ~ a,
+#themes .new-theme-shortcut [type="radio"]:checked ~ i,
+#themes .new-theme-shortcut [type="radio"]:checked ~ a {
   background-color: white !important;
   color: #26A69A;
 }

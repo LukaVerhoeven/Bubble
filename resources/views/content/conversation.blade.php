@@ -3,19 +3,19 @@
 	<!-- messages -->
 	<div class="chat-box">
 		<div class="chat">
-			<div class="message-wrapper" ng-repeat="message in messages">
+			<div class="message-wrapper"  ng-repeat="message in messages">
 				<div ng-if="message.user_id != Authuserid">
 					<p>@{{ message.name }}</p>
-					<div class="message section card">
+					<div class="message section card @{{message.color}}">
 						@{{ message.text }}
 					</div>
 					<div class="col s4 no-pad  img-overflow circle left">
-						<img class="friend-pic" src="@{{ message.profile_image }}" alt="Bubble profile image" >{{-- error --}}
+						<img class="friend-pic" ng-src="@{{ message.profile_image }}" alt="Bubble profile image" >{{-- error --}}
 					</div>
 				</div>
 				<div ng-if="message.user_id == Authuserid">
 					<p class="right-align">You</p>
-					<div class="message section card right-align">
+					<div class="message section card right-align @{{message.color}}">
 						@{{ message.text }}
 					</div>
 				<div class="col s4 no-pad  img-overflow circle center right">

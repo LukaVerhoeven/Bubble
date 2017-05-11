@@ -1,5 +1,9 @@
 #content{
-.nav-content{
+	.nav-extended{
+		z-index: 10;
+	}	
+	
+	.nav-content{
 		height: $content-nav-height;
 		position: relative;
 

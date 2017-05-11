@@ -2,6 +2,7 @@
 import externalLink from './helpers/externalLink';
 import AutoScrollDownChat from './helpers/autoScrollDownChat';
 import PreventDefault from './helpers/preventDefault';
+import SlideOpen from './helpers/slideOpen';
 // import ParentSelector from './helpers/parentSelector';
 import addFriend from './components/addFriend';
 import chatSettings from './pages/chatSettings';
@@ -35,6 +36,7 @@ class App {
         this.externallink = new externalLink();
         this.preventdefault = new PreventDefault();
         this.autoscrolldownchat = new AutoScrollDownChat();
+        this.slideopen = new SlideOpen();
         // this.parentselector = new ParentSelector();
         // pages
         this.chatsettings = new chatSettings();

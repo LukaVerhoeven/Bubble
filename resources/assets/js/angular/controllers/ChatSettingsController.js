@@ -93,4 +93,27 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
             $rootScope.renameChat(newChatName, $rootScope.chatID);
         }
     }
+
+    // DISABLE THEME
+    $scope.toggleTheme = function(themeid , index){
+        var isActive = 1 - $rootScope.themes[index].is_active;
+        $rootScope.toggleTheme = {};
+        $rootScope.toggleTheme.id = themeid;
+        $rootScope.toggleTheme.isActive = isActive;
+        $rootScope.toggleTheme.chatid =  $rootScope.chatID;
+        $rootScope.toggleTheme.generalID = $rootScope.generalThemeID;
+        $rootScope.postRequest($rootScope.toggleTheme ,'toggleTheme', '');
+        $rootScope.themes[index].is_active = isActive;
+    }
+
+    // ALERT TO CONFIRM DELETE THEME
+    $scope.deleteTheme = function(themeid, index){
+        $rootScope.deleteTheme = {};
+        $rootScope.deleteTheme.index = index;
+        $rootScope.deleteTheme.themeid = themeid;
+        $rootScope.deleteTheme.chatid = $rootScope.chatID;
+        $rootScope.deleteTheme.generalID = $rootScope.generalThemeID;
+        $('#Alerts').addClass('open');
+        $('#deleteThemeAlert').addClass('open');
+    }
 })

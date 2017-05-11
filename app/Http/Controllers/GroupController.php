@@ -30,7 +30,7 @@ class GroupController extends Controller
         $AuthInchat = UsersInChat::create($user,$chat);
         $AuthInchat = UsersInChat::AddNameJson($user->name, $AuthInchat);
         array_push($UsersInChat, $AuthInchat);
-        Theme::create($chat,'general','white');
+        Theme::create($chat,'general','white', 0,0,1);
 
 
         if($friends){

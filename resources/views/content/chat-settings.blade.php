@@ -2,7 +2,7 @@
 	<div class="top-gutter-double margin-div col s12">
 		<div class="settings-layout card">
 		<!-- Main options -->
-        	<div class="card-content col s12 ">
+        	<div class="card-content col s12">
 		        <p ng-if="chatFunction === 'friendchat'">Nickname</p>
 		        <p ng-if="chatFunction === 'groupschat'">Groupsname</p>
 		        <div class="right" id="editChatName">
@@ -35,12 +35,29 @@
 	        </div>
         <!-- Theme-option -->
 	        <div class="card-content col s12">
-	        	<p>Themes</p>
-	        	<div class="right">
-	        		<p>Usage</p>
-	        		<p ng-if="isChatAdmin">Active</p>
-	        		<p ng-if="isChatAdmin">Delete</p>
-	        	</div>
+		        <div>
+		        	<p>Themes</p>
+		        	<div class="right">
+		        		<p>Usage</p>
+		        		<p ng-if="isChatAdmin">Active</p>
+		        		<p ng-if="isChatAdmin">Delete</p>
+		        	</div>
+		        </div>
+		        <div class="card-content col s12" ng-repeat="(key, theme) in themes" ng-if="!theme.is_general && !theme.is_deleted">
+        			<div class="btn-floating waves-effect waves-light @{{theme.color}}">
+			     	 	<i class="material-icons ">@{{theme.icon}}</i>
+			    	</div>
+		        	<p>@{{theme.name}}</p>
+		        	<div class="right">
+		        		<p>@{{theme.themeUsage}}</p>
+		        		<div ng-if="isChatAdmin">
+							<input type="checkbox" class="filled-in" id="theme-active-box@{{key}}" checked="checked" ng-if="theme.is_active"/>
+						    <input type="checkbox" class="filled-in" id="theme-active-box@{{key}}" ng-if="!theme.is_active"/>
+						    <label ng-click="toggleTheme(theme.id , key)"></label>
+		        		</div>
+		        		<a ng-if="isChatAdmin"><i class="small material-icons col s2 red-text" ng-click="deleteTheme(theme.id, key)">delete</i></a>
+		        	</div>
+		        </div>
 	        </div>
 	    <!-- Group admin options -->
 	    	<!-- head -->

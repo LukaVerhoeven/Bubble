@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Events\UpdateChat;
 use App\Message;
+use App\Keyword;
 use App\Theme;
 use Auth;
 
@@ -23,9 +24,29 @@ class MessageController extends Controller
             try {
                 $messages = Message::where('messages.chat_id', $id)
                 ->join('users', 'users.id', '=', 'messages.user_id')
+                ->join('themes', 'themes.id', '=', 'messages.theme_id')
                 ->orderBy('messages.id','asc')
-                ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image')->get();
-                $themes = Theme::where('chat_id', $id)->get();
+                ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image', 'themes.color')->get();
+                $themes = Theme::where('chat_id', $id)->with('keywords')->get();
+                $themes = collect($themes)->map(function($item) {
+                    $keywords= collect(collect($item)['keywords'])->implode('word',', ');
+                    $item = collect($item)->put('keywordString', $keywords);
+                    return $item;
+                });
+
+                // theme usage
+                foreach ($themes as $key => $theme) {
+                    $themeMessages = $messages->where('theme_id',$theme['id']);
+                    $amountThemeMessages = $themeMessages->count();
+                    $amountMessages = $messages->count();
+                    if($amountMessages){
+                        $themeUsage = ($amountThemeMessages/$amountMessages)*100;
+                        $themeUsage = round($themeUsage) . '%';
+                    }else{
+                        $themeUsage = '0%';
+                    }
+                    $themes[$key] = collect($theme)->put('themeUsage', $themeUsage);
+                }
                 return compact('messages', 'themes','profileImage');
             } catch (Exception $e) {
                 return 'something went wrong retrieving the chat';
@@ -33,28 +54,50 @@ class MessageController extends Controller
         }
     }
     
-   	public function store(Request $request, $id)
+   	public function store(Request $request)
     {
         try {
-
             $this->validate($request, [
-                'theme'      =>   'integer',
-                'chat_id'      =>   'integer',
-                'profileImage' =>   'string'
+                'theme'        =>   'integer',
+                'chatid'       =>   'integer',
+                'profileImage' =>   'string',
+                'text'         =>   'string' 
             ]);
             
             $user = Auth::user();
-            $theme = Theme::where('id', $request->input('theme'))->where('chat_id', $id)->first();
-            $message = New Message;
-            $message->text = $request->input('text');
+            $chatid = $request->input('chatid');
+            $text = $request->input('text');
+            $themeid =  $request->input('theme');
             $profileImage = $request->input('profileImage');
-            $message->Theme()->associate($theme);
+            $theme = Theme::where('id', $themeid)->where('chat_id', $chatid)->first();
+            if($theme->is_general === 1){
+                // if no theme was selected => check theme
+                $keywords = Keyword::where('chat_id', $chatid)->get();
+                foreach ($keywords as $key => $word) {
+                    if (strpos($text, $word->word) !== false) {
+                        $theme = $word->theme_id;
+                        break;
+                    }
+                }
+                $forceTheme = 0;
+            }else{
+                $forceTheme = 1;
+            }
+            $message = New Message;
+            $message->text = $text;
             $message->User()->associate($user);
-            $message->chat_id = $id;
+            $message->chat_id = $chatid;
+            $message->force_theme = $forceTheme;
+            if (is_int($theme)) {
+                $message->theme_id = $theme;
+            }else{
+                $message->Theme()->associate($theme);
+            }
             $message->save();
             $message = collect($message)->put("profile_image", $profileImage);
             $user = Auth::user();
-            broadcast(new UpdateChat($message , $user, $id))->toOthers();
+
+            broadcast(new UpdateChat($message , $user, $chatid))->toOthers();
 
             return 'Message record succefuly created and send';
         } catch (Exception $e) {

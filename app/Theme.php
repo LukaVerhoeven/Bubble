@@ -11,15 +11,27 @@ class Theme extends Model
 	{
 		return $this->belongsTo('App\Chat','chat_id');
 	}
+
+	public function keywords() {
+	    return $this->hasMany('App\Keyword', 'theme_id');
+  	}
 	
-	protected function create($chat,$name,$color,$icon, $shortcut) {
+	protected function create($chat,$name,$color,$icon, $shortcut, $is_general) {
 	    $generalTheme = New Theme;
 		$generalTheme->name = $name;
 		$generalTheme->icon = $icon;
 		$generalTheme->color = $color;
 		$generalTheme->shortcut = $shortcut;
 		$generalTheme->is_active = 1;
-		$generalTheme->Chat()->associate($chat);
+		$generalTheme->is_deleted = 0;
+		$generalTheme->is_general = $is_general;
+		if(is_int($chat)){
+			$generalTheme->chat_id = $chat;
+		}else{
+			$generalTheme->Chat()->associate($chat);
+		}
 		$generalTheme->save();
+		return $generalTheme;
 	}
+
 }

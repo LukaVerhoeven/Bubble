@@ -20,6 +20,8 @@ class CreateThemesTable extends Migration
             $table->string('icon');
             $table->string('shortcut');
             $table->boolean('is_active');
+            $table->boolean('is_general');
+            $table->boolean('is_deleted');
             $table->integer('chat_id')->unsigned();
             $table->timestamps();
 
