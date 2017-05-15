@@ -10,6 +10,22 @@
 			height: 0;
 		}
 	}
+
+	.online-state{
+		width: 12px;
+		height: 12px;
+		border-radius: 20px;
+		float: right;
+		
+		&.online{
+			background-color: green;
+		}
+
+		&.offline{
+			background-color: gray;
+		}
+	}
+
 	.bottom{
 		position: absolute;
 		background-color: white;

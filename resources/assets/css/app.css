@@ -116,6 +116,28 @@ $panel-default-heading-bg: #fff;
   width: auto;
 }
 
+#bubble .no-button-container {
+  height: 40px;
+  position: relative;
+}
+
+#bubble .no-button-container .btn-floating {
+  display: block;
+}
+
+#bubble .no-button,
+#bubble .no-button:before,
+#bubble .no-button:after {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  z-index: 50;
+}
+
 html,
 body {
   height: 100vh;
@@ -298,22 +320,6 @@ body {
   display: inline-block;
 }
 
-#themes .new-theme-icon .no-button,
-#themes .new-theme-icon .no-button:before,
-#themes .new-theme-icon .no-button:after,
-#themes .new-theme-shortcut .no-button,
-#themes .new-theme-shortcut .no-button:before,
-#themes .new-theme-shortcut .no-button:after {
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  z-index: 50;
-}
-
 #themes .new-theme-icon input[type="radio"]:not(:checked) ~ i,
 #themes .new-theme-icon input[type="radio"]:not(:checked) ~ a,
 #themes .new-theme-shortcut input[type="radio"]:not(:checked) ~ i,
@@ -414,6 +420,24 @@ body {
 #friends .friends.minimized,
 #groups .friends.minimized {
   height: 0;
+}
+
+#friends .online-state,
+#groups .online-state {
+  width: 12px;
+  height: 12px;
+  border-radius: 20px;
+  float: right;
+}
+
+#friends .online-state.online,
+#groups .online-state.online {
+  background-color: green;
+}
+
+#friends .online-state.offline,
+#groups .online-state.offline {
+  background-color: gray;
 }
 
 #friends .bottom,

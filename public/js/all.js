@@ -10422,6 +10422,11 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                                         obj[editKey] = editValue;
                                         $rootScope.IsEdited = true;
                                     }
+                                    if (action === 'update') {
+                                        //add new element then update
+                                        var prop = editKey;
+                                        obj[prop] = editValue;
+                                    }
                                 }
                             }
                         }
@@ -10610,23 +10615,17 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         Echo.join('user.' + userid).here(function (users) {
             // this.usersInRoom = users;
         }).joining(function (user) {}).leaving(function (user) {}).listen('UserEvents', function (e) {
-            if (e.event === 'grouprequest') {
-                $scope.$apply(function () {
+            $scope.$apply(function () {
+                if (e.event === 'grouprequest') {
                     $rootScope.groups.push(e.data);
-                });
-            }
-            if (e.event === 'friendrequest') {
-                $scope.$apply(function () {
+                }
+                if (e.event === 'friendrequest') {
                     $rootScope.friendRequests.push(e.data);
-                });
-            }
-            if (e.event === 'groupaccept') {
-                $scope.$apply(function () {
+                }
+                if (e.event === 'groupaccept') {
                     $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
-                });
-            }
-            if (e.event === 'leavegroup') {
-                $scope.$apply(function () {
+                }
+                if (e.event === 'leavegroup') {
                     if ($rootScope.Authuserid === e.data.userid) {
                         $rootScope.resetChat();
                         $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
@@ -10636,40 +10635,40 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                             $rootScope.adjustObjectElement($rootScope.groupFriends, e.data.userid, 'user_id', 'remove', 0, 0, 0);
                         }
                     }
-                });
-            }
-            if (e.event === 'toggleAdmin') {
-                $scope.$apply(function () {
+                }
+                if (e.event === 'toggleAdmin') {
                     if ($rootScope.Authuserid === e.data.userid) {
                         $rootScope.switchAdmin(e.data.userid, e.data.chatid, e.data.admin, 1);
                     } else {
                         $rootScope.switchAdmin(e.data.userid, e.data.chatid, e.data.admin, 0);
                     }
-                });
-            }
-            if (e.event === 'chatdeleted') {
-                $scope.$apply(function () {
+                }
+                if (e.event === 'chatdeleted') {
                     $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
                     if ($rootScope.chatID === e.data.chatid) {
                         $rootScope.resetChat();
                     }
-                });
-            }
-            if (e.event === 'renamechat') {
-                $scope.$apply(function () {
+                }
+                if (e.event === 'renamechat') {
                     $rootScope.renameChat(e.data.newname, e.data.chatid);
-                });
-            }
-            if (e.event === 'deletefriend') {
-                $scope.$apply(function () {
+                }
+                if (e.event === 'deletefriend') {
                     $rootScope.removeFriend(e.data);
-                });
-            }
-            if (e.event === 'acceptfriend') {
-                $scope.$apply(function () {
+                }
+                if (e.event === 'acceptfriend') {
                     $rootScope.addFriend(e.data);
-                });
-            }
+                }
+                if (e.event === 'sendOnline') {
+                    $scope.onlinestate = {};
+                    $scope.onlinestate.authid = $rootScope.Authuserid;
+                    $scope.onlinestate.userid = e.data;
+                    $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
+                    $rootScope.postRequest($scope.onlinestate, 'onlineAnswer', '');
+                }
+                if (e.event === 'receiveOnline') {
+                    $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
+                }
+            });
         });
     };
 });
@@ -10778,6 +10777,8 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
         $rootScope.broadcastUser($rootScope.Authuserid);
+        // broadcast loginstate
+        $scope.loginBroadcast();
     };
 
     $rootScope.getFriendChats = function () {
@@ -10879,6 +10880,15 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
     // ADD FRIEND TO FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.addFriend = function (user) {
         $rootScope.friendlist.push(user);
+    };
+
+    // ONLINE STATES
+    $scope.loginBroadcast = function () {
+        console.log($rootScope.Authuserid, $rootScope.friendlist);
+        $scope.onlinestate = {};
+        $scope.onlinestate.authid = $rootScope.Authuserid;
+        $scope.onlinestate.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist, 0, 'userid', 'retreive', 0, 0, 0);;
+        $rootScope.postRequest($scope.onlinestate, 'onlineState', '');
     };
 });
 app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
@@ -11037,8 +11047,8 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         $rootScope.messages = response.data.messages;
         $rootScope.themes = response.data.themes;
         $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1, 'is_general', 'retreive', 0, 'id', 0)[0];
-        console.log($rootScope.themes);
-        $scope.message.theme = response.data.themes[0].id;
+        console.log($rootScope.themes, $rootScope.messages);
+        $scope.message.theme = $rootScope.generalThemeID;
         $scope.message.profileImage = response.data.profileImage;
         $scope.chatID = $rootScope.chatID;
         if ($rootScope.makeBroadcastConnection) {
@@ -11058,13 +11068,18 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
 
     //SEND A MESSAGE
     $scope.sendMessage = function (keyEvent) {
-        $scope.message.chatid = $rootScope.chatID;
         if (keyEvent.which === 13) {
+            $scope.message.chatid = $rootScope.chatID;
+            // force theme message
+            if ($scope.message.filter) {
+                $scope.message.theme = $scope.message.filter;
+            } else {
+                $scope.message.theme = $rootScope.generalThemeID;
+            }
             var $textInput = $('#message-text');
             // if the text Input is not empty send the message
             if ($textInput.val() != "" && $rootScope.chatID) {
                 $textInput.val('');
-                //TODO: werkt alleen met rootscope nu. is het niet beter dat het met scope.chatID werkt? Anders verwijder regel 17?
                 var url = API_URL + "message";
 
                 $http({
@@ -11103,8 +11118,12 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
                     theme_id: e.message.theme_id,
                     name: e.user.name,
                     user_id: e.message.user_id,
-                    profile_image: e.message.profile_image
+                    profile_image: e.message.profile_image,
+                    force_theme: e.message.force_theme,
+                    color: e.message.color
                 });
+                console.log($rootScope.messages);
+                $rootScope.updateThemeUsage(); //update Theme usage
             });
         }).listen('ProfileImage', function (e) {
             $scope.$apply(function () {
@@ -11115,37 +11134,56 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
                 if ($rootScope.themes) {
                     console.log(e);
                     if (e.event === 'create') {
-                        var objectString = $rootScope.keywordToObjectArray(e.data.keywords);
-                        e.data.keywords = objectString;
+                        var keywords = $rootScope.ObjToArray(e.data.keywords);
+                        keywords = $rootScope.keywordToObjectArray(e.data.keywords);
+                        e.data.keywords = keywords;
                         $rootScope.themes.push(e.data);
+                        $rootScope.updateMessages(keywords, e.data.color, e.data.id);
+                        $rootScope.updateThemeUsage(); //update Theme usage
                     }
 
                     if (e.event === 'delete') {
                         $rootScope.adjustObjectElement($rootScope.themes, e.data, 'id', 'remove', 0, 0, 0);
+                        $rootScope.removeThemeFromMessages(e.data.themeid);
+                        $rootScope.updateThemeUsage(); //update Theme usage
                     }
 
                     if (e.event === 'update') {
                         var keywords = $rootScope.ObjToArray(e.data.keywords);
-                        var objectString = $rootScope.keywordToObjectArray(keywords);
-                        e.data.keywords = objectString;
+                        keywords = $rootScope.keywordToObjectArray(keywords);
+                        e.data.keywords = keywords;
                         $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'remove', 0, 0, 0);
                         $rootScope.themes.push(e.data);
+                        $rootScope.updateMessages(keywords, e.data.color, e.data.id);
+                        $rootScope.updateThemeUsage(); //update Theme usage
                     }
 
                     if (e.event === 'toggle') {
+                        if (e.data.isActive) {
+                            var keywords = $rootScope.keywordToObjectArray(e.data.keywords);
+                            $rootScope.updateMessages(keywords, e.data.color, e.data.themeid);
+                        } else {
+                            $rootScope.removeThemeFromMessages(e.data.themeid);
+                        }
                         $rootScope.adjustObjectElement($rootScope.themes, e.data.themeid, 'id', 'edit', e.data.isActive, 'is_active', 0);
+                        $rootScope.updateThemeUsage(); //update Theme usage
                     }
                 }
             });
         });
     };
 
-    $scope.scrollDown = function (chatid) {
+    $scope.scrollDown = function () {
         var $chat = $('.chat');
         var $friend = $('.js-scrolldown');
         setTimeout(function () {
             $chat[0].scrollTop = $chat[0].scrollHeight;
         }, 1);
+    };
+
+    $scope.messageColor = function (color) {
+        $scope.message.color = color;
+        $scope.scrollDown();
     };
 });
 app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
@@ -11245,11 +11283,12 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
     };
 
     // DISABLE THEME
-    $scope.toggleTheme = function (themeid, index) {
+    $scope.toggleTheme = function (themeid, index, color) {
         var isActive = 1 - $rootScope.themes[index].is_active;
         $rootScope.toggleTheme = {};
         $rootScope.toggleTheme.id = themeid;
         $rootScope.toggleTheme.isActive = isActive;
+        $rootScope.toggleTheme.color = color;
         $rootScope.toggleTheme.chatid = $rootScope.chatID;
         $rootScope.toggleTheme.generalID = $rootScope.generalThemeID;
         $rootScope.postRequest($rootScope.toggleTheme, 'toggleTheme', '');
@@ -11304,33 +11343,18 @@ app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope
 app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) {
     $scope.createNewTheme = function () {
         $scope.NewTheme.chatid = $rootScope.chatID;
+        $scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g, ",").replace(/[^a-zA-Z0-9,@#]/g, '');
+        $scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/[^a-zA-Z0-9,@#]/g, ''); //sanitize
         if ($scope.NewTheme.chatid) {
             $rootScope.postRequest($scope.NewTheme, 'NewTheme', '');
-            // $scope.resetForm($scope.NewTheme);
+            $scope.resetForm($scope.NewTheme);
         }
-        console.log($rootScope.themes);
     };
 
     $scope.editTheme = function (theme) {
+        theme.generalID = $rootScope.generalThemeID;
         $rootScope.postRequest(theme, 'updateTheme', '');
     };
-
-    // TODO maak loading screen ( i am creating your theme)
-    // geen theme->id dus kan functie niet gberuiken ( maar wel leerijke functie dus ni weg doen)
-    // $scope.pushNewTheme = function (newCreatedTheme){
-    // 	var newTheme = JSON.parse(JSON.stringify(newCreatedTheme)); //Create unique new object
-    // 	newTheme.themeUsage = "0%";
-    // 	newTheme.is_active = 1;
-    // 	newTheme.is_deleted = 0;
-    // 	newTheme.is_general = 0;
-    // 	newTheme.keywordString = newTheme.keywordString.replace(/\s+/g, ',').toLowerCase();
-    // 	var filteredString = newTheme.keywordString.split(",").filter(function(e){return e}).join(',');
-    // 	var objectString = filteredString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
-    // 	var newJson = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-    // 	newJson = newJson.replace(/'/g, '"');
-    // 	newTheme.keywords = JSON.parse(newJson);
-    // 	$rootScope.themes.push(newTheme);
-    // }
 
     $scope.resetForm = function (form) {
         for (var prop in form) {
@@ -11349,6 +11373,86 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
         objectString = JSON.parse(objectString);
         return objectString;
     };
+
+    $rootScope.updateMessages = function (keywords, color, themeid) {
+        var themeMessages = [];
+        // check if themeid is passed to this function
+        // if (keywords[prop].theme_id) {
+        // 	themeid = keywords[prop].theme_id;
+        // }
+
+        for ($prop in $rootScope.messages) {
+            if ($rootScope.messages[$prop].force_theme === 0) {
+                for (prop in keywords) {
+                    // if messages contains a keyword an has not been forced by  a theme => give new theme
+                    if ($rootScope.messages[$prop].text.indexOf(keywords[prop].word) !== -1) {
+                        $rootScope.messages[$prop].theme_id = themeid;
+                        $rootScope.messages[$prop].color = color;
+                        themeMessages.push($rootScope.messages[$prop].id);
+                    }
+                }
+            }
+        }
+        for ($prop in $rootScope.messages) {
+            // if messages contains none of the keywords but has the themeID => remove the theme from it
+            if ($rootScope.messages[$prop].theme_id == themeid && themeMessages.indexOf($rootScope.messages[$prop].id) === -1 && $rootScope.messages[$prop].force_theme === 0) {
+                $rootScope.messages[$prop].theme_id = $rootScope.generalThemeID;
+                $rootScope.messages[$prop].color = "white";
+            }
+        }
+    };
+
+    $rootScope.removeThemeFromMessages = function (themeid) {
+        for ($prop in $rootScope.messages) {
+            if ($rootScope.messages[$prop].theme_id == themeid && $rootScope.messages[$prop].force_theme === 0) {
+                $rootScope.messages[$prop].theme_id = $rootScope.generalThemeID;
+                $rootScope.messages[$prop].color = "white";
+            }
+        }
+    };
+
+    $rootScope.updateThemeUsage = function () {
+        var countThemes = {};
+        for (prop in $rootScope.messages) {
+            if ($rootScope.messages[prop].theme_id != $rootScope.generalThemeID) {
+                var id = $rootScope.messages[prop]['theme_id'];
+                countThemes[id]++;
+                if (isNaN(countThemes[id])) {
+                    countThemes[id] = 1;
+                }
+            }
+        }
+        var amountMessages = Object.keys($rootScope.messages).length;
+        if (!amountMessages) {
+            amountMessages = $rootScope.messages.length;
+        }
+        for (prop in $rootScope.themes) {
+            var id = $rootScope.themes[prop].id;
+            if (countThemes[id]) {
+                var usage = Math.round(countThemes[id] / amountMessages * 100) + "%";
+                $rootScope.themes[prop].themeUsage = usage;
+            } else {
+                $rootScope.themes[prop].themeUsage = "0%";
+            }
+        }
+    };
+
+    // TODO maak loading screen ( i am creating your theme)
+    // geen theme->id dus kan functie niet gberuiken ( maar wel leerijke functie dus ni weg doen)
+    // $scope.pushNewTheme = function (newCreatedTheme){
+    // 	var newTheme = JSON.parse(JSON.stringify(newCreatedTheme)); //Create unique new object
+    // 	newTheme.themeUsage = "0%";
+    // 	newTheme.is_active = 1;
+    // 	newTheme.is_deleted = 0;
+    // 	newTheme.is_general = 0;
+    // 	newTheme.keywordString = newTheme.keywordString.replace(/\s+/g, ',').toLowerCase();
+    // 	var filteredString = newTheme.keywordString.split(",").filter(function(e){return e}).join(',');
+    // 	var objectString = filteredString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
+    // 	var newJson = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+    // 	newJson = newJson.replace(/'/g, '"');
+    // 	newTheme.keywords = JSON.parse(newJson);
+    // 	$rootScope.themes.push(newTheme);
+    // }
 });
 app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 

@@ -95,11 +95,12 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
     }
 
     // DISABLE THEME
-    $scope.toggleTheme = function(themeid , index){
+    $scope.toggleTheme = function(themeid , index, color){
         var isActive = 1 - $rootScope.themes[index].is_active;
         $rootScope.toggleTheme = {};
         $rootScope.toggleTheme.id = themeid;
         $rootScope.toggleTheme.isActive = isActive;
+        $rootScope.toggleTheme.color = color;
         $rootScope.toggleTheme.chatid =  $rootScope.chatID;
         $rootScope.toggleTheme.generalID = $rootScope.generalThemeID;
         $rootScope.postRequest($rootScope.toggleTheme ,'toggleTheme', '');

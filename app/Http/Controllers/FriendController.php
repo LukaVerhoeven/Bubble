@@ -139,4 +139,34 @@ class FriendController extends Controller
                         ->where('friendships.confirmed',0)->get();
         return compact('friendrequests');
     }
+
+    public function sendOnline(Request $request)
+    {
+        $this->validate($request, [
+            'authid'      =>   'integer',
+            'friendids'   =>   'array'
+        ]);
+        $userid = (int)$request->input('authid');
+        $friendids = $request->input('friendids');
+
+        $noDuplicates = array();
+        foreach ($friendids as $id) {
+            if(!in_array($id, $noDuplicates)){
+                broadcast(new UserEvents($id , "sendOnline" , $userid))->toOthers();
+                array_push($noDuplicates, $id);
+            }
+        }
+    }
+
+ public function receiveOnline(Request $request)
+    {
+        $this->validate($request, [
+            'authid'      =>   'integer',
+            'userid'      =>   'integer'
+        ]);
+        $authid = (int)$request->input('authid');
+        $userid = $request->input('userid');
+
+        broadcast(new UserEvents($userid , "receiveOnline" , $authid))->toOthers();
+    }    
 }

@@ -26,19 +26,22 @@ class Message extends Model
 		return $this->belongsTo('App\User','user_id');
 	}
 
-	public static function updateTheme($keywords, $themeid)
+	public static function updateTheme($keywords, $themeid, $chatid, $generalid)
 	{
+        if($generalid){
+	        $messages = Message::where(function($query) use($keywords){
+	            foreach($keywords as $keyword) {
+	                $query->orWhere('text', 'LIKE', "%".$keyword."%");
+	            }
+	        })->where('force_theme',0)->where('chat_id', $chatid)->pluck('id');
+
+			Message::whereNotIn('id',$messages)->where('theme_id',$themeid)->update(['theme_id' => $generalid]);	
+        }
+
         Message::where(function($query) use($keywords){
             foreach($keywords as $keyword) {
                 $query->orWhere('text', 'LIKE', "%".$keyword."%");
             }
-        })->where('force_theme',0)->update(['theme_id' => $themeid]);
-        $messages = Message::where(function($query) use($keywords){
-            foreach($keywords as $keyword) {
-                $query->orWhere('text', 'LIKE', "%".$keyword."%");
-            }
-        })->where('force_theme',0)->get();
-
-        dd($messages, $themeid, $keywords);
+        })->where('force_theme',0)->where('chat_id', $chatid)->update(['theme_id' => $themeid]);
 	}
 }

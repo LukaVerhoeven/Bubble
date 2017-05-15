@@ -16,7 +16,7 @@
 	     	 	<i class="material-icons ">vpn_key</i>
 	    	</div>
 	    	<div class="keywords inline-block">
-				<p class="inline-block" ng-repeat="keyword in theme.keywords">@{{keyword.word}}, </p>
+				<p class="inline-block" >@{{theme.keywordString}}</p>
 	    	</div>
 			<p class="inline-block right">Shortcut: @{{theme.shortcut}}</p>
 		</div>

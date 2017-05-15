@@ -38,7 +38,6 @@ class Keyword extends Model
             );
             array_push($data, $newKeyword);
         }
-        // dd($data);
         Keyword::insert($data);
 	}
 }

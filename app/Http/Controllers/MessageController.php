@@ -27,12 +27,8 @@ class MessageController extends Controller
                 ->join('themes', 'themes.id', '=', 'messages.theme_id')
                 ->orderBy('messages.id','asc')
                 ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image', 'themes.color')->get();
-                $themes = Theme::where('chat_id', $id)->with('keywords')->get();
-                $themes = collect($themes)->map(function($item) {
-                    $keywords= collect(collect($item)['keywords'])->implode('word',', ');
-                    $item = collect($item)->put('keywordString', $keywords);
-                    return $item;
-                });
+                $themes = Theme::where('chat_id', $id)->where('is_deleted', 0)->with('keywords')->get();
+                $themes = Theme::addKeywordString($themes);
 
                 // theme usage
                 foreach ($themes as $key => $theme) {
@@ -61,7 +57,7 @@ class MessageController extends Controller
                 'theme'        =>   'integer',
                 'chatid'       =>   'integer',
                 'profileImage' =>   'string',
-                'text'         =>   'string' 
+                'text'         =>   'string',
             ]);
             
             $user = Auth::user();
@@ -72,9 +68,14 @@ class MessageController extends Controller
             $theme = Theme::where('id', $themeid)->where('chat_id', $chatid)->first();
             if($theme->is_general === 1){
                 // if no theme was selected => check theme
-                $keywords = Keyword::where('chat_id', $chatid)->get();
+                $keywords = Theme::select('keywords.*', 'themes.color')
+                            ->where('themes.chat_id', $chatid)
+                            ->where('themes.is_active', 1)
+                            ->where('themes.is_deleted', 0)
+                            ->join('keywords','keywords.theme_id','themes.id')->get();
                 foreach ($keywords as $key => $word) {
                     if (strpos($text, $word->word) !== false) {
+                        $color = $word->color;
                         $theme = $word->theme_id;
                         break;
                     }
@@ -82,6 +83,7 @@ class MessageController extends Controller
                 $forceTheme = 0;
             }else{
                 $forceTheme = 1;
+                $color = $theme->color;
             }
             $message = New Message;
             $message->text = $text;
@@ -95,6 +97,9 @@ class MessageController extends Controller
             }
             $message->save();
             $message = collect($message)->put("profile_image", $profileImage);
+            if(isset($color)){
+                $message = $message->put("color", $color);
+            }
             $user = Auth::user();
 
             broadcast(new UpdateChat($message , $user, $chatid))->toOthers();

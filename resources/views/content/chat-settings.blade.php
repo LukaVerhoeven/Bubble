@@ -53,7 +53,7 @@
 		        		<div ng-if="isChatAdmin">
 							<input type="checkbox" class="filled-in" id="theme-active-box@{{key}}" checked="checked" ng-if="theme.is_active"/>
 						    <input type="checkbox" class="filled-in" id="theme-active-box@{{key}}" ng-if="!theme.is_active"/>
-						    <label ng-click="toggleTheme(theme.id , key)"></label>
+						    <label ng-click="toggleTheme(theme.id , key, theme.color)"></label>
 		        		</div>
 		        		<a ng-if="isChatAdmin"><i class="small material-icons col s2 red-text" ng-click="deleteTheme(theme.id, key)">delete</i></a>
 		        	</div>

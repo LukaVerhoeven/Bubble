@@ -3,7 +3,7 @@
 	<!-- messages -->
 	<div class="chat-box">
 		<div class="chat">
-			<div class="message-wrapper"  ng-repeat="message in messages">
+			<div class="message-wrapper"  ng-repeat="message in messages | filter:{theme_id: message.filter}:true">
 				<div ng-if="message.user_id != Authuserid">
 					<p>@{{ message.name }}</p>
 					<div class="message section card @{{message.color}}">
@@ -31,7 +31,7 @@
 		<nav >
 	    <div class="nav-wrapper white">
 	      <form name="frmMessage" novalidate="">
-	        <div class="input-field">
+	        <div class="input-field @{{message.color}}">
 	          <input type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)" autocomplete="off">
 	          <label class="label-icon" for="search"><i class="material-icons">note_add</i></label>
 	          <i class="material-icons send" ng-click="sendMessage(13)">send</i>
@@ -44,13 +44,26 @@
 	 <!-- filter -->
 	 <div class="filter">
 		<div class="side-nav z-depth-1">
-			<ul>
-				<li><a href=""></a></li>
-				<li><a href=""></a></li>
-				<li><a href=""></a></li>
-				<li><a href=""></a></li>
-				<li><a href=""></a></li>
+		<form>
+			<ul>	
+				<!-- TODO <p class="inline-block" style="width: 100%;height: 20px; font-size: 12px;">@{{message.filter}}</p> -->
+				<li class="no-button-container" ng-repeat="(key, theme) in themes" ng-if="!theme.is_general && theme.is_active && !theme.is_deleted">
+					<input name="themeFilter" type="radio" id="themeFilter@{{key}}" ng-model="message.filter" ng-value="@{{theme.id}}" required/>
+					<label for="themeFilter@{{key}}" class="no-button js-NIcon" ng-click="messageColor(theme.color)"></label>
+					<div class="btn-floating waves-effect waves-light @{{theme.color}}">
+	     	 			<i class="material-icons">@{{theme.icon}}</i>
+	    			</div>
+				</li>
+				<li class="no-button-container" ng-if="chatID">
+					<input name="themeFilter" type="radio" id="themeFilter@{{key}}" ng-model="message.filter" required/>
+					<label for="themeFilter@{{key}}" class="no-button js-NIcon" ng-click="messageColor('')"></label>
+					<div class="btn-floating waves-effect waves-light white">
+	     	 			<i class="material-icons black-text ">cancel</i>
+	    			</div>
+				</li>
+
 			</ul>
+		</form>
 		</div>
 	 </div>
 </div>

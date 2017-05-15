@@ -4,8 +4,46 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3e1e69752b269fbca4a6dc9961bd279b",
+    "content-hash": "cbd55961a64e34235a0420a9b19f6215",
     "packages": [
+        {
+            "name": "bahricanli/laravel-emoji",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bahricanli/laravel-emoji.git",
+                "reference": "7e41cb6f26133cdb520e6dce45075eabbfa29834"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bahricanli/laravel-emoji/zipball/7e41cb6f26133cdb520e6dce45075eabbfa29834",
+                "reference": "7e41cb6f26133cdb520e6dce45075eabbfa29834",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.0 || ~4.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "App\\": "app/",
+                    "BahriCanli\\LaravelEmoji\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bahri Meriç CANLI",
+                    "email": "bahri@bahri.info"
+                }
+            ],
+            "description": "Text with Emoji for Laravel",
+            "time": "2016-09-23T21:17:16+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",
@@ -3504,7 +3542,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "bahricanli/laravel-emoji": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

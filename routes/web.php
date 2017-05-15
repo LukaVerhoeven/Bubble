@@ -29,6 +29,8 @@ Route::post('/api/declineFriend', 'FriendController@decline');
 Route::post('/api/deleteFriend', 'FriendController@delete');
 Route::get('/api/friendRequests', 'FriendController@getFriendRequests');
 Route::get('/api/searchFriend/{id?}', 'FriendController@searchFriend');
+Route::post('/api/onlineState', 'FriendController@sendOnline');
+Route::post('/api/onlineAnswer', 'FriendController@receiveOnline');
 
 //groups
 Route::post('/api/createGroup', 'GroupController@createGroup');

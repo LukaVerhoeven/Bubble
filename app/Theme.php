@@ -34,4 +34,12 @@ class Theme extends Model
 		return $generalTheme;
 	}
 
+	protected function addKeywordString($themes) {
+        $themes = collect($themes)->map(function($item) {
+            $keywords= collect(collect($item)['keywords'])->implode('word',', ');
+            $item = collect($item)->put('keywordString', $keywords);
+            return $item;
+        });
+		return $themes;
+	}	
 }

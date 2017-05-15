@@ -116,6 +116,10 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                                         obj[editKey] = editValue;
                                         $rootScope.IsEdited = true;
                                     }
+                                    if(action === 'update'){ //add new element then update
+                                        var prop = editKey;
+                                        obj[prop] = editValue;
+                                    }
                                 }
                             }
                         }
@@ -309,23 +313,17 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
 
             })
             .listen('UserEvents', (e) => {
-                if(e.event === 'grouprequest'){
-                    $scope.$apply(function() {
+                $scope.$apply(function() {
+                    if(e.event === 'grouprequest'){
                         $rootScope.groups.push(e.data);
-                    });
-                }
-                if(e.event === 'friendrequest'){
-                    $scope.$apply(function() {
+                    }
+                    if(e.event === 'friendrequest'){
                         $rootScope.friendRequests.push(e.data);
-                    });
-                }
-                if(e.event === 'groupaccept'){
-                    $scope.$apply(function() {
+                    }
+                    if(e.event === 'groupaccept'){
                         $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
-                    }); 
-                }
-                if(e.event === 'leavegroup'){
-                    $scope.$apply(function() {
+                    }
+                    if(e.event === 'leavegroup'){
                         if($rootScope.Authuserid === e.data.userid){
                             $rootScope.resetChat();
                             $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
@@ -335,40 +333,40 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                                 $rootScope.adjustObjectElement($rootScope.groupFriends, e.data.userid, 'user_id', 'remove', 0, 0, 0);
                             }
                         }                        
-                    });
-                }
-                if(e.event === 'toggleAdmin'){
-                    $scope.$apply(function() {
+                    }
+                    if(e.event === 'toggleAdmin'){
                         if($rootScope.Authuserid === e.data.userid){
                             $rootScope.switchAdmin( e.data.userid,  e.data.chatid,  e.data.admin, 1);
                         }else{
                             $rootScope.switchAdmin( e.data.userid,  e.data.chatid,  e.data.admin, 0);
                         }
-                    });
-                }
-                if(e.event === 'chatdeleted'){
-                    $scope.$apply(function() {
+                    }
+                    if(e.event === 'chatdeleted'){
                         $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
                         if ($rootScope.chatID === e.data.chatid) {
                             $rootScope.resetChat();
                         }
-                    });
-                }
-                if(e.event === 'renamechat'){
-                    $scope.$apply(function() {
-                       $rootScope.renameChat(e.data.newname, e.data.chatid);
-                    });
-                }
-                if(e.event === 'deletefriend'){
-                    $scope.$apply(function() {
-                       $rootScope.removeFriend(e.data);
-                    });
-                }
-                if(e.event === 'acceptfriend'){
-                    $scope.$apply(function() {
-                       $rootScope.addFriend(e.data);
-                    });
-                }
+                    }
+                    if(e.event === 'renamechat'){
+                        $rootScope.renameChat(e.data.newname, e.data.chatid);
+                    }
+                    if(e.event === 'deletefriend'){
+                        $rootScope.removeFriend(e.data);
+                    }
+                    if(e.event === 'acceptfriend'){
+                        $rootScope.addFriend(e.data);
+                    }
+                    if(e.event === 'sendOnline'){
+                        $scope.onlinestate = {};
+                        $scope.onlinestate.authid = $rootScope.Authuserid;
+                        $scope.onlinestate.userid = e.data;
+                        $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
+                        $rootScope.postRequest($scope.onlinestate ,'onlineAnswer', '');
+                    }
+                    if(e.event === 'receiveOnline'){
+                        $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
+                    }
+                });
             });
     };
 })

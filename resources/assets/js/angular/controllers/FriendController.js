@@ -15,6 +15,8 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
         $rootScope.broadcastUser($rootScope.Authuserid);
+        // broadcast loginstate
+        $scope.loginBroadcast();
     }
 
     $rootScope.getFriendChats = function() {
@@ -121,5 +123,14 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     // ADD FRIEND TO FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.addFriend = function(user) {
         $rootScope.friendlist.push(user)
+    }
+
+    // ONLINE STATES
+    $scope.loginBroadcast = function(){
+        console.log($rootScope.Authuserid, $rootScope.friendlist );
+        $scope.onlinestate = {};
+        $scope.onlinestate.authid = $rootScope.Authuserid;
+        $scope.onlinestate.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist , 0,'userid', 'retreive',0,0,0);;
+        $rootScope.postRequest($scope.onlinestate ,'onlineState', '');
     }
 })

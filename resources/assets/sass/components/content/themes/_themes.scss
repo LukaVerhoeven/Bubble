@@ -42,19 +42,6 @@
 		}
 	}
 	.new-theme-icon,.new-theme-shortcut{
-		.no-button{
-			&, &:before, &:after{
-				opacity: 0;
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				padding: 0;
-				z-index: 50;
-			}
-		}
-		
 		input[type="radio"]:not(:checked)~i,input[type="radio"]:not(:checked)~a{
 			color: white !important;
 		}
