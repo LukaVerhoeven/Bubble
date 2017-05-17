@@ -9675,8 +9675,14 @@ body {
 }
 
 #bubble #login-page {
-  width: 25%;
   margin: auto;
+  width: 100%;
+}
+
+@media screen and (min-width: 25.9375em) {
+  #bubble #login-page {
+    width: 30rem;
+  }
 }
 
 #bubble #login-page .logo {
@@ -9684,12 +9690,33 @@ body {
   width: 100%;
 }
 
+@media screen and (max-width: 37.5em) {
+  #bubble #login-page .logo {
+    margin-bottom: -50px;
+  }
+}
+
 #bubble #login-page .logo svg {
   margin-bottom: 40px;
 }
 
+@media screen and (max-width: 25.9375em) {
+  #bubble #login-page .logo svg {
+    width: 60%;
+  }
+}
+
 #bubble #login-page .form-container {
   height: 470px;
+  margin: auto;
+  width: 90%;
+}
+
+@media screen and (min-width: 25.9375em) {
+  #bubble #login-page .form-container {
+    width: 100%;
+    width: 25rem;
+  }
 }
 
 #bubble #login-page .form-container .form-box {

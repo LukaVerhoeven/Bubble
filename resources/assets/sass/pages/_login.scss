@@ -2,20 +2,39 @@
 	height: 100%;
 	
 	#login-page{
-		width: 25%;
 		margin: auto;
+		width: 100%;
+
+		@include media($small-screen-up) {
+			width: 30rem;
+		}
 
 		.logo {
 			text-align: center;	
 			width: 100%;
 
+			@include media($small-screenheight-down) {
+				margin-bottom: -50px;
+			}
+
 			svg{
 				margin-bottom: 40px;
+
+				@include media($small-screen-down) {
+					width: 60%;
+				}
 			}
 		}
 		
 		.form-container{
 			height: 470px;
+			margin: auto;
+			width: 90%;
+			
+			@include media($small-screen-up) {
+				width: 100%;
+				width: 25rem;
+			}
 
 			.form-box{
 				box-shadow: 4px 4px 2px 1px rgba(0, 0, 0, .25);

@@ -37,8 +37,8 @@ class ChatController extends Controller
         try {
             $this->validate($request, [
                 'fileToUpload'    =>   'image',
-                'chatid'          =>   'integer',
             ]);
+
             $image = $request->file('fileToUpload');
             $chatid = (int)$request->input('chatid');
             if($image){
@@ -48,7 +48,9 @@ class ChatController extends Controller
                 $user = Auth::user();
                 $user->profile_image = $destinationPath;
                 $user->save();
-                broadcast(new ProfileImage($destinationPath , $user->id , $chatid))->toOthers();
+                if($chatid){
+                    broadcast(new ProfileImage($destinationPath , $user->id , $chatid))->toOthers();
+                }
           
                 return $destinationPath;
             }else{

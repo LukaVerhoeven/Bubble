@@ -10299,10 +10299,9 @@ return jQuery;
 
 /* WEBPACK VAR INJECTION */(function($) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var app = angular.module('bubble', ['ngSanitize'])
-// .constant('API_URL','http://bubble.local/api/');
+var app = angular.module('bubble', ['ngSanitize']).constant('API_URL', 'http://bubble.local/api/');
 // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
-.constant('API_URL', 'http://bubble-lukaverhoeven.c9users.io/api/');
+// .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
 app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope) {
     //************ GLOBAL FUNCTIONS ************
     // ERROR
