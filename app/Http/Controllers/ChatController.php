@@ -28,7 +28,7 @@ class ChatController extends Controller
     public function index()
     {
         $emojis = Emoji::getEmojis();
-        dd($emojis);
+        dd($emojis, Emoji);
         return view('layouts.chat-layout', compact('emojis'));
     }
 
