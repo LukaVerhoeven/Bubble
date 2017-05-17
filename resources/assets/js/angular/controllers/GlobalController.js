@@ -33,6 +33,13 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
 
     //************ ARRAYS AND OBJECTS ************
     $rootScope.IsEdited = false;
+    // array prepend
+    $rootScope.prependArray = function prepend(value, array) {
+        console.log(array);
+      var newArray = array.slice();
+      newArray.unshift(value);
+      return newArray;
+    }
 
     // Filter an array on specific value. ex ([1,2], 1) => [1]
     $rootScope.filterArray = function (array, value) {

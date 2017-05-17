@@ -92,7 +92,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
             })
             .listen('UpdateChat', (e) => {
                 $scope.$apply(function() {
-                    $rootScope.messages.items.push({
+                    var newMessage = {
                         text: e.message.text,
                         theme_id: e.message.theme_id,
                         name: e.user.name,
@@ -100,7 +100,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                         profile_image: e.message.profile_image,
                         force_theme: e.message.force_theme,
                         color: e.message.color,
-                    });
+                    }
+                    $rootScope.messages.items = $rootScope.prependArray(newMessage, $rootScope.messages.items)
                     $scope.scrollDown();
                     $rootScope.updateThemeUsage(); //update Theme usage
                 });

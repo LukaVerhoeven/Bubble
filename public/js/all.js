@@ -10337,6 +10337,13 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
 
     //************ ARRAYS AND OBJECTS ************
     $rootScope.IsEdited = false;
+    // array prepend
+    $rootScope.prependArray = function prepend(value, array) {
+        console.log(array);
+        var newArray = array.slice();
+        newArray.unshift(value);
+        return newArray;
+    };
 
     // Filter an array on specific value. ex ([1,2], 1) => [1]
     $rootScope.filterArray = function (array, value) {
@@ -11146,7 +11153,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
             }, $scope.chatfriends.active);
         }).listen('UpdateChat', function (e) {
             $scope.$apply(function () {
-                $rootScope.messages.items.push({
+                var newMessage = {
                     text: e.message.text,
                     theme_id: e.message.theme_id,
                     name: e.user.name,
@@ -11154,7 +11161,8 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
                     profile_image: e.message.profile_image,
                     force_theme: e.message.force_theme,
                     color: e.message.color
-                });
+                };
+                $rootScope.messages.items = $rootScope.prependArray(newMessage, $rootScope.messages.items);
                 $scope.scrollDown();
                 $rootScope.updateThemeUsage(); //update Theme usage
             });
