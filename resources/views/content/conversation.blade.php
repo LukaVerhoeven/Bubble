@@ -28,9 +28,9 @@
 		</div>
 	</div>
 	<div class="emoji-popup js-emoji-popup hide">
-	{{-- 	@foreach ($emojis as $key => $emoji)
+		@foreach ($emojis as $key => $emoji)
 			<a class="js-emoji" data-value="{{$key}}">{{$emoji}}</a>
-		@endforeach --}}
+		@endforeach
 	</div>
 	<!-- chat input -->
 	<div class="chat-input">
