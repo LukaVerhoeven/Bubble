@@ -116,6 +116,9 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                                         obj[editKey] = editValue;
                                         $rootScope.IsEdited = true;
                                     }
+                                    if(action === 'increment'){
+                                        obj[editKey]++;
+                                    }                                    
                                     if(action === 'update'){ //add new element then update
                                         var prop = editKey;
                                         obj[prop] = editValue;
@@ -256,7 +259,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
 
     // ************ MULTICONTROLLER FUNCTIONS ************
     // ENTER A CHAT
-    $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin) {
+    $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
         // Get messages and enter chatBroadcast channel
         $(".conversation-tab a")[0].click();
         if(chatID != $rootScope.chatID){
@@ -274,8 +277,15 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         if($rootScope.groupFriends){
             $rootScope.groupFriends = $rootScope.ObjToArray(friends);
             $rootScope.groupFriends.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
+            $rootScope.groups[index].unread_messages = 0;
+        }else{
+            $rootScope.friendlist[index].unread_messages = 0;
         }
-        console.log($rootScope.groupFriends);
+        // retreive messages per paginate
+        $scope.readmessages = {};
+        $scope.readmessages.chatid = $rootScope.chatID;
+        $scope.readmessages.userid = $rootScope.Authuserid;
+        $rootScope.postRequest($scope.readmessages ,'readMessages', '');
     }
 
     $rootScope.resetChat = function() {
@@ -287,7 +297,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.chatFunction  = null;      
         $rootScope.groupFriends  = null;
         $rootScope.isChatAdmin   = null;
-        $rootScope.messages      = null;
+        $rootScope.messages.items      = null;
     }
 
     // OPEN CHAT
@@ -366,6 +376,10 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     if(e.event === 'receiveOnline'){
                         $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
                     }
+                    if(e.event === 'unreadmessage'){
+                        console.log(e)
+                        $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'chatid', 'increment', 1, 'unread_messages', 0);
+                    }                    
                 });
             });
     };

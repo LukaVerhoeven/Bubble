@@ -10299,9 +10299,10 @@ return jQuery;
 
 /* WEBPACK VAR INJECTION */(function($) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var app = angular.module('bubble', ['ngSanitize']).constant('API_URL', 'http://bubble.local/api/');
+var app = angular.module('bubble', ['ngSanitize'])
+// .constant('API_URL','http://bubble.local/api/');
 // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
-// .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
+.constant('API_URL', 'http://bubble-lukaverhoeven.c9users.io/api/');
 app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope) {
     //************ GLOBAL FUNCTIONS ************
     // ERROR
@@ -10421,6 +10422,9 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                                     if (action === 'edit') {
                                         obj[editKey] = editValue;
                                         $rootScope.IsEdited = true;
+                                    }
+                                    if (action === 'increment') {
+                                        obj[editKey]++;
                                     }
                                     if (action === 'update') {
                                         //add new element then update
@@ -10564,7 +10568,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
 
     // ************ MULTICONTROLLER FUNCTIONS ************
     // ENTER A CHAT
-    $rootScope.openChat = function (chatID, friendID, friendName, chatFunction, friends, userIsAdmin) {
+    $rootScope.openChat = function (chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
         // Get messages and enter chatBroadcast channel
         $(".conversation-tab a")[0].click();
         if (chatID != $rootScope.chatID) {
@@ -10584,8 +10588,15 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
             $rootScope.groupFriends.sort($rootScope.sort_by('name', false, function (a) {
                 return a.toUpperCase();
             }));
+            $rootScope.groups[index].unread_messages = 0;
+        } else {
+            $rootScope.friendlist[index].unread_messages = 0;
         }
-        console.log($rootScope.groupFriends);
+        // retreive messages per paginate
+        $scope.readmessages = {};
+        $scope.readmessages.chatid = $rootScope.chatID;
+        $scope.readmessages.userid = $rootScope.Authuserid;
+        $rootScope.postRequest($scope.readmessages, 'readMessages', '');
     };
 
     $rootScope.resetChat = function () {
@@ -10597,7 +10608,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         $rootScope.chatFunction = null;
         $rootScope.groupFriends = null;
         $rootScope.isChatAdmin = null;
-        $rootScope.messages = null;
+        $rootScope.messages.items = null;
     };
 
     // OPEN CHAT
@@ -10668,6 +10679,10 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                 if (e.event === 'receiveOnline') {
                     $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
                 }
+                if (e.event === 'unreadmessage') {
+                    console.log(e);
+                    $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'chatid', 'increment', 1, 'unread_messages', 0);
+                }
             });
         });
     };
@@ -10712,7 +10727,6 @@ app.controller('AlertController', function ($scope, $http, API_URL, $rootScope) 
         $rootScope.groupFriends.push(data);
         $rootScope.adjustObjectElement($rootScope.FriendsNotInGroup, friendID, 'userid', 'remove', 0, 0, 0, 0);
         $rootScope.adjustArrayFromObject($rootScope.groups, [chatID, data], ['chat_id', 'friends'], 'update', 0, 0, 1, 0);
-        console.log($rootScope.FriendsNotInGroup, friendID);
     };
 
     // LEAVE GROUPCHAT CONFIRMED
@@ -10773,7 +10787,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
-        console.log($rootScope.friendlist);
+        console.log($rootScope.friendlist, $rootScope.groups);
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
         $rootScope.broadcastUser($rootScope.Authuserid);
@@ -10884,7 +10898,6 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
 
     // ONLINE STATES
     $scope.loginBroadcast = function () {
-        console.log($rootScope.Authuserid, $rootScope.friendlist);
         $scope.onlinestate = {};
         $scope.onlinestate.authid = $rootScope.Authuserid;
         $scope.onlinestate.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist, 0, 'userid', 'retreive', 0, 0, 0);;
@@ -10946,7 +10959,6 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
             }
         }).then(function (response) {}, $scope.errorCallback);
         $scope.update(chatid, true);
-        console.log($rootScope.groups);
     };
 
     //DECLINE GROUP INVITE
@@ -11037,17 +11049,20 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
         }
     };
 });
-app.controller('MessageController', function ($scope, $http, API_URL, $rootScope) {
+app.controller('MessageController', function ($scope, $http, API_URL, $rootScope, Messages) {
     $scope.message = {};
     $scope.message.theme = '1';
     $rootScope.makeBroadcastConnection = false;
+    $rootScope.messagesLoaded = 0;
 
     //UPDATE CHAT
     $scope.successGetMessage = function (response) {
-        $rootScope.messages = response.data.messages;
+        // $rootScope.messages.items = response.data.messages;
+        $rootScope.messagesLoaded = 0;
+        $rootScope.messages = new Messages();
+        $rootScope.messages.nextPage();
         $rootScope.themes = response.data.themes;
         $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1, 'is_general', 'retreive', 0, 'id', 0)[0];
-        console.log($rootScope.themes, $rootScope.messages);
         $scope.message.theme = $rootScope.generalThemeID;
         $scope.message.profileImage = response.data.profileImage;
         $scope.chatID = $rootScope.chatID;
@@ -11059,16 +11074,16 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
             $rootScope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);
         }
+        console.log($rootScope.themes, $rootScope.messages.items);
     };
 
     $rootScope.updateChat = function (chatid) {
-        console.log(chatid);
         $http.get(API_URL + "message" + "/" + chatid).then($scope.successGetMessage, $rootScope.errorCallback);
     };
 
     //SEND A MESSAGE
     $scope.sendMessage = function (keyEvent) {
-        if (keyEvent.which === 13) {
+        if (keyEvent.which === 13 || keyEvent === 13) {
             $scope.message.chatid = $rootScope.chatID;
             // force theme message
             if ($scope.message.filter) {
@@ -11079,6 +11094,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
             var $textInput = $('#message-text');
             // if the text Input is not empty send the message
             if ($textInput.val() != "" && $rootScope.chatID) {
+                $scope.message.text = $textInput.val();
                 $textInput.val('');
                 var url = API_URL + "message";
 
@@ -11090,8 +11106,10 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then(function (response) {
+                    $rootScope.postRequest($scope.chatfriends, 'newMessage', '');
                     $scope.scrollDown();
                 }, $rootScope.errorCallback);
+                $scope.message.text = null;
             }
         }
     };
@@ -11100,20 +11118,35 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
     $scope.broadcast = function (chatid) {
         $scope.currentChatroom = 'chatroom.' + chatid;
         console.log('chatroom.' + chatid);
-
+        // to retreive friends that are not in the chat
+        $scope.chatfriends = {};
+        $scope.chatfriends.chatid = chatid;
+        if ($rootScope.chatFunction === 'friendchat') {
+            $scope.chatfriends.Ids = [$rootScope.friendID];
+        } else if ($rootScope.chatFunction === 'groupschat') {
+            $scope.chatfriends.Ids = $rootScope.adjustElementNewArray($rootScope.groupFriends, 0, 'user_id', 'retreive', 0, 0, 0);
+        }
         $scope.scrollDown();
         Echo.join('chatroom.' + chatid).here(function (users) {
-            // console.log(users);
-            // this.usersInRoom = users;
+            $scope.chatfriends.active = $rootScope.adjustElementNewArray(users, 0, 'id', 'retreive', 0, 0, 0);
+            $scope.chatfriends.NotActive = $scope.chatfriends.Ids.filter(function (e) {
+                return this.indexOf(e) < 0;
+            }, $scope.chatfriends.active);
         }).joining(function (user) {
-            // console.log(user);
-            // this.usersInRoom.push(user);
+            $scope.chatfriends.active.push(user.id);
+            $scope.chatfriends.NotActive = $scope.chatfriends.Ids.filter(function (e) {
+                return this.indexOf(e) < 0;
+            }, $scope.chatfriends.active);
         }).leaving(function (user) {
-            // console.log(user);
-            // this.usersInRoom = this.usersInRoom.filter(u => u != user);
+            $scope.chatfriends.active = $scope.chatfriends.active.filter(function (e) {
+                return this.indexOf(e) < 0;
+            }, [user.id]);
+            $scope.chatfriends.NotActive = $scope.chatfriends.Ids.filter(function (e) {
+                return this.indexOf(e) < 0;
+            }, $scope.chatfriends.active);
         }).listen('UpdateChat', function (e) {
             $scope.$apply(function () {
-                $rootScope.messages.push({
+                $rootScope.messages.items.push({
                     text: e.message.text,
                     theme_id: e.message.theme_id,
                     name: e.user.name,
@@ -11122,17 +11155,16 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
                     force_theme: e.message.force_theme,
                     color: e.message.color
                 });
-                console.log($rootScope.messages);
+                $scope.scrollDown();
                 $rootScope.updateThemeUsage(); //update Theme usage
             });
         }).listen('ProfileImage', function (e) {
             $scope.$apply(function () {
-                $rootScope.adjustObjectElement($rootScope.messages, e.userid, 'user_id', 'edit', e.profileImage, 'profile_image', 0);
+                $rootScope.adjustObjectElement($rootScope.messages.items, e.userid, 'user_id', 'edit', e.profileImage, 'profile_image', 0);
             });
         }).listen('ThemeEvent', function (e) {
             $scope.$apply(function () {
                 if ($rootScope.themes) {
-                    console.log(e);
                     if (e.event === 'create') {
                         var keywords = $rootScope.ObjToArray(e.data.keywords);
                         keywords = $rootScope.keywordToObjectArray(e.data.keywords);
@@ -11173,7 +11205,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         });
     };
 
-    $scope.scrollDown = function () {
+    $rootScope.scrollDown = function () {
         var $chat = $('.chat');
         var $friend = $('.js-scrolldown');
         setTimeout(function () {
@@ -11185,7 +11217,68 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         $scope.message.color = color;
         $scope.scrollDown();
     };
+
+    $scope.$on('$routeChangeStart', function () {
+        Echo.leave($scope.currentChatroom);
+    });
+
+    // infinite scroll messages ↓↓↓↓ all code down below ↓↓↓↓ 
+    $("#scrollMessages").scroll(function () {
+        if (this.scrollTop < 100) {
+            $scope.currentScrollHeight = this.scrollHeight;
+            $rootScope.messages.nextPage();
+        }
+    });
+
+    $rootScope.loadingScroll = function (color) {
+        var $scroll = $("#scrollMessages")[0];
+        setTimeout(function () {
+            var scrolldifference = $scroll.scrollHeight - $scope.currentScrollHeight;
+            if (scrolldifference > 0) {
+                $("#scrollMessages").scrollTop(scrolldifference);
+            }
+        }, 1);
+    };
 });
+
+// infinite scroll messages (retreive messages per block of pagination from laravel)
+app.factory('Messages', function ($http, API_URL, $rootScope) {
+    var Messages = function Messages() {
+        this.items = [];
+        this.busy = false;
+        this.page = 1;
+    };
+
+    Messages.prototype.nextPage = function () {
+        if (this.busy) return;
+        this.busy = true;
+        var url = API_URL + 'getMessages/' + $rootScope.chatID + '?page=' + this.page;
+        $http.get(url).then(function (response) {
+            for (var i = 0; i < response.data.length; i++) {
+                this.items.push(response.data[i]);
+            };
+            this.page++;
+            this.busy = false;
+            if (!$rootScope.messagesLoaded) {
+                $rootScope.scrollDown();
+                $rootScope.messagesLoaded = 1;
+            } else {
+                $rootScope.loadingScroll();
+            }
+        }.bind(this));
+    };
+
+    return Messages;
+});
+
+app.filter('reverse', function () {
+    return function (items) {
+        if (items) {
+            return items.slice().reverse();
+        }
+    };
+});
+
 app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
     // ADD FRIEND TO NEW GROUP (Send to alert)
     $scope.addFriendToGroup = function () {
@@ -11381,50 +11474,50 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
         // 	themeid = keywords[prop].theme_id;
         // }
 
-        for ($prop in $rootScope.messages) {
-            if ($rootScope.messages[$prop].force_theme === 0) {
+        for ($prop in $rootScope.messages.items) {
+            if ($rootScope.messages.items[$prop].force_theme === 0) {
                 for (prop in keywords) {
                     // if messages contains a keyword an has not been forced by  a theme => give new theme
-                    if ($rootScope.messages[$prop].text.indexOf(keywords[prop].word) !== -1) {
-                        $rootScope.messages[$prop].theme_id = themeid;
-                        $rootScope.messages[$prop].color = color;
-                        themeMessages.push($rootScope.messages[$prop].id);
+                    if ($rootScope.messages.items[$prop].text.indexOf(keywords[prop].word) !== -1) {
+                        $rootScope.messages.items[$prop].theme_id = themeid;
+                        $rootScope.messages.items[$prop].color = color;
+                        themeMessages.push($rootScope.messages.items[$prop].id);
                     }
                 }
             }
         }
-        for ($prop in $rootScope.messages) {
+        for ($prop in $rootScope.messages.items) {
             // if messages contains none of the keywords but has the themeID => remove the theme from it
-            if ($rootScope.messages[$prop].theme_id == themeid && themeMessages.indexOf($rootScope.messages[$prop].id) === -1 && $rootScope.messages[$prop].force_theme === 0) {
-                $rootScope.messages[$prop].theme_id = $rootScope.generalThemeID;
-                $rootScope.messages[$prop].color = "white";
+            if ($rootScope.messages.items[$prop].theme_id == themeid && themeMessages.indexOf($rootScope.messages.items[$prop].id) === -1 && $rootScope.messages.items[$prop].force_theme === 0) {
+                $rootScope.messages.items[$prop].theme_id = $rootScope.generalThemeID;
+                $rootScope.messages.items[$prop].color = "white";
             }
         }
     };
 
     $rootScope.removeThemeFromMessages = function (themeid) {
-        for ($prop in $rootScope.messages) {
-            if ($rootScope.messages[$prop].theme_id == themeid && $rootScope.messages[$prop].force_theme === 0) {
-                $rootScope.messages[$prop].theme_id = $rootScope.generalThemeID;
-                $rootScope.messages[$prop].color = "white";
+        for ($prop in $rootScope.messages.items) {
+            if ($rootScope.messages.items[$prop].theme_id == themeid && $rootScope.messages.items[$prop].force_theme === 0) {
+                $rootScope.messages.items[$prop].theme_id = $rootScope.generalThemeID;
+                $rootScope.messages.items[$prop].color = "white";
             }
         }
     };
 
     $rootScope.updateThemeUsage = function () {
         var countThemes = {};
-        for (prop in $rootScope.messages) {
-            if ($rootScope.messages[prop].theme_id != $rootScope.generalThemeID) {
-                var id = $rootScope.messages[prop]['theme_id'];
+        for (prop in $rootScope.messages.items) {
+            if ($rootScope.messages.items[prop].theme_id != $rootScope.generalThemeID) {
+                var id = $rootScope.messages.items[prop]['theme_id'];
                 countThemes[id]++;
                 if (isNaN(countThemes[id])) {
                     countThemes[id] = 1;
                 }
             }
         }
-        var amountMessages = Object.keys($rootScope.messages).length;
+        var amountMessages = Object.keys($rootScope.messages.items).length;
         if (!amountMessages) {
-            amountMessages = $rootScope.messages.length;
+            amountMessages = $rootScope.messages.items.length;
         }
         for (prop in $rootScope.themes) {
             var id = $rootScope.themes[prop].id;
@@ -11474,17 +11567,17 @@ app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_externalLink__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_externalLink__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_externalLink___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__helpers_externalLink__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_autoScrollDownChat__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_autoScrollDownChat___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__helpers_autoScrollDownChat__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_preventDefault__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_preventDefault___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__helpers_preventDefault__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_slideOpen__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_slideOpen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__helpers_slideOpen__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_addFriend__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_chatSettings__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_chatSettings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__pages_chatSettings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_preventDefault__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_preventDefault___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__helpers_preventDefault__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_slideOpen__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_slideOpen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__helpers_slideOpen__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_addFriend__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_chatSettings__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_chatSettings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__pages_chatSettings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_Conversation__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_Conversation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__pages_Conversation__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_angular__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_angular__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_angular_sanitize__ = __webpack_require__(6);
@@ -11497,28 +11590,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // import Carousel from './components/carousel';
 
-
+// import AutoScrollDownChat from './helpers/autoScrollDownChat';
 
 
 // import ParentSelector from './helpers/parentSelector';
 
 
+
 // import pusher from './plugins/Pusher';
 
 
+// import ngInfiniteScroll from 'ng-infinite-scroll';
 // import angularSanitize from 'angular-sanitize';
 // import VueChat from './components/_vueChat';
 
 
 // Global variables
-var _USERID = null;
-var _USERNAME = null;
-var _LOGINBTN = null;
-var _ISLOGGEDIN = 0;
-var _APILINK = "http://jorenvh.webhosting.be/api";
-var _ALL_POLITICIANS = [];
-var _POLITICIAN_QUESTIONS = [];
-var _FIRST_QUESTION_LIKED = false;
+// var _USERID = null;
+// var _USERNAME = null;
+// var _LOGINBTN = null;
+// var _ISLOGGEDIN = 0;
+// var _APILINK = "http://jorenvh.webhosting.be/api";
+// var _ALL_POLITICIANS = [];
+// var _POLITICIAN_QUESTIONS = [];
+// var _FIRST_QUESTION_LIKED = false;
+
 
 var $ = global.jQuery = __webpack_require__(0);
 
@@ -11529,15 +11625,16 @@ var App = function () {
         //components
         // this.vuemessages = new VueChat();
         this.injector = { app: this };
-        this.addfriend = new __WEBPACK_IMPORTED_MODULE_4__components_addFriend__["a" /* default */]();
+        this.addfriend = new __WEBPACK_IMPORTED_MODULE_3__components_addFriend__["a" /* default */]();
         //helpers
         this.externallink = new __WEBPACK_IMPORTED_MODULE_0__helpers_externalLink___default.a();
-        this.preventdefault = new __WEBPACK_IMPORTED_MODULE_2__helpers_preventDefault___default.a();
-        this.autoscrolldownchat = new __WEBPACK_IMPORTED_MODULE_1__helpers_autoScrollDownChat___default.a();
-        this.slideopen = new __WEBPACK_IMPORTED_MODULE_3__helpers_slideOpen___default.a();
+        this.preventdefault = new __WEBPACK_IMPORTED_MODULE_1__helpers_preventDefault___default.a();
+        // this.autoscrolldownchat = new AutoScrollDownChat();
+        this.slideopen = new __WEBPACK_IMPORTED_MODULE_2__helpers_slideOpen___default.a();
         // this.parentselector = new ParentSelector();
         // pages
-        this.chatsettings = new __WEBPACK_IMPORTED_MODULE_5__pages_chatSettings___default.a();
+        this.chatsettings = new __WEBPACK_IMPORTED_MODULE_4__pages_chatSettings___default.a();
+        this.conversation = new __WEBPACK_IMPORTED_MODULE_5__pages_Conversation___default.a();
     }
 
     _createClass(App, [{
@@ -45756,42 +45853,6 @@ var addFriend = function () {
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports) {
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var AutoScrollDownChat = function AutoScrollDownChat() {
-    _classCallCheck(this, AutoScrollDownChat);
-}
-// // this.$chat = $('.chat');
-// this.$friend = $('.js-scrolldown');
-// this.init();
-
-
-// init(){
-//     console.log(this.$friend);
-//     // this.$friend.on('click', 'li',  () => this.scrollDown);
-//     this.$friend.on('click', 'li', () => {
-//     var children = this.$chat.children().length;
-//         // while (children === 0) {
-//         //     children = this.$chat.children().length;
-//         //     console.log(children);
-//         //     this.scrollDown();
-//         // }
-//     });
-// }
-
-// scrollDown() {
-//     console.log(this.$chat[0].scrollTop);
-//     console.log(this.$chat[0].scrollHeight);
-//     this.$chat[0].scrollTop = this.$chat[0].scrollHeight;
-// }
-;
-
-module.exports = AutoScrollDownChat;
-
-/***/ }),
-/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -45825,7 +45886,7 @@ module.exports = externalLink;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -45856,7 +45917,7 @@ module.exports = PreventDefault;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -45900,6 +45961,49 @@ var SlideOpen = function () {
 }();
 
 module.exports = SlideOpen;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Conversation = function () {
+    function Conversation() {
+        _classCallCheck(this, Conversation);
+
+        this.$emojiClick = $('.js-emoji-click');
+        this.$emojiPopup = $('.js-emoji-popup');
+        this.$emoji = $('.js-emoji');
+        this.$message = $('.js-message');
+        this.emojis();
+    }
+
+    _createClass(Conversation, [{
+        key: 'emojis',
+        value: function emojis() {
+            var _this = this;
+
+            this.$emojiClick.on('click', function () {
+                _this.$emojiPopup.toggleClass('hide');
+            });
+
+            this.$emoji.on('click', function (e) {
+                var textValue = _this.$message.val();
+                var emojiCode = $(e.currentTarget).data('value');
+                _this.$message.val(textValue + ' :' + emojiCode + ':');
+                _this.$message.focus();
+            });
+        }
+    }]);
+
+    return Conversation;
+}();
+
+module.exports = Conversation;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),

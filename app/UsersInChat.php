@@ -33,6 +33,7 @@ class UsersInChat extends Model
     	$chatUser->admin = 1;
     	$chatUser->confirmed = 1;
     	$chatUser->is_deleted = 0;
+        $chatUser->unread_messages = 0;
     	$chatUser->save();
     	return $chatUser;
   	}

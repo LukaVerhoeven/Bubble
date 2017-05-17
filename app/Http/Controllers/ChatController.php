@@ -10,6 +10,7 @@ use App\UsersInChat;
 use App\Friendship;
 use Auth;
 use DB;
+use Emoji;
 
 class ChatController extends Controller
 {
@@ -23,9 +24,11 @@ class ChatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
-        return view('layouts.chat-layout');
+        $emojis = Emoji::getEmojis();
+        return view('layouts.chat-layout', compact('emojis'));
     }
 
     public function profileImage(Request $request)
@@ -73,12 +76,14 @@ class ChatController extends Controller
         foreach ($chats as $chat) {
            array_push($chatID, $chat->id);
            if ($chat->function === "groupschat") {
-               array_push($groupchatsNoUsers, $chat);
+                array_push($groupchatsNoUsers, $chat);
+           }else{
+
            }
         }
         
         // Get all users from the groupchats 
-        $friendsInGroupChats = UsersInChat::select('name','user_id','confirmed', 'chat_id','users_in_chats.admin', 'users_in_chats.is_deleted')
+        $friendsInGroupChats = UsersInChat::select('name','user_id','confirmed', 'chat_id','users_in_chats.admin', 'users_in_chats.is_deleted' , 'users_in_chats.unread_messages')
                         ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
                         ->join('users', 'users.id', '=', 'users_in_chats.user_id')
                         ->where('chats.function', '=', 'groupschat')
@@ -93,13 +98,14 @@ class ChatController extends Controller
                 $loggedinUser = $loggedinUser->toArray();
                 $friendGroup = $friendsInGroupChats->where('chat_id', $chat->chat_id)->toArray();
                 $chat = collect($chat)->put("friends", $friendGroup);
-                $chat = collect($chat)->put("userIsAdmin", $loggedinUser['admin']);
+                $chat = $chat->put("userIsAdmin", $loggedinUser['admin']);
+                $chat = $chat->put("unread_messages", $loggedinUser['unread_messages']);
                 array_push($groupchats, $chat);
             }
         }
         // Get all friends that belong to the friendchat
         $friends = DB::table('users')
-                ->select('users.id as userid', 'users.name', 'chats.id as chatid')
+                ->select('users.id as userid', 'users.name', 'chats.id as chatid', 'users_in_chats.unread_messages')
                 ->join('users_in_chats', 'users_in_chats.user_id', '=', 'users.id')
                 ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
                 ->whereIn('chats.id',$chatID)
@@ -109,6 +115,12 @@ class ChatController extends Controller
                 ->where('function', '=', 'friendchat')
                 ->orderBy('users.name', 'asc')
                 ->get();
+
+        $unread_messages = collect($chats)->where("user_id",  $user->id)->where("function",  'friendchat');
+        foreach ($friends as $key => $friend) {
+            $unread_message = $unread_messages->where('chat_id', $friend->chatid)->pluck('unread_messages');
+            $friends[$key] = collect($friends[$key])->put('unread_messages',$unread_message[0]);
+        }
                 
         return compact('friends','groupchats','userid');
     }

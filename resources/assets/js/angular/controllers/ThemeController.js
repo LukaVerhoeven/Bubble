@@ -40,50 +40,50 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 		// 	themeid = keywords[prop].theme_id;
 		// }
 
-		for ($prop in $rootScope.messages) {
-			if($rootScope.messages[$prop].force_theme === 0){
+		for ($prop in $rootScope.messages.items) {
+			if($rootScope.messages.items[$prop].force_theme === 0){
 				for (prop in keywords) {
 					// if messages contains a keyword an has not been forced by  a theme => give new theme
-					if($rootScope.messages[$prop].text.indexOf(keywords[prop].word) !== -1){
-						$rootScope.messages[$prop].theme_id = themeid;
-						$rootScope.messages[$prop].color = color;
-						themeMessages.push($rootScope.messages[$prop].id);
+					if($rootScope.messages.items[$prop].text.indexOf(keywords[prop].word) !== -1){
+						$rootScope.messages.items[$prop].theme_id = themeid;
+						$rootScope.messages.items[$prop].color = color;
+						themeMessages.push($rootScope.messages.items[$prop].id);
 					}
 				}
 			}
 		}
-		for ($prop in $rootScope.messages) {
+		for ($prop in $rootScope.messages.items) {
 			// if messages contains none of the keywords but has the themeID => remove the theme from it
-			if ($rootScope.messages[$prop].theme_id == themeid && themeMessages.indexOf($rootScope.messages[$prop].id) === -1 && $rootScope.messages[$prop].force_theme === 0) {
-				$rootScope.messages[$prop].theme_id = $rootScope.generalThemeID;
-				$rootScope.messages[$prop].color = "white";
+			if ($rootScope.messages.items[$prop].theme_id == themeid && themeMessages.indexOf($rootScope.messages.items[$prop].id) === -1 && $rootScope.messages.items[$prop].force_theme === 0) {
+				$rootScope.messages.items[$prop].theme_id = $rootScope.generalThemeID;
+				$rootScope.messages.items[$prop].color = "white";
 			}
 		}
 	}
 
 	$rootScope.removeThemeFromMessages = function(themeid){
-		for ($prop in $rootScope.messages) {
-			if($rootScope.messages[$prop].theme_id == themeid && $rootScope.messages[$prop].force_theme === 0){
-				$rootScope.messages[$prop].theme_id = $rootScope.generalThemeID;
-				$rootScope.messages[$prop].color = "white";
+		for ($prop in $rootScope.messages.items) {
+			if($rootScope.messages.items[$prop].theme_id == themeid && $rootScope.messages.items[$prop].force_theme === 0){
+				$rootScope.messages.items[$prop].theme_id = $rootScope.generalThemeID;
+				$rootScope.messages.items[$prop].color = "white";
 			}
 		}
 	}
 
 	$rootScope.updateThemeUsage = function(){
 		var countThemes = {};
-		for (prop in $rootScope.messages) {
-			if($rootScope.messages[prop].theme_id != $rootScope.generalThemeID){
-				var id = $rootScope.messages[prop]['theme_id'];
+		for (prop in $rootScope.messages.items) {
+			if($rootScope.messages.items[prop].theme_id != $rootScope.generalThemeID){
+				var id = $rootScope.messages.items[prop]['theme_id'];
 				countThemes[id]++;
 				if(isNaN(countThemes[id])){
 					countThemes[id] = 1;
 				}
 			}
 		}
-		var amountMessages = Object.keys($rootScope.messages).length;
+		var amountMessages = Object.keys($rootScope.messages.items).length;
 		if(!amountMessages){
-			amountMessages = $rootScope.messages.length;
+			amountMessages = $rootScope.messages.items.length;
 		}
 		for (prop in $rootScope.themes) {
 			var id = $rootScope.themes[prop].id;

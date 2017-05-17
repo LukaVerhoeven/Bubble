@@ -17,12 +17,25 @@
 		}
 	}
 
+	.emoji-popup{
+		position: absolute;
+		margin-top: -7rem;
+
+	}
+
 	.chat-input{
 		position: relative;
 		bottom: 5rem;
 		margin-right: $filter-theme-width;
 		display: block;
-		    
+
+		.insert-emo img{
+			width: 25px;
+			position: absolute;
+			margin: 20px;
+			opacity: .7;
+		}
+
 		.nav-wrapper{
 			border-bottom: 2px solid grey;
 		}

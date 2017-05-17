@@ -42,6 +42,7 @@ class GroupController extends Controller
                 $friendInChat->admin = 0;
                 $friendInChat->confirmed = 0;
                 $friendInChat->is_deleted = 0;
+                $friendInChat->unread_messages = 0;
                 $friendInChat->save();
                 $friendInChat = UsersInChat::AddNameJson($value['name'], $friendInChat);
                 array_push($UsersInChat, $friendInChat);

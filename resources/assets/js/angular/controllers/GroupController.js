@@ -54,7 +54,6 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
             
         }, $scope.errorCallback);
         $scope.update(chatid, true);
-        console.log($rootScope.groups);
     }
 
     //DECLINE GROUP INVITE

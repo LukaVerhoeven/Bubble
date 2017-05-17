@@ -38,7 +38,6 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
         $rootScope.groupFriends.push(data);
         $rootScope.adjustObjectElement($rootScope.FriendsNotInGroup, friendID, 'userid', 'remove', 0, 0, 0, 0);
         $rootScope.adjustArrayFromObject($rootScope.groups, [chatID, data], ['chat_id', 'friends'], 'update', 0, 0,1,0);
-        console.log($rootScope.FriendsNotInGroup, friendID);
     }
 
     // LEAVE GROUPCHAT CONFIRMED

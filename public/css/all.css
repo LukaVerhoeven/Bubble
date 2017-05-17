@@ -9212,6 +9212,13 @@ $panel-default-heading-bg: #fff;
   display: inline-block;
 }
 
+#bubble .v-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+}
+
 #Alerts {
   position: fixed;
   height: 100%;
@@ -9357,11 +9364,23 @@ body {
   width: 80%;
 }
 
+#content .emoji-popup {
+  position: absolute;
+  margin-top: -7rem;
+}
+
 #content .chat-input {
   position: relative;
   bottom: 5rem;
   margin-right: 6rem;
   display: block;
+}
+
+#content .chat-input .insert-emo img {
+  width: 25px;
+  position: absolute;
+  margin: 20px;
+  opacity: .7;
 }
 
 #content .chat-input .nav-wrapper {
@@ -9585,6 +9604,18 @@ body {
   background-color: gray;
 }
 
+#friends .unread-messages,
+#groups .unread-messages {
+  display: inline-block;
+  line-height: 1.5em;
+  text-align: center;
+  background-color: red;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+}
+
 #friends .bottom,
 #groups .bottom {
   position: absolute;
@@ -9637,6 +9668,49 @@ body {
   background-color: red;
   border-radius: 50%;
   opacity: 0.5;
+}
+
+#bubble {
+  height: 100%;
+}
+
+#bubble #login-page {
+  width: 25%;
+  margin: auto;
+}
+
+#bubble #login-page .logo {
+  text-align: center;
+  width: 100%;
+}
+
+#bubble #login-page .logo svg {
+  margin-bottom: 40px;
+}
+
+#bubble #login-page .form-container {
+  height: 470px;
+}
+
+#bubble #login-page .form-container .form-box {
+  box-shadow: 4px 4px 2px 1px rgba(0, 0, 0, 0.25);
+}
+
+#bubble #login-page .form-container .nav-extended .tabs {
+  overflow-x: hidden;
+}
+
+#bubble #login-page .form-container .nav-extended .indicator {
+  background: #b71c1c;
+}
+
+#bubble #login-page .form-container .panel-default {
+  background: white;
+}
+
+#bubble #login-page .form-container .form-horizontal {
+  display: inline-block;
+  padding: 0.75rem 0;
 }
 
 /* @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap"; */

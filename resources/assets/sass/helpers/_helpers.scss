@@ -21,5 +21,9 @@ $gutter: .75rem;
 	.inline-block{
 		display: inline-block;
 	}
+
+	.v-align{
+		@include vertical-align;
+	}
 }
 

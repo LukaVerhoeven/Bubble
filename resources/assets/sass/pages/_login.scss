@@ -1,0 +1,44 @@
+#bubble{
+	height: 100%;
+	
+	#login-page{
+		width: 25%;
+		margin: auto;
+
+		.logo {
+			text-align: center;	
+			width: 100%;
+
+			svg{
+				margin-bottom: 40px;
+			}
+		}
+		
+		.form-container{
+			height: 470px;
+
+			.form-box{
+				box-shadow: 4px 4px 2px 1px rgba(0, 0, 0, .25);
+			}
+
+			.nav-extended{
+				.tabs{
+					overflow-x: hidden;
+				}
+
+				.indicator{
+					background: #b71c1c;
+				}
+			}
+
+			.panel-default{
+				background: white;
+			}
+
+			.form-horizontal{
+				display: inline-block;
+				padding: $gutter 0;
+			}
+		}
+	}
+}

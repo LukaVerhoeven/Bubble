@@ -7,8 +7,10 @@
 				<a class="btn waves-effect waves-light" ng-click="addFriend(request.user_id, true)">Accept</a>
 			</li>
 		</ul>
-		<ul ng-repeat="friend in friendlist | filter:searchfriend">
-			<li data-id="@{{friend.userid}}" ng-click="openChat(friend.chatid , friend.userid , friend.name , 'friendchat', null, 1)"> @{{friend.name}} <span class="online-state offline" ng-if="!friend.isOnline"></span><span class="online-state online" ng-if="friend.isOnline"></span></li>
+		<ul ng-repeat="(key, friend) in friendlist | filter:searchfriend">
+			<li data-id="@{{friend.userid}}" ng-click="openChat(friend.chatid , friend.userid , friend.name , 'friendchat', null, 1, key)"> @{{friend.name}} 
+			<span class="unread-messages" ng-if="friend.unread_messages">@{{friend.unread_messages}}</span>
+			<span class="online-state offline" ng-if="!friend.isOnline"></span><span class="online-state online" ng-if="friend.isOnline"></span></li>
 		</ul>
 	</div>
 

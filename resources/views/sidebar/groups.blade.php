@@ -7,8 +7,10 @@
 				<a class="btn waves-effect waves-light" ng-click="accept(group.chat_id, group.friends)">Accept</a>
 			</li>
 		</ul>
-		<ul ng-repeat="group in groups | filter:searchgroup" ng-if="group.function === 'groupschat' && !is_deleted">
-			<li data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , 0 , group.chat_name, 'groupschat', group.friends , group.userIsAdmin)"  ng-if="group.confirmed"> @{{group.chat_name}} </li>
+		<ul ng-repeat="(key, group) in groups | filter:searchgroup" ng-if="group.function === 'groupschat' && !is_deleted">
+			<li data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , 0 , group.chat_name, 'groupschat', group.friends , group.userIsAdmin, key)"  ng-if="group.confirmed"> @{{group.chat_name}} 
+			<span class="unread-messages" ng-if="friend.unread_messages">@{{friend.unread_messages}}</span>
+			</li>
 		</ul>
 	</div>
 

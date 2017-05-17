@@ -11,6 +11,7 @@ const { mix } = require('laravel-mix');
  |
  */
    /*.js('resources/assets/materialize-src/js/bin/materialize.min.js','public/assets/all.js')*/
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 // mix.combine([
 //    'resources/assets/js/angular/app.js',
@@ -25,14 +26,26 @@ const { mix } = require('laravel-mix');
 //    'resources/assets/js/angular/controllers/NavController.js'],
 //    'resources/assets/js/compiled/angular.js');
 
+// mix.webpackConfig({
+//    plugins: [
+//        new BrowserSyncPlugin({
+//            files: [
+//                'public/**/*.css',
+//                // 'public/**/*.js',
+//                // 'resources/views/**/*',
+//            ]
+//        })
+//    ]
+// });
+
 mix.sass('resources/assets/sass/app.scss', '../resources/assets/css')
    .js([
       'resources/assets/js/main.js',
       'resources/assets/js/compiled/angular.js'],
-	    'public/js/all.js')
+       'public/js/all.js')
    // .js('resources/assets/js/main.js','public/js/all.js')
    .sass('resources/assets/materialize-src/sass/materialize.scss', '../resources/assets/css')
    .combine([
-   		'resources/assets/css/materialize.css',
-   		'resources/assets/css/app.css'
-   	],'public/css/all.css');
+         'resources/assets/css/materialize.css',
+         'resources/assets/css/app.css'
+      ],'public/css/all.css');

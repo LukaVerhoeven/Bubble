@@ -21,6 +21,7 @@ class CreateUsersInChatTable extends Migration
             $table->boolean('admin');
             $table->boolean('confirmed');
             $table->boolean('is_deleted');
+            $table->integer('unread_messages');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

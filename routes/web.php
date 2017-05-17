@@ -17,9 +17,13 @@
 Route::get('/', 'ChatController@index');
 Route::get('/api/getChatRooms', 'ChatController@getChatRooms');
 
+// messages
 Route::get('/api/message/{id?}', 'MessageController@index');
 Route::post('/api/message', 'MessageController@store');
 Route::post('/api/getThemes/{id}', 'MessageController@getThemes');
+Route::post('/api/newMessage', 'MessageController@unread');
+Route::post('/api/readMessages', 'MessageController@read');
+Route::get('/api/getMessages/{id?}', 'MessageController@getMessages');
 
 // friends
 Route::get('/api/searchNewFriend/{letters?}', 'FriendController@searchNewFriend');

@@ -11,7 +11,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         $rootScope.friendsForGroup = response.data.friends;
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
-        console.log($rootScope.friendlist);
+        console.log($rootScope.friendlist, $rootScope.groups);
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
         $rootScope.broadcastUser($rootScope.Authuserid);
@@ -127,7 +127,6 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     // ONLINE STATES
     $scope.loginBroadcast = function(){
-        console.log($rootScope.Authuserid, $rootScope.friendlist );
         $scope.onlinestate = {};
         $scope.onlinestate.authid = $rootScope.Authuserid;
         $scope.onlinestate.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist , 0,'userid', 'retreive',0,0,0);;

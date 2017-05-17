@@ -92,6 +92,7 @@
 		<script>
 			window.Laravel = { 'csrfToken' : '{{ csrf_token() }}' };
 		</script>
+		
 		{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> --}}
 		{{-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> --}}
 		{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.6.4/angular-sanitize.js"></script> --}}
@@ -99,6 +100,7 @@
 		<script src="//js.pusher.com/4.0/pusher.min.js"></script>
 		<script src="/js/all.js"></script>
 		<script src="/js/materialize.js"></script>
+		{{-- <script src="//cdnjs.cloudflare.com/ajax/libs/ngInfiniteScroll/1.3.0/ng-infinite-scroll.js"></script> --}}
 		{{-- <script src="/js/angular.js"></script> --}}
 		{{-- <script src="{{ asset('js/angular/app.js') }}"></script> --}}
     {{-- 	<script src="{{ asset('js/angular/controllers/MessageController.js') }}"></script>
@@ -106,5 +108,10 @@
     	<script src="{{ asset('js/angular/controllers/NavController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/GlobalController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/GroupController.js') }}"></script> --}}
+    	<!-- browser sync -->
+    	<script id="__bs_script__">//<![CDATA[
+    document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.18.11'><\/script>".replace("HOST", location.hostname));
+//]]></script>
+
 	</body>
 </html>
