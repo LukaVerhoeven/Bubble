@@ -16,6 +16,7 @@ class ChatController extends Controller
 {
     public function __construct()
     {
+
         $this->middleware('auth');
     }
 
@@ -28,7 +29,7 @@ class ChatController extends Controller
     public function index()
     {
         $emojis = Emoji::getEmojis();
-        dd($emojis, Emoji);
+        dd($emojis, Auth);
         return view('layouts.chat-layout', compact('emojis'));
     }
 
