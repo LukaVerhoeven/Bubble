@@ -9,27 +9,37 @@
 
 // Helpers
 @import "Helpers/mixins";
+@import "Helpers/parameters";
 @import "Helpers/helpers";
 @import "Helpers/breakpoints";
 
 // Components
+@import "components/fonts";
+@import "components/colors";
 @import "components/alertbox";
 @import "components/profileImage";
 @import "components/radio-invisible";
+@import "components/preloader";
+@import "components/icons";
+@import "components/buttons";
+@import "components/scrollbar";
+@import "components/disable-select";
 //Content
-@import "components/content/content-div";
-@import "components/content/content-nav";
+@import "pages/chat/content/content-div";
+@import "pages/chat/content/content-nav";
 // chat
-@import "components/content/chat/content-chat";
-@import "components/content/chat/content-filter";
+@import "pages/chat/content/chat/content-chat";
+@import "pages/chat/content/chat/content-filter";
 // settings
-@import "components/content/settings/settings-div";
+@import "pages/chat/content/settings/settings-div";
+@import "pages/chat/content/settings/components";
 // themes
-@import "components/content/themes/themes";
+@import "pages/chat/content/themes/colors";
+@import "pages/chat/content/themes/theme";
 // sidebar
-@import "components/sidebar/sidebar-header";
-@import "components/sidebar/friends";
-@import "components/sidebar/profile";
+@import "pages/chat/sidebar/sidebar-header";
+@import "pages/chat/sidebar/friends";
+@import "pages/chat/sidebar/profile";
 // pages
 @import "pages/login";
 

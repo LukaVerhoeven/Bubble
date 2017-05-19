@@ -29,11 +29,12 @@
 		margin-right: $filter-theme-width;
 		display: block;
 
-		.insert-emo img{
-			width: 25px;
+		.insert-emo i{
+			color: #252525;
 			position: absolute;
-			margin: 20px;
+			padding: 0 20px;
 			opacity: .7;
+			cursor: pointer;
 		}
 
 		.nav-wrapper{

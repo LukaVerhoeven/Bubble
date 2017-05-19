@@ -1,10 +1,17 @@
 <div id="groups" class="col s12 no-pad tab-item" ng-controller="GroupController">
 	<!-- groups -->
-	<div class="js-hide-groups js-scrolldown friends col s12">
-		<ul ng-repeat="group in groups" ng-if="group.function === 'groupschat' && !is_deleted">
-			<li class="grey lighten-3" data-id="@{{group.chat_id}}" ng-if="!group.confirmed"> @{{group.chat_name}} 
-				<a class="btn waves-effect waves-light red" ng-click="decline(group.chat_id, group.friends)">Decline</a> 
-				<a class="btn waves-effect waves-light" ng-click="accept(group.chat_id, group.friends)">Accept</a>
+	<div class="js-hide-groups js-scrolldown friends no-margin-top">
+		<ul class="no-margin-top request">
+			<li ng-repeat="group in groups" ng-if="group.function === 'groupschat' && !is_deleted && !group.confirmed" class="grey lighten-3 row" data-id="@{{group.chat_id}}">
+				<div class="request-head white-text red darken-4 col s12">
+					<i class="bubble-icon group v-align"></i>
+					<p class="inline-block v-align">Group request</p>
+				</div>
+				<p class="inline-block col s12 groupname">@{{group.chat_name}} </p> 
+				<div class="col s12 buttons">
+					<a class="btn waves-effect waves-light red ns" ng-click="decline(group.chat_id, group.friends)">Decline</a> 
+					<a class="btn waves-effect waves-light ns" ng-click="accept(group.chat_id, group.friends)">Accept</a>
+				</div>
 			</li>
 		</ul>
 		<ul ng-repeat="(key, group) in groups | filter:searchgroup" ng-if="group.function === 'groupschat' && !is_deleted">

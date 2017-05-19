@@ -1,10 +1,17 @@
 <div id="friends" class="col s12 no-pad tab-item" ng-controller="FriendController">
 	<!-- friends -->
-	<div class="js-hide-friends js-scrolldown friends col s12">
-		<ul ng-repeat="request in friendRequests">
-			<li class="grey lighten-3" data-id="@{{request.id}}"> @{{request.name}} 
-				<a class="btn waves-effect waves-light red" ng-click="decline(request.user_id)">Decline</a> 
-				<a class="btn waves-effect waves-light" ng-click="addFriend(request.user_id, true)">Accept</a>
+	<div class="js-hide-friends js-scrolldown friends">
+		<ul class="request no-margin-top ">
+			<li ng-repeat="request in friendRequests" class="row" data-id="@{{request.id}}"> 
+				<div class="request-head white-text red darken-4 col s12">
+					<i class="bubble-icon friend"></i>
+					<p class="inline-block v-align">Friend request</p>
+				</div>
+				<p class="inline-block col s12 groupname">@{{request.name}}  </p> 
+				<div class="col s12 buttons">
+					<a class="btn waves-effect waves-light red ns" ng-click="decline(request.user_id)">Decline</a> 
+					<a class="btn waves-effect waves-light ns" ng-click="addFriend(request.user_id, true)">Accept</a>
+				</div>
 			</li>
 		</ul>
 		<ul ng-repeat="(key, friend) in friendlist | filter:searchfriend">

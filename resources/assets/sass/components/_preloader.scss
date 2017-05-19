@@ -1,0 +1,13 @@
+.fullscreen-loader{
+	z-index: 2000;
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	background: white;
+	text-align: center;
+
+	.loading-sentance{
+		margin-bottom: 60px;
+		font-size: map-get($font, big);
+	}
+}

@@ -1,4 +1,5 @@
 app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
+	$scope.NewTheme = {color :"red"};
 	$scope.createNewTheme = function(){
 		$scope.NewTheme.chatid = $rootScope.chatID;
 		$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g,",").replace(/[^a-zA-Z0-9,@#]/g,'');

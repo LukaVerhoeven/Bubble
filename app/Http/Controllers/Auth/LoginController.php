@@ -32,6 +32,27 @@ class LoginController extends Controller
      *
      * @return void
      */
+    
+    public function postLogin(Request $request)
+    {
+        $this->validate($request, [
+            'user_email' => 'required|email', 'password' => 'required',
+        ]);
+
+        $credentials = $request->only('user_email', 'password');
+
+        if ($this->auth->attempt($credentials, $request->has('remember')))
+        {
+            return redirect()->intended($this->redirectPath());
+        }
+
+        return redirect($this->loginPath())
+                    ->withInput($request->only('user_email', 'remember'))
+                    ->withErrors([
+                        'user_email' => $this->getFailedLoginMessage(),
+                    ]);
+    }    
+
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'logout']);

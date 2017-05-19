@@ -155,6 +155,7 @@ class GroupController extends Controller
                 $UserInchat->admin = 0;
                 $UserInchat->confirmed = 0;
                 $UserInchat->is_deleted = 0;
+                $UserInchat->unread_messages = 0;
                 $UserInchat->save();
             }
             $UserInchat = collect($UserInchat)->put("name", $friendName);

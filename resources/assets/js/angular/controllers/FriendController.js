@@ -129,7 +129,9 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     $scope.loginBroadcast = function(){
         $scope.onlinestate = {};
         $scope.onlinestate.authid = $rootScope.Authuserid;
-        $scope.onlinestate.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist , 0,'userid', 'retreive',0,0,0);;
-        $rootScope.postRequest($scope.onlinestate ,'onlineState', '');
+        $scope.onlinestate.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist , 0,'userid', 'retreive',0,0,0);
+        if($scope.onlinestate.friendids.length>0){
+            $rootScope.postRequest($scope.onlinestate ,'onlineState', '');
+        }
     }
 })

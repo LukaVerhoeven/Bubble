@@ -1,5 +1,3 @@
-$gutter: .75rem;
-
 #bubble{
 	// extra = when the element above has a drop shadow
 	.top-gutter-double{
@@ -20,6 +18,10 @@ $gutter: .75rem;
 	
 	.inline-block{
 		display: inline-block;
+	}
+	
+	.invisible{
+		opacity: 0;
 	}
 
 	.v-align{

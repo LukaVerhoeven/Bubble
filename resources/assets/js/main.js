@@ -1,12 +1,14 @@
 // import Carousel from './components/carousel';
-import externalLink from './helpers/externalLink';
+import Scrolling from './components/scrolling';
+import addFriend from './components/addFriend';
 // import AutoScrollDownChat from './helpers/autoScrollDownChat';
+import externalLink from './helpers/externalLink';
 import PreventDefault from './helpers/preventDefault';
 import SlideOpen from './helpers/slideOpen';
 // import ParentSelector from './helpers/parentSelector';
-import addFriend from './components/addFriend';
 import chatSettings from './pages/chatSettings';
 import Conversation from './pages/Conversation';
+import Themes from './pages/themes';
 // import pusher from './plugins/Pusher';
 import angular from 'angular';
 import angularSanitize from 'angular-sanitize';
@@ -31,7 +33,7 @@ const $ = global.jQuery = require('jquery');
 class App {
     constructor() {
         //components
-        // this.vuemessages = new VueChat();
+        this.scrolling = new Scrolling();
         this.injector = { app: this };
         this.addfriend = new addFriend();
         //helpers
@@ -43,6 +45,7 @@ class App {
         // pages
         this.chatsettings = new chatSettings();
         this.conversation = new Conversation();
+        this.themes = new Themes();
 
 
     }
@@ -54,7 +57,8 @@ class App {
 
 //init
 $(document).ready(() => {
-   const init = new App();
+    // const init = new App();
+    const init = new App();
 
 });
 

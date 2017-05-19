@@ -8,8 +8,8 @@ class chatSettings {
 
     init() {
         this.$editNameButton.on('click', () => {
-            this.$editName.toggleClass('hide');
-            this.$editNameInput.toggleClass('hide');
+            this.$editName.toggleClass('edit');
+            this.$editNameInput.toggleClass('edit');
         });
     }
 }

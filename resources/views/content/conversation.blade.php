@@ -38,7 +38,7 @@
 	    <div class="nav-wrapper white">
 	      <form name="frmMessage" novalidate="">
 	        <div class="input-field @{{message.color}}">
-        	  <a class="insert-emo js-emoji-click"><img src="http://i.imgur.com/X85Q2Iu.png" alt="bubble emoticon"></a>
+        	  <a class="insert-emo js-emoji-click"><i class="bubble-icon smiley "></i></a>
 	          <input class="js-message" type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)" autocomplete="off">
 	          <label class="label-icon" for="message-text"></label>
 	          <i class="material-icons send" ng-click="sendMessage(13)">send</i>

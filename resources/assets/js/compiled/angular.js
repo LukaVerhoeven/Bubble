@@ -1,8 +1,7 @@
 var app = angular.module('bubble',['ngSanitize'])
-        // .constant('API_URL','http://bubble.local/api/');
+        .constant('API_URL','http://bubble.local/api/');
         // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
-        .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
-
+        // .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
 app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) {
     //************ GLOBAL FUNCTIONS ************
     // ERROR
@@ -312,16 +311,12 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.messages.items      = null;
     }
 
-    // OPEN CHAT
-    // $rootScope.$watch(function() {
-    //     return $rootScope.chatID;
-    // }, function() {
-    //     if ($rootScope.chatID) {
-            
-    //     }
-    // }, true);
+    // REMOVE LOADING SCREEN WHEN ANGULAR IS LOADED
+    $scope.$watch('$viewContentLoaded', function()
+    {
+        $('.fullscreen-loader').addClass('hide');
+    });
 
-    // Make a broadcast connection for the user to create Real-time action. (ex. friendrequest)
     $rootScope.broadcastUser = function(userid) {
 
         Echo.join(`user.${userid}`)
@@ -614,8 +609,10 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     $scope.loginBroadcast = function(){
         $scope.onlinestate = {};
         $scope.onlinestate.authid = $rootScope.Authuserid;
-        $scope.onlinestate.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist , 0,'userid', 'retreive',0,0,0);;
-        $rootScope.postRequest($scope.onlinestate ,'onlineState', '');
+        $scope.onlinestate.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist , 0,'userid', 'retreive',0,0,0);
+        if($scope.onlinestate.friendids.length>0){
+            $rootScope.postRequest($scope.onlinestate ,'onlineState', '');
+        }
     }
 })
 app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $rootScope) {
@@ -1148,6 +1145,7 @@ app.controller('ProfileController', function($scope, $http, API_URL, $rootScope)
 //   }
 // })
 app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
+	$scope.NewTheme = {color :"red"};
 	$scope.createNewTheme = function(){
 		$scope.NewTheme.chatid = $rootScope.chatID;
 		$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g,",").replace(/[^a-zA-Z0-9,@#]/g,'');

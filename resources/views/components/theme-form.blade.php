@@ -1,15 +1,16 @@
-<div class="card top-gutter-double-margin new-theme js-slide-menu js-open-slide-menu {{$hide}}">
-	@if($action === 'create')
-	<div>
-		<h2 class="inline-block">Create new theme</h2>
-		<a class=" right">
-     	 	<i class="material-icons grey-text text-darken-3 js-toggle-slide-menu">keyboard_arrow_up</i>
-    	</a>
-	</div>
+@if($action === 'create')
+	<div class="card top-gutter-double-margin new-theme js-slide-menu theme-card">
+		<div class="js-toggle-slide-menu">
+			<h2 class="inline-block">Create new theme</h2>
+			<a class="right arrow-toggle">
+	     	 	<i class="material-icons grey-text text-darken-3 js-toggle-slide-menu">keyboard_arrow_up</i>
+	    	</a>
+		</div>
 	<form class="row" ng-submit="createNewTheme({{$model}}.$valid)" id="createThemeForm" name="createThemeForm">
-	@else
+@else
+<div class="js-edit-form edit-form top-gutter-double-margin js-slide-menu js-open-slide-menu">	
 	<form class="row" ng-submit="editTheme(theme)" >
-	@endif
+@endif
         <div class="input-field col s12">
 			<input placeholder="Ex: Sport" id="@{{key}}theme_name" type="text" ng-model="{{$model}}.name" class="validate" autocomplete="off" required>
 			<label for="@{{key}}theme_name" class="active">Theme name</label>
@@ -48,28 +49,32 @@
 			</div>
         </div>
         <div class="input-field col s12 new-theme-shortcut">
-			<p class="inline-block col s2">Shortcut: Ctrl+</p>
+			<p class="inline-block col s1">Shortcut: </p>
 			<div class="col s10">
-				<div class="inline-block">
+				@if($action === 'create')
+				     <div class="inline-block all-letters  @{{NewTheme.color}}" >
+	     	 	@else
+					<div class="inline-block all-letters @{{theme.color}} ">
+	     	 	@endif
 					@foreach (range('A', 'Z') as $char)
-					    <div class="inline-block new-shortcut left">
+					    <div class="inline-block new-shortcut">
 							<input name="@{{key}}schortcut" type="radio" id="@{{key}}ctrl-{{ $char }}" ng-model="{{$model}}.shortcut" value="{{ $char }}" required/>
 							<label for="@{{key}}ctrl-{{ $char }}" class="no-button"></label>
 							@if($action === 'create')
-				     	 		<a class="waves-effect waves-light btn @{{NewTheme.color}} @{{NewTheme.color}}-text">{{ $char }}</a>
+				     	 		<a class="waves-effect waves-light btn @{{NewTheme.color}} @{{NewTheme.color}}-border @{{NewTheme.color}}-text">{{ $char }}</a>
 				     	 	@else
-								<a class="waves-effect waves-light btn @{{theme.color}} @{{theme.color}}-text">{{ $char }}</a>
+								<a class="waves-effect waves-light btn @{{theme.color}} @{{theme.color}}-border @{{theme.color}}-text">{{ $char }}</a>
 				     	 	@endif
 				    	</div>
 					@endforeach
 					@foreach (range('0', '9') as $number)
-					    <div class="inline-block new-shortcut left">
+					    <div class="inline-block new-shortcut">
 							<input name="@{{key}}schortcut" type="radio" id="@{{key}}ctrl-{{ $number }}" ng-model="{{$model}}.shortcut" value="{{ $number }}" />
 							<label for="@{{key}}ctrl-{{ $number }}" class="no-button"></label>
 							@if($action === 'create')
-								<a class="waves-effect waves-light btn @{{NewTheme.color}} @{{NewTheme.color}}-text">{{ $number }}</a>
+								<a class="waves-effect waves-light btn @{{NewTheme.color}} @{{NewTheme.color}}-border @{{NewTheme.color}}-text">{{ $number }}</a>
 							@else
-								<a class="waves-effect waves-light btn @{{theme.color}} @{{theme.color}}-text">{{ $number }}</a>
+								<a class="waves-effect waves-light btn @{{theme.color}} @{{theme.color}}-border @{{theme.color}}-text">{{ $number }}</a>
 				     	 	@endif
 				    	</div>
 					@endforeach
@@ -78,7 +83,8 @@
         </div>
         <div class="col s12 center">
 
-        <input type="submit" class="waves-effect waves-light btn red inline-block" value="{{ $action }} theme">
+        <input type="submit" class="submit-theme waves-effect waves-light btn red inline-block {{$submit}}" value="{{ $action }} theme">
+        
         	{{-- <a class="waves-effect waves-light btn red inline-block" ng-click="createNewTheme()">Create theme</a>     --}}
         </div>
 	</form>

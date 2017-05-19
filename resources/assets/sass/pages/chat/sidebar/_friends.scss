@@ -37,6 +37,67 @@
 		border-radius: 20px;
 	}
 
+
+	.request{
+		li{
+			padding-bottom: 1rem;
+			margin-bottom: 0;
+			animation: request 1.5s;
+			overflow: hidden;
+			
+			@include animation('open-request 1s 1');
+			@include keyframes(open-request) {
+			  0%   { max-height: 0px; opacity: 0; }
+			  100% { max-height: 170px;  opacity: 1;}
+			}
+		}
+
+		.request-head{
+			height: 50px;
+
+			.bubble-icon{
+				&.friend{
+					margin-top: 12px;
+				}
+
+				&.group{
+					font-size: 35px;
+				}
+			}
+
+			p{
+				font-weight: 500;
+				vertical-align: top;
+				margin: 0;
+				margin-left: 15px;
+			}
+
+		}
+
+		.groupname{
+			margin: 0;
+			margin-left: 1rem;
+			font-weight: 500;
+			font-size: map-get($font, medium);
+
+			@extend %first-capital;
+		}
+
+		.buttons{
+			text-align: center;
+
+			a{
+				width: 45%;
+				margin: 0;
+				display: inline-block;
+
+				&:first-child{
+					margin-right: 1rem;
+				}
+			}
+		}
+	}
+
 	.bottom{
 		position: absolute;
 		background-color: white;

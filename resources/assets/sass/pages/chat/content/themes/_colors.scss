@@ -1,0 +1,71 @@
+#themes{
+   	.input-field input[type=text].ng-invalid.ng-touched {
+	    border-bottom: 1px solid #E53935;
+	    box-shadow: 0 1px 0 0 #E53935;
+
+	    &+label{
+			color: #E53935;
+	    }
+    }
+
+    .input-field input[type=text].ng-valid.ng-touched {
+	    border-bottom: 1px solid #26A69A;
+	    box-shadow: 0 1px 0 0 #26A69A;
+    }
+
+	.new-theme-color{
+		li{
+			display: inline-block;
+		}
+	}
+	.white{
+		box-shadow: none;
+	}
+
+	.new-theme-icon,.new-theme-shortcut{
+		[type="radio"]:checked~i,input[type="radio"]:not(:checked)~a{
+			color: white !important;
+			// box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2) !important;
+		}
+
+		input[type="radio"]:not(:checked)~i, [type="radio"]:checked~a{
+			background-color:white !important;
+			color: #26A69A;
+			// box-shadow: none;
+			
+		}
+
+		.new-shortcut{
+			position: relative;
+		}
+
+		a{
+			padding: 0 .5rem;
+		}
+	}
+
+	// animate
+	// animation effect
+	.ink {
+	  display: block;
+	  position: absolute;
+	  pointer-events: none;
+	  border-radius: 50%;
+	  
+	  -webkit-transform: scale(0);
+	  -moz-transform: scale(0);
+	  -ms-transform: scale(0);
+	  -o-transform: scale(0);
+	  transform: scale(0);
+
+	  opacity: 1;
+	}
+
+	.ink.animate {
+		@include animation('ripple .3s linear');
+		@include keyframes(ripple) {
+		  100% {transform: scale(2.5);}
+		}
+	}
+
+}

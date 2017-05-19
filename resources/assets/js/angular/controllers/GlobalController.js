@@ -307,16 +307,12 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.messages.items      = null;
     }
 
-    // OPEN CHAT
-    // $rootScope.$watch(function() {
-    //     return $rootScope.chatID;
-    // }, function() {
-    //     if ($rootScope.chatID) {
-            
-    //     }
-    // }, true);
+    // REMOVE LOADING SCREEN WHEN ANGULAR IS LOADED
+    $scope.$watch('$viewContentLoaded', function()
+    {
+        $('.fullscreen-loader').addClass('hide');
+    });
 
-    // Make a broadcast connection for the user to create Real-time action. (ex. friendrequest)
     $rootScope.broadcastUser = function(userid) {
 
         Echo.join(`user.${userid}`)
