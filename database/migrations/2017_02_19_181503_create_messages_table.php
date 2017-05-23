@@ -15,7 +15,7 @@ class CreateMessagesTable extends Migration
     {
        Schema::create('messages', function (Blueprint $table) {
           $table->increments('id');
-          $table->string('text');
+          $table->string('text', 2000);
           $table->boolean('force_theme');
           $table->integer('theme_id')->unsigned();
           $table->integer('chat_id')->unsigned();

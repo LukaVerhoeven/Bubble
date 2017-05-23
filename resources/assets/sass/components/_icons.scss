@@ -32,21 +32,55 @@ i.bubble-icon{
 		font-size: 42px;
 		i{
 			position: absolute;
-			margin-left: -32px;
-			margin-top: 8px;
+			margin-left: -32.5px;
+			margin-top: 9px;
 		}
 	}
 }
 
-.bubble-icon.key:before {
-  content: "\1f527";
+.bubble-icon.arrow:before {
+  content: "\3d";
 }
-.bubble-icon.friend:before {
-  content: "\1f46b";
+.bubble-icon.alert:before {
+  content: "\21";
 }
-.bubble-icon.group:before {
-  content: "\1f46a";
+.bubble-icon.question:before {
+  content: "\3f";
+}
+.bubble-icon.cross:before {
+  content: "\1f5f4";
+}
+.bubble-icon.triangle-you .path1:before {
+  content: "\e900";
+  color: rgb(255, 255, 255);
+}
+.bubble-icon.triangle-you .path2:before {
+  content: "\e901";
+  margin-left: -1.2001953125em;
+  color: rgb(0, 0, 0);
+}
+.bubble-icon.triangle .path1:before {
+  content: "\e902";
+  color: rgb(255, 255, 255);
+}
+.bubble-icon.triangle .path2:before {
+  content: "\e903";
+  margin-left: -1.2001953125em;
+  color: rgb(0, 0, 0);
+}
+.bubble-icon.no-content:before {
+  content: "\1f5eb";
+  color: map-get( $colors, light-gray);
 }
 .bubble-icon.smiley:before {
-  content: "\1f466";
+  content: "\1f31e";
+}
+.bubble-icon.key:before {
+  content: "\1f3f4";
+}
+.bubble-icon.friend:before {
+  content: "\1f5e9";
+}
+.bubble-icon.group:before {
+  content: "\1f5ea";
 }

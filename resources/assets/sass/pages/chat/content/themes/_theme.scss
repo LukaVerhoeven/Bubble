@@ -23,7 +23,7 @@
 		@include transition(max-height .5s ease-out);
 
 		&.open{
-			max-height: 605px;
+			max-height: 675px;
 		}
 
 		h2{
@@ -37,7 +37,9 @@
 		
 		.theme-status{
 			display: inline-block;
+			float: left;
 			opacity: 1;
+			margin-top: 11px;
 			margin-bottom: 0;
 			margin-right: $gutter;
 			@include transition(opacity 1s linear 2s);
@@ -91,6 +93,11 @@
 		.all-letters{
 			text-align: center;
 			padding: 0 3px;
+			margin: 0 $gutter*2;
+			
+			.waves-ripple{
+				display: none;
+			}
 
 			.new-shortcut a{
 				box-shadow: none;
@@ -122,7 +129,7 @@
 		}
 
 		h2{
-			margin-top: .6rem;
+			margin-top: .8rem;
 			margin-left: $gutter;
 		}
 

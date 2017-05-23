@@ -24,8 +24,8 @@
 								<img class="profile-pic " src="{{ Auth::user()->profile_image }}" alt="">
 							</div>
 							<div class="col s8 fixed"si>
-								<h1 class="bubble-username">{{ Auth::user()->name }}</h1>
-								<h2 class="bubble-email">{{ Auth::user()->email }}</h2>
+								<h1 class="bubble-username js-username">{{ Auth::user()->name }}</h1>
+								<h2 class="bubble-email js-email">{{ Auth::user()->email }}</h2>
 							</div>
 						</div>
 						<!-- sidebar menu-items -->
@@ -48,7 +48,7 @@
 
 					<!-- sidebar content -->
 					<section class="side-nav-content row">
-						<div id="profilesettings" class="col s12 no-pad tab-item">settings </div>
+						<div id="profilesettings" class="col s12 no-pad tab-item"><h2 class="side-header card">Settings</h2></div>
 						@include('sidebar.profile')
 						@include('sidebar.friends')
 						@include('sidebar.groups')
@@ -66,7 +66,7 @@
 						<nav class="nav-extended" ng-controller="NavController">
 							<div class="nav-content red darken-1">
 								<ul class="tabs tabs-transparent valign-wrapper">
-									<li class="tab col s4 conversation-tab"><a class="active" href="#chat-section"><i class="small material-icons  col s2 offset-s3">chatbubble</i><span class="col s2" > @{{ chatname }} </span></a></li>
+									<li class="tab col s4 conversation-tab"><a class="active" href="#chat-section"><i class="small material-icons  col s2 offset-s3">chatbubble</i><span class="col s2 truncate">@{{ chatname }} </span></a></li>
 									<li class="tab col s4 theme-tab"><a href="#themes"><i class="small material-icons  col s2 offset-s3">loyalty</i><span class="col s2">Theme</span></a></li>
 									<li class="tab col s4 settings-tab"><a href="#chat-settings"><i class="small material-icons  col s2 offset-s3">settings</i><span class="col s2">settings</span></a></li>
 								</ul>
@@ -84,6 +84,12 @@
 
 							<!-- tab3 setting -->
 							@include('content.chat-settings')
+
+							<!-- no chat selected -->
+							<div id="no-content" class="col s12 tab-item active" ng-if="!chatID"><i class="bubble-icon no-content v-align"><p>Click a friend or a group</p><p>to start a conversation</p></i></div>
+							
+							<!-- load messages -->
+							@include('components.preloader-messages')
 						</section>
 
 					</div>

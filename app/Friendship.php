@@ -35,6 +35,17 @@ class Friendship extends Model
         return $friends;
     }
 
+    protected function getListFriendrequest() {
+        $friends = DB::table('users')
+                    ->select('users.id', 'users.name', 'users.email')
+                    ->join('friendships', 'friendships.user_id', '=', 'users.id')
+                    ->where('friendships.friend_id', Auth::user()->id)
+                    ->orderBy('users.name', 'desc')
+                    ->get();
+
+        return $friends;
+    }
+
     protected function create($user , $friendRequested , $isConfirmed) {
         $friendship = Friendship::createFriendship($user , $friendRequested , $isConfirmed);
 

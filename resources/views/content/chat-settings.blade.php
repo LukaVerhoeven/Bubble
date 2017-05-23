@@ -2,22 +2,22 @@
 	<div class="top-gutter-double margin-div col s12">
 		<div class="settings-layout card">
 		<!-- Main options -->
-        	<div class="card-content col s12">
+        	<div class="card-content col s12 js-parent">
 		        <p ng-if="chatFunction === 'friendchat'" class="text-block-center">Nickname</p>
 		        <p ng-if="chatFunction === 'groupschat'" class="text-block-center">Groupsname</p>
-		        <div class="right solid-block" id="editChatName">
+		        <div class="right solid-block bubble-editName" id="editChatName">
 		          	<p class="text-block-center">@{{ chatname }}</p>
-		          	<a class="btn-floating btn red editChatNameButton v-align">
+		          	<a class="btn-floating btn red bubble-editButton v-align">
 			     	 	<i class="material-icons ">mode_edit</i>
 			    	</a>
 	          	</div>
-	          	<div class="right solid-block" id="editChatNameInput">
+	          	<div class="right solid-block bubble-editInput" id="editChatNameInput">
 		          	<input type="text" placeholder="@{{chatname}}" ng-model="newChatName" maxlength="20">
 		          	<div class="buttons">
-			          	<a class=" btn-floating btn editChatNameButton" ng-click="editchatname(newChatName)">
+			          	<a class=" btn-floating btn bubble-editButton" ng-click="editchatname(newChatName)">
 				     	 	<i class="material-icons">done</i>
 				    	</a>
-			          	<a class=" btn-floating btn editChatNameButton grey clear">
+			          	<a class=" btn-floating btn bubble-editButton grey clear">
 				     	 	<i class="material-icons">clear</i>
 				    	</a>
 		          	</div>

@@ -60,11 +60,19 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     }
 
     // ADD NEW FRIEND
-    $scope.addFriend = function(friendID,friendrequest) {
+    $scope.addFriend = function(friendID,friendrequest,index) {
         var newfriend = {
             newfriend: friendID
         };
         var url = API_URL + "addFriend";
+        if($scope.searchedfriends){
+            if($scope.searchedfriends[index].removeRequest){
+                newfriend.removeRequest = $scope.searchedfriends[index].removeRequest;
+                $scope.searchedfriends[index].removeRequest = null;
+            }else{
+                $scope.searchedfriends[index].removeRequest = 1;
+            }
+        }
         $http({
                 method: 'POST',
                 url: url,

@@ -18,6 +18,24 @@ app.controller('ProfileController', function($scope, $http, API_URL, $rootScope)
             var url = window.URL.createObjectURL(file)
             $('.profile-pic').attr('src', url);
     }
+
+    $scope.editUserName = function(){
+        $('.js-username').html($scope.user.newUserName);
+        $rootScope.adjustArrayFromObject($rootScope.groups, $rootScope.Authuserid, 'user_id', 'edit', $scope.user.newUserName, 'name', 0, 0);
+        console.log($rootScope.chatID);
+        if($rootScope.chatID){
+           $scope.user.chatid = $rootScope.chatID;
+        }
+        $rootScope.postRequest($scope.user ,'username', '');
+    }
+
+    $scope.editUserEmail = function(newEmail){
+        $('.js-email').html($scope.user.newUserEmail);
+        if($rootScope.chatID){
+           $scope.user.chatid = $rootScope.chatID;
+        }
+        $rootScope.postRequest($scope.user ,'email', '');
+    }    
 })
 
 // app.directive("ngFileSelect",function(){

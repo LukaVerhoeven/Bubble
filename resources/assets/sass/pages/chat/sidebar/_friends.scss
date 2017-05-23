@@ -3,11 +3,53 @@
 		height: 80%;
 		overflow:hidden;
 		overflow-y: scroll;
-		z-index: -20;
-		transition: height .8s ease-in-out;
+		z-index: 21;
+		position: relative;
 
-		&.minimized{
-			height: 0;
+		ul:first-of-type{
+			margin:0;
+		}
+	}
+
+	.friend-item{
+		height: 50px;
+		cursor: pointer;
+
+		&.active .friend-name{
+			color: map-get($colors, red);
+			padding-left: 2rem;
+
+			&:before{
+				opacity: 1;
+			}
+		}
+
+		.friend-name{
+			@include transition(padding-left .3s ease-in-out);
+			display: inline-block;
+			margin: 0;
+			line-height: 50px;
+			padding-left: $gutter;
+			@extend %first-capital;
+
+			&:before{
+				@include transition(opacity .1s ease-in-out .1s);
+				opacity: 0;
+				font-family: 'Bubble-icons' !important;
+				color: map-get($colors, red);
+				opacity: 0;
+				speak: none;
+				font-size: 20px;
+				margin-top: 15px;
+				left: .6rem;
+				position: absolute;
+				font-style: normal;
+				font-weight: normal;
+				font-variant: normal;
+				text-transform: none;
+				line-height: 1;
+				content: "\3d";
+			}
 		}
 	}
 
@@ -16,9 +58,10 @@
 		height: 12px;
 		border-radius: 20px;
 		float: right;
+		margin-right: $gutter*2;
 		
 		&.online{
-			background-color: green;
+			background-color: map-get($colors, light-green);
 		}
 
 		&.offline{
@@ -31,12 +74,14 @@
 		line-height: 1.5em;
 		text-align: center;
 		background-color: red;
+		margin-left: $gutter;
+		margin-top: 3px;
 		color: white;
-		width: 20px;
+		min-width: 20px;
+		padding: 0 4px;
 		height: 20px;
 		border-radius: 20px;
 	}
-
 
 	.request{
 		li{
@@ -100,17 +145,120 @@
 
 	.bottom{
 		position: absolute;
-		background-color: white;
+		width: 100%;
+		z-index: 20;
 		bottom: 0;
 		height: 13rem;
 		padding-top: 0;
 		overflow: hidden;
 		overflow-y: hidden;
-		transition: height .8s ease-in-out, top .8s ease-in-out, padding-top .8s ease-in-out;
+		height: 100%;
+		padding-top: 86vh;
+		@include transition(top .8s ease-in-out, padding-top .8s ease-in-out, z-index .8s ease-in-out);
 
 		&.full{
+			z-index: 50;
+			padding-top: 138px;
+
+			.search-new-friends{
+				margin-top: 10px;
+				height: 64px;
+
+				.close-search{
+					padding-right: 6px;
+				}
+			}
+
+			.collection{
+				opacity: 1;
+			}
+		}
+
+		.collection{
+			opacity:  0;
+			@include transition(opacity .8s ease-in-out);
+ 
+			.collection-item{
+				display: inline-block;
+				width: 100%;
+				float: left;
+			}
+
+			.name{
+				float: left;
+			}
+
+			a{
+				float: right;
+				padding: 0 0 0 $gutter;
+
+				&:hover{
+					background-color: transparent;
+				}
+
+				i{
+					margin: auto;
+				}
+			}
+		}
+
+		.search-new-friends{
+			margin-top: -80px;
+			height: 0;
+			@include transition(margin-top .4s ease-in-out .7s, height 0s ease-in-out .7s);
+
+			&.remove{
+				@include transition(margin-top .4s ease-in-out .2s, height .3s ease-in-out .2s);
+			}
+		}
+
+		.white{
 			height: 100%;
-			padding-top: 143px;
+		}
+		
+		.btn{
+			margin: 10px 0;
+		}
+		.add-friend{
+			@include transition(all .8s ease-in-out, line-height .4s);
+			padding: 0 35%;
+			text-align: left;
+
+			&.button-header{
+				color: black;
+				cursor: auto;
+				background-color: white;
+				
+				font-size: map-get($font, big);
+				font-weight: normal;
+				// box-shadow: none;
+				height: 4rem;
+			    line-height: 4rem;
+				padding: 0 $gutter;
+				margin: 0 -.75rem 10px -.75rem;
+
+				i{
+					opacity: 1;
+					cursor: pointer;
+					padding-right: 20px;
+					pointer-events: auto;
+					height: 100%;
+				}
+			}
+			
+			&.delayed-properties{
+				text-transform: none;
+			}
+
+			i{
+				opacity: 0;
+				pointer-events: none;
+				height: 0;
+				width: 0;
+				color: black;
+				float: right;
+				@include transition(all .3s ease-in-out);
+			}
 		}
 
 		.search-friends{
@@ -118,8 +266,9 @@
 			z-index: 0;
 		}
 
-		.search-new-friends{
-			margin-top: 10px;
+		.close-search{
+			font-size: 20px;
+			padding-right: 12px;
 		}
 	}
 }

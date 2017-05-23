@@ -30,7 +30,7 @@ const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 //    plugins: [
 //        new BrowserSyncPlugin({
 //            files: [
-//                'public/**/*.css',
+//                'public/css/*.css',
 //                // 'public/**/*.js',
 //                // 'resources/views/**/*',
 //            ]

@@ -1,6 +1,7 @@
 .scolling{
+
     &::-webkit-scrollbar{
-      width: 8px;
+      width: 8px !important;
     }
     &::-webkit-scrollbar-track {
       box-shadow: none;
@@ -9,9 +10,33 @@
     }
     &::-webkit-scrollbar-thumb {
       border-radius: 10px;
-      background-color: red;
       box-shadow: none;
       background-color: rgba(70, 70, 70, 0.51);
+    }
+
+    // override element in the scroll container ( webkit only )
+    @media screen and (-webkit-min-device-pixel-ratio:0) {  
+        & .online-state{
+          margin-right: 1rem !important;
+        }
+        & .buttons{
+          padding-right: .2rem;
+        }
+    }
+    // edge
+    @supports (-ms-ime-align:auto) {
+        & .online-state{
+            margin-right: $gutter*2 !important;
+        }
+        & .buttons{
+          padding-right: $gutter;
+        }
+    }
+}
+
+.hide-scrollbar{
+    &::-webkit-scrollbar{
+      width: 0px;
     }
 }
 

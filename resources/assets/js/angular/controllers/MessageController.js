@@ -1,6 +1,6 @@
 app.controller('MessageController', function($scope, $http, API_URL, $rootScope, Messages) {
-    $scope.message = {};
-    $scope.message.theme = '1';
+    $rootScope.message = {};
+    $rootScope.message.theme = '1';
     $rootScope.makeBroadcastConnection = false;
     $rootScope.messagesLoaded = 0;
 
@@ -12,8 +12,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
         $rootScope.messages.nextPage();
         $rootScope.themes = response.data.themes;
         $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1,'is_general', 'retreive',0,'id',0)[0];
-        $scope.message.theme = $rootScope.generalThemeID;
-        $scope.message.profileImage = response.data.profileImage;
+        $rootScope.message.theme = $rootScope.generalThemeID;
+        $rootScope.message.profileImage = response.data.profileImage;
         $scope.chatID = $rootScope.chatID;
         if ($rootScope.makeBroadcastConnection) {
             // If you are already in a chatroom. First leave this one. => than make a new broadcast connection.
@@ -23,7 +23,16 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
             $rootScope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);
         }
-        console.log($rootScope.themes ,$rootScope.messages.items);
+        // shortcuts
+        $rootScope.initShortcut();
+        // remove unread messages notifcation
+        $scope.readmessages = {};
+        $scope.readmessages.chatid = $rootScope.chatID;
+        $scope.readmessages.userid = $rootScope.Authuserid;
+        $rootScope.postRequest($scope.readmessages ,'readMessages', '');
+        
+        // remove loadscreen
+        $("#load-content").removeClass('active');
     };
 
     $rootScope.updateChat = function(chatid) {
@@ -34,24 +43,24 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     //SEND A MESSAGE
     $scope.sendMessage = function(keyEvent) {
         if (keyEvent.which === 13 || keyEvent === 13) {
-            $scope.message.chatid = $rootScope.chatID;
+            $rootScope.message.chatid = $rootScope.chatID;
             // force theme message
-            if($scope.message.filter){
-                $scope.message.theme = $scope.message.filter
+            if($rootScope.message.filter){
+                $rootScope.message.theme = $rootScope.message.filter
             }else{
-                $scope.message.theme = $rootScope.generalThemeID;
+                $rootScope.message.theme = $rootScope.generalThemeID;
             }
             var $textInput = $('#message-text');
             // if the text Input is not empty send the message
             if ($textInput.val() != "" && $rootScope.chatID) {
-                $scope.message.text = $textInput.val();
+                $rootScope.message.text = $textInput.val();
                 $textInput.val('');
                 var url = API_URL + "message";
 
                 $http({
                     method: 'POST',
                     url: url,
-                    data: $.param($scope.message),
+                    data: $.param($rootScope.message),
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
@@ -59,7 +68,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                     $rootScope.postRequest($scope.chatfriends ,'newMessage', '');
                     $scope.scrollDown();
                 }, $rootScope.errorCallback);
-                $scope.message.text = null;
+                $rootScope.message.text = null;
             }
         }
     };
@@ -111,6 +120,11 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                     $rootScope.adjustObjectElement($rootScope.messages.items ,e.userid, 'user_id', 'edit', e.profileImage, 'profile_image', 0);
                 });
             })
+            .listen('EditUsername', (e) => {
+                $scope.$apply(function() {
+                    $rootScope.adjustArrayFromObject($rootScope.groups, e.userid, 'user_id', 'edit',e.newUsername, 'name', 0, 0);
+                })
+            })
             .listen('ThemeEvent', (e) => {
                 $scope.$apply(function() {
                     if($rootScope.themes){
@@ -149,7 +163,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                             }
                             $rootScope.adjustObjectElement($rootScope.themes, e.data.themeid, 'id', 'edit', e.data.isActive, 'is_active', 0);
                             $rootScope.updateThemeUsage(); //update Theme usage
-                        }                                
+                        }
+                        $rootScope.initShortcut();
                     }
                 });
             });            
@@ -163,8 +178,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
         }, 1);
     };
 
-    $scope.messageColor = function(color) {
-        $scope.message.color = color;
+    $rootScope.messageColor = function(color) {
+        $rootScope.message.color = color;
         $scope.scrollDown();
     }
 

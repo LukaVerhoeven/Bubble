@@ -5,23 +5,38 @@
 		<div class="chat" scroll ng-class="{min:boolChangeClass}" id="scrollMessages">
 			<div lr-infinite-scroll="messages.nextPage()" infinite-scroll="messages.nextPage()" infinite-scroll-distance="2" infinite-scroll-container='".chat"' infinite-scroll-disabled="messages.busy">
 				<div class="message-wrapper"  ng-repeat="message in messages.items | filter:{theme_id: message.filter}:true | reverse">
-					<div ng-if="message.user_id != Authuserid">
-						<p>@{{ message.name }}</p>
-						<div class="message section card @{{message.color}}">
-							@{{ message.text }}
-						</div>
-						<div class="col s4 no-pad  img-overflow circle left">
+					<div ng-if="message.user_id != Authuserid" class="friend-message inline-block message-block">
+						<div class="col s4 no-pad  img-overflow circle left image">
 							<img class="friend-pic" ng-src="@{{ message.profile_image }}" alt="Bubble profile image" >{{-- error --}}
 						</div>
-					</div>
-					<div ng-if="message.user_id == Authuserid">
-						<p class="right-align">You</p>
-						<div class="message section card right-align @{{message.color}}">
-							@{{ message.text }}
+						<div class="left message-container">
+							<div class="block">
+								<p class="user-name">@{{ message.name }}</p>
+							</div>
+							<div class="inline-block text-container">
+								<i class="bubble-icon triangle left"><path class="path1"></path><path class="path2 @{{message.color}}-before"></path></i>
+								<div class="message section card left @{{message.color}}-border">
+									<p>@{{ message.text }}</p>
+								</div>
+							</div>							
 						</div>
-					<div class="col s4 no-pad  img-overflow circle center right">
-						<img class="profile-pic" src="{{ Auth::user()->profile_image }}" alt="Bubble profile image">
 					</div>
+					<div ng-if="message.user_id == Authuserid" class="auth-message inline-block message-block">
+					<!-- your image -->
+					<!-- 	<div class="col s4 no-pad  img-overflow circle center right image">
+						<img class="profile-pic" src="{{ Auth::user()->profile_image }}" alt="Bubble profile image">
+					</div> -->
+						<div class="right message-container">
+							<div class="block">
+								<p class="right-align user-name">You</p>
+							</div>
+							<div class="inline-block text-container">
+								<i class="bubble-icon triangle-you right"><path class="path1"></path><path class="path2 @{{message.color}}-before"></path></i>
+								<div class="message section card right-align right @{{message.color}}-border">
+									<p>@{{ message.text }}</p>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -37,11 +52,11 @@
 		<nav >
 	    <div class="nav-wrapper white">
 	      <form name="frmMessage" novalidate="">
-	        <div class="input-field @{{message.color}}">
-        	  <a class="insert-emo js-emoji-click"><i class="bubble-icon smiley "></i></a>
-	          <input class="js-message" type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)" autocomplete="off">
+	        <div class="input-field @{{message.color}}-border">
+        	  <a class="insert-emo js-emoji-click"><i class="bubble-icon smiley @{{message.color}}-text"></i></a>
+	          <input class="js-message" type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)" autocomplete="off" maxlength="2000">
 	          <label class="label-icon" for="message-text"></label>
-	          <i class="material-icons send" ng-click="sendMessage(13)">send</i>
+	          <i class="material-icons send @{{message.color}}-text" ng-click="sendMessage(13)">send</i>
 	        </div>
 	      </form>
 	    </div>
@@ -63,8 +78,8 @@
 	    			</div>
 				</li>
 				<li class="no-button-container" ng-if="chatID">
-					<input name="themeFilter" type="radio" id="themeFilter@{{key}}" ng-model="message.filter" required/>
-					<label for="themeFilter@{{key}}" class="no-button js-NIcon" ng-click="messageColor('')"></label>
+					<input name="themeFilter" type="radio" id="themeFilter" ng-model="message.filter" required/>
+					<label for="themeFilter" class="no-button js-NIcon" ng-click="messageColor('')"></label>
 					<div class="btn-floating waves-effect waves-light white">
 	     	 			<i class="material-icons black-text ">cancel</i>
 	    			</div>

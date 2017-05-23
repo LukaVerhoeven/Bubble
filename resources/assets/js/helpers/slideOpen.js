@@ -32,7 +32,6 @@ class SlideOpen {
         });
 
         $(document).on('click',this.$submitEdit, (event) => {
-            event.preventDefault();
             var parent = $(event.currentTarget).parents('.js-theme-card');
             var status = parent.find('.js-theme-status');
             var button = parent.find('.exit-theme').removeClass('exit-theme');

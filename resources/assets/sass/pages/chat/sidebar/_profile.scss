@@ -1,5 +1,5 @@
 $profile-size: 9rem;
-#profile{
+#bubble #profile{
 	.img-overflow{
 		margin-top: 4vw;
 		width: $profile-size;
@@ -23,5 +23,31 @@ $profile-size: 9rem;
 				opacity: 0.5;
 			}
 		}
+	}
+
+	.btn{
+		height: 40px;
+		padding: 0;
+		margin: 0;
+		display: inline-block;
+	}
+	.buttons{
+		margin: 0;
+	}
+	.solid-block{
+		height: 50px;
+
+		p{
+			margin: 0;
+			margin-top: -3px;
+		}
+	}
+	.bubble-editName{
+		width: 100%;
+	}
+	.bubble-editInput{
+		right: 0;
+		padding-left: $gutter;
+		width: 100%;
 	}
 }

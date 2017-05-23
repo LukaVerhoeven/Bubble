@@ -21,7 +21,7 @@
         </div>
         <div class="input-field col s12 new-theme-color">
 			<p class="inline-block col s1">Color</p>
-			<ul class="col s11">
+			<ul class="col s11 center-align">
 				@foreach (['red','orange','blue','purple','green','cyan'] as $color)
 				  	<li>
 				      <input name="@{{key}}color" type="radio" id="@{{key}}{{$color}}" ng-model="{{$model}}.color" value="{{$color}}" required/>
@@ -32,9 +32,9 @@
         </div>
         <div class="input-field col s12 new-theme-icon">
 			<p class="inline-block col s1">Icon</p>
-			<div class="col s11">
-				<div class="inline-block ">
-					@foreach (['school','work','star'] as $icon)
+			<div class="col s11 center-align">
+				<div class="inline-block">
+					@foreach (['school','work','star', 'favorite', 'extension' ,'euro_symbol', 'query_builder', 'shopping_cart', 'theaters', 'flight', 'toys', 'brightness_5', 'healing', 'music_note', 'flash_on', 'photo_camera', 'wb_cloudy', 'directions_car', 'local_bar','local_dining', 'hotel', 'local_grocery_store', 'local_shipping', 'beach_access', 'fitness_center', 'casino', 'child_friendly','free_breakfast', 'kitchen', 'ac_unit', 'cake', 'public', 'weekend', 'account_balance', 'pets', 'timeline'] as $icon)
 						<div class="btn-floating btn white inline-block js-parent-selector">
 							<input name="@{{key}}icon" type="radio" id="@{{key}}{{$icon}}" ng-model="{{$model}}.icon" value="{{$icon}}" required/>
 							<label for="@{{key}}{{$icon}}" class="no-button js-NIcon"></label>
@@ -50,13 +50,13 @@
         </div>
         <div class="input-field col s12 new-theme-shortcut">
 			<p class="inline-block col s1">Shortcut: </p>
-			<div class="col s10">
+			<div class="col s11 center-align">
 				@if($action === 'create')
-				     <div class="inline-block all-letters  @{{NewTheme.color}}" >
+				     <div class="inline-block all-letters  @{{NewTheme.color}} waves-effect waves-light" >
 	     	 	@else
-					<div class="inline-block all-letters @{{theme.color}} ">
+					<div class="inline-block all-letters @{{theme.color}} waves-effect waves-light">
 	     	 	@endif
-					@foreach (range('A', 'Z') as $char)
+					@foreach ($shortcuts as $char)
 					    <div class="inline-block new-shortcut">
 							<input name="@{{key}}schortcut" type="radio" id="@{{key}}ctrl-{{ $char }}" ng-model="{{$model}}.shortcut" value="{{ $char }}" required/>
 							<label for="@{{key}}ctrl-{{ $char }}" class="no-button"></label>
@@ -67,24 +67,12 @@
 				     	 	@endif
 				    	</div>
 					@endforeach
-					@foreach (range('0', '9') as $number)
-					    <div class="inline-block new-shortcut">
-							<input name="@{{key}}schortcut" type="radio" id="@{{key}}ctrl-{{ $number }}" ng-model="{{$model}}.shortcut" value="{{ $number }}" />
-							<label for="@{{key}}ctrl-{{ $number }}" class="no-button"></label>
-							@if($action === 'create')
-								<a class="waves-effect waves-light btn @{{NewTheme.color}} @{{NewTheme.color}}-border @{{NewTheme.color}}-text">{{ $number }}</a>
-							@else
-								<a class="waves-effect waves-light btn @{{theme.color}} @{{theme.color}}-border @{{theme.color}}-text">{{ $number }}</a>
-				     	 	@endif
-				    	</div>
-					@endforeach
 				</div>
 			</div>
         </div>
         <div class="col s12 center">
 
-        <input type="submit" class="submit-theme waves-effect waves-light btn red inline-block {{$submit}}" value="{{ $action }} theme">
-        
+        <input type="submit" class="submit-theme waves-effect waves-light btn red inline-block {{$submit}}" value="{{ $action }} theme">        
         	{{-- <a class="waves-effect waves-light btn red inline-block" ng-click="createNewTheme()">Create theme</a>     --}}
         </div>
 	</form>

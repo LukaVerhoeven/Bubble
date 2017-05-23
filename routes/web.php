@@ -16,6 +16,8 @@
 // });
 Route::get('/', 'ChatController@index');
 Route::get('/api/getChatRooms', 'ChatController@getChatRooms');
+Route::post('/api/username', 'ChatController@editUserName');
+Route::post('/api/email', 'ChatController@editUserEmail');
 
 // messages
 Route::get('/api/message/{id?}', 'MessageController@index');

@@ -27,5 +27,11 @@
 	.v-align{
 		@include vertical-align;
 	}
+	.no-animation{
+		@include transition(none);
+	}
+	.first-letter-capital{
+		@extend %first-capital;
+	}
 }
 

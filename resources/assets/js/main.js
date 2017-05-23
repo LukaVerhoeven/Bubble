@@ -5,11 +5,14 @@ import addFriend from './components/addFriend';
 import externalLink from './helpers/externalLink';
 import PreventDefault from './helpers/preventDefault';
 import SlideOpen from './helpers/slideOpen';
+import GiveActive from './helpers/giveActive';
 // import ParentSelector from './helpers/parentSelector';
 import chatSettings from './pages/chatSettings';
 import Conversation from './pages/Conversation';
 import Themes from './pages/themes';
+import ProfileSettings from './pages/profile-settings';
 // import pusher from './plugins/Pusher';
+// import Sugar from 'sugar';
 import angular from 'angular';
 import angularSanitize from 'angular-sanitize';
 // import ngInfiniteScroll from 'ng-infinite-scroll';
@@ -39,6 +42,7 @@ class App {
         //helpers
         this.externallink = new externalLink();
         this.preventdefault = new PreventDefault();
+        this.giveactive = new GiveActive();
         // this.autoscrolldownchat = new AutoScrollDownChat();
         this.slideopen = new SlideOpen();
         // this.parentselector = new ParentSelector();
@@ -46,6 +50,7 @@ class App {
         this.chatsettings = new chatSettings();
         this.conversation = new Conversation();
         this.themes = new Themes();
+        this.profilesettings = new ProfileSettings();
 
 
     }

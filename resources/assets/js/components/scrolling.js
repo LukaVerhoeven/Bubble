@@ -4,7 +4,6 @@ class Scrolling {
     }
 
     init() {
-        console.log('scroll');
         document.addEventListener('scroll', function(e){ 
             var target = $(e.target);
             if (target.is(':hover')) {

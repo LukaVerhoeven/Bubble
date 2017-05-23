@@ -92,10 +92,12 @@ class MessageController extends Controller
                             ->where('themes.is_deleted', 0)
                             ->join('keywords','keywords.theme_id','themes.id')->get();
                 foreach ($keywords as $key => $word) {
-                    if (strpos($text, $word->word) !== false) {
-                        $color = $word->color;
-                        $theme = $word->theme_id;
-                        break;
+                    if($word->word){
+                        if (strpos($text, $word->word) !== false) {
+                            $color = $word->color;
+                            $theme = $word->theme_id;
+                            break;
+                        }
                     }
                 }
                 $forceTheme = 0;

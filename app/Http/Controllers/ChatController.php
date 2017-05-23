@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Events\ProfileImage;
+use App\Events\EditUsername;
 use App\UsersInChat;
 use App\Friendship;
 use Auth;
@@ -29,9 +30,48 @@ class ChatController extends Controller
     public function index()
     {
         $emojis = Emoji::getEmojis();
-        return view('layouts.chat-layout', compact('emojis'));
+
+        $shortcuts = array_merge(range('A', 'Z'), range('0', '9'));
+        $disabled = array('W','N','T');
+        $shortcuts = array_diff($shortcuts, $disabled);
+        return view('layouts.chat-layout', compact('emojis', 'shortcuts'));
     }
 
+    public function editUserName(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'newUserName'    =>   'string',
+                'chatid'         =>   'integer',
+            ]);
+            $chatid = (int)$request->input('chatid');
+            $username = $request->input('newUserName');
+            $user = Auth::user();
+            $user->name = $username;
+            $user->save();
+            if($chatid){
+                broadcast(new EditUsername($username , $user->id, $chatid))->toOthers();
+            }
+            return "name edited";
+        } catch (Exception $e) {
+            
+        }
+    }    
+
+    public function editUserEmail(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'newUserEmail'    =>   'string',
+            ]);
+            $user = Auth::user();
+            $user->email = $request->input('newUserEmail');
+            $user->save();
+            return "email edited";
+        } catch (Exception $e) {
+            
+        }
+    }
     public function profileImage(Request $request)
     {   
         try {

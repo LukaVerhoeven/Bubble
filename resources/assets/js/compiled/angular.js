@@ -45,6 +45,16 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
       return newArray;
     }
 
+    $rootScope.containsObject = function (obj, list) {
+        var i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i] === obj) {
+                return i;
+            }
+        }
+        return false;
+    }
+
     // Filter an array on specific value. ex ([1,2], 1) => [1]
     $rootScope.filterArray = function (array, value) {
         var filteredArray = array.filter(checkvalue);
@@ -80,29 +90,56 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     $rootScope.adjustObjectElement = function(data, value, keyElement, action, editValue, editKey, CheckMultipleValues) {
         var retreiveData = [];
         var valueIsArray = value.constructor === Array;
+        var keyElementIsArray = keyElement.constructor === Array;
         data.forEach(function (obj, i) {
+            var retreiveCounter = 0;
             for (var key in obj) {
                 // search on specific key
                 if(keyElement){
-                    if(key === keyElement){
-                        if(CheckMultipleValues){
-                            // if value is an array check if one elements in the array = obj[key]
-                            if(valueIsArray){
-                                value.forEach( function(element, index) {
-                                    if(obj[key] == element){
+                    if(CheckMultipleValues){
+                        // if value is an array check if one elements in the array = obj[key]
+                        if(!keyElementIsArray){
+                            value.forEach( function(element, index) {
+                                if(obj[key] == value[index]){
+                                    // remove
+                                    if(action === 'remove'){
+                                        retreiveData.push(element); 
+                                        // retreiveData = data.splice(i,1);
+                                    }
+                                    // edit
+                                    if(action === 'edit'){
+                                        obj[editKey] = editValue;
+                                        $rootScope.IsEdited = true;
+                                    }
+                                }
+                            });
+                        }else if(valueIsArray){
+                            keyElement.forEach( function(element, index) {
+                                if(key == element){
+                                    if(obj[key] == value[index]){
                                         // remove
                                         if(action === 'remove'){
-                                            data.splice(i,1);
+                                            retreiveData.push(element); 
+                                            // retreiveData = data.splice(i,1);
                                         }
                                         // edit
                                         if(action === 'edit'){
                                             obj[editKey] = editValue;
                                             $rootScope.IsEdited = true;
                                         }
+                                        if(action === 'retreive'){
+                                            retreiveCounter++;
+                                        }
                                     }
-                                });
+                                }
+                            });
+                            if(retreiveCounter == value.length && action === 'retreive'){
+                                retreiveData.push(obj);
                             }
-                        }else{
+                        }
+                    }
+                    if(key === keyElement){
+                        if(!CheckMultipleValues){
                             if(valueIsArray){ // this does not work with an array of objects because : x{data:1} != x{data:1}
                                 if(obj[key].toString() == value.toString()){
                                     // remove
@@ -139,9 +176,11 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         }
                         // Retreive data
                         if(action === 'retreive'){
-                            if(value){
+                            // console.log('key', key, 'value', obj[key], 'myval', value);
+                            // console.log(obj[key] == value)
+                           if(value){
                                 if(obj[key] == value){
-                                    retreiveData.push(obj[editKey]);    
+                                    retreiveData.push(obj[editKey]); 
                                 }
                             }else{
                                 retreiveData.push(obj[key]);
@@ -169,6 +208,17 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
             data.splice(0,data.length);
             data.push.apply(data, retreiveData);
         }
+        // Return Retreived data
+        if(action === 'remove' && valueIsArray && CheckMultipleValues){
+            var length = retreiveData.length
+            for (var i = 0; i < length; i++) {
+                var userid = retreiveData[i];
+                var index =data.map(x => x[keyElement]).indexOf(retreiveData[i])
+                if(index !== -1){
+                    data.splice(index ,1);
+                }
+            }
+        }        
     }
 
     // REMOVE AN ELEMENT FROM AN OBJECT by value and return new 
@@ -181,6 +231,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     // REMOVE AN ELEMENT FROM AN OBJECT by value in Array
     $rootScope.adjustArrayFromObject = function(data, value, keyElement, action, editValue, editKey, MultipleValues, CheckMultipleValues) {
         var doAdjust, arrayFound = false;
+        var editElements = [];
         var prevI = 0;
         var elementValue, keyvalue, array, prevI;
         data.forEach(function (obj, i) {
@@ -202,12 +253,12 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         doAdjust = true;
                         elementValue = value[1];
                         keyvalue = keyElement[1];
-
                     }
                 }else{
                 // otherwise adjust the array of every object (if the conditions are right)
                     if(typeof obj[key] === 'object' || obj[key].constructor === Array){
-                        doAdjust, arrayFound = true;
+                        arrayFound = true;
+                        doAdjust = true;
                         elementValue = value;
                         keyvalue = keyElement;
                         array = $rootScope.ObjToArray(obj[key]);
@@ -222,12 +273,12 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         if(deleteParentObj){
                             var isSameObj = $rootScope.adjustElementNewArray(array , elementValue , keyvalue, action, editValue, editKey, CheckMultipleValues);
                             if(array.length !== isSameObj.length){
-                                data.splice(i,1);
+                                editElements.push(obj);
                             }
                         }else{
                             $rootScope.adjustObjectElement(array , elementValue , keyvalue, action, editValue, editKey, CheckMultipleValues);
                             // update data
-                            $rootScope.adjustObjectElement(data ,value[0] , keyElement[0], 'edit', array, editKey,0);
+                            $rootScope.adjustObjectElement(data ,value[0] , keyElement[0], 'edit', array, editKey,0,0,0);
                         }
                     }
                     if(action === 'edit'){
@@ -240,17 +291,139 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         var prop = keyvalue;
                         obj[prop] = newArray;
                     }
+                    if(action === 'retreive'){
+                        var foundObj = $rootScope.adjustElementNewArray(array ,[elementValue[0], elementValue[1] ], [keyvalue[0], keyvalue[1]], 'retreive', editValue, editKey,1);
+                        if(foundObj[0]){
+                            editElements.push(obj);
+                        }
+                    }
                 }
             }
         });
+        if(editElements.length>0 && action === 'remove'){
+            editElements.forEach( function(element, index) {
+                index = $rootScope.containsObject(element, data);
+                data.splice(index,1);
+            });
+        }
+        if(editElements.length>0 && action === 'retreive'){
+            data.splice(0,data.length);
+            data.push.apply(data, editElements);  
+        }
     }
 
     // REMOVE AN ELEMENT FROM AN OBJECT by value in Array and return new 
     $rootScope.adjustArrayElementNewArray = function(data, value, keyElement, action, editValue, editKey, MultipleValues, CheckMultipleValues) {
         var newArray = data.slice(0, data.lenght); // copy the array into a new variable
-        $rootScope.adjustArrayFromObject(newArray, value, keyElement, action, editKey, MultipleValues, CheckMultipleValues);
+        $rootScope.adjustArrayFromObject(newArray, value, keyElement, action, editValue, editKey, MultipleValues, CheckMultipleValues);
         return newArray ;
     }
+
+    // $rootScope.objectInArray = {};
+    // $rootScope.objectInArray.remove = function(object){
+    //     console.log(object);
+    //     var retreiveData = [];
+    //     if(object.data.constructor !== Array){
+    //           var array = [object.data];
+    //           object.data = array;
+    //     }
+    //     // console.log('remove-function', object.checkvalue , object.keyvalue ,object.data)
+    //     if(typeof object.checkvalue === 'object' || object.checkvalue.constructor === Array){
+    //         if(typeof object.keyvalue === 'object' || object.keyvalue.constructor === Array){
+    //             if(object.keyvalue.length === object.checkvalue.length){
+    //                 // foreach object in the dataArray
+    //                 var datalength = object.data.length;
+    //                 for (var arrayIndex = 0; arrayIndex < datalength; arrayIndex++) {
+    //                     // check how many property are passed => so only if they got al the properties is will return true
+    //                     // this is for deleting the object if it contains the mutiple values (object.checkvalue)
+    //                     obj = object.data[arrayIndex]
+    //                     var length = object.keyvalue.length;
+    //                     var amountCorrect = 0;
+    //                     // foreach property in the object
+    //                     for (var prop in obj) {
+    //                         // console.log(prop);
+    //                         object.keyvalue.forEach( function(keyvalue, keyIndex) {
+    //                             // console.log(prop, obj[prop],  keyvalue, prop === keyvalue,object.checkvalue[keyIndex],  obj[prop] === object.checkvalue[keyIndex])
+    //                             // find the right propert of the obj
+    //                             if(prop === keyvalue){
+    //                                 if(obj[prop] === object.checkvalue[keyIndex]){
+    //                                     amountCorrect++;
+    //                                 }
+    //                             }
+    //                          });
+    //                     };
+    //                     if(amountCorrect !== length){
+    //                         editData.push(obj)
+    //                     }
+    //                 }
+    //             }else{
+    //                 return "keyvalue and checkvalue have a diffrent length";
+    //                 console.log("keyvalue and checkvalue have a diffrent length");
+    //             }
+    //         }else{
+    //             return "checkvalue and keyvalue need both to be an array";
+    //             console.log("checkvalue and keyvalue need both to be an array");
+    //         }
+    //     }else if(typeof object.keyvalue === 'object' || object.keyvalue.constructor === Array){
+    //         return "checkvalue and keyvalue need both to be an array";
+    //         console.log("checkvalue and keyvalue need both to be an array");
+    //     }else{
+    //         // not an array of object
+    //     }
+
+    //     //reversed remove => if obj has all checkvalues => don't remove
+    //     var length = retreiveData.length
+    //     for (var i = 0; i < length; i++) {
+    //         var userid = retreiveData[i];
+    //         var index =data.map(x => x.retreiveData[i].key).indexOf(retreiveData[i].val)
+    //         if(index !== -1){
+    //             data.splice(index ,1);
+    //         }
+    //     }
+    // }
+
+    // $rootScope.objectInArray.removeInArray = function(object){
+    //     // object.data
+    //     var length = object.data.length;
+    //     console.log('lenghh', length);
+    //     for (var i = 0; i < length; i++) {
+    //         var obj = object.data[i];
+    //         for (var prop in obj) {
+    //             // console.log(prop, obj);
+    //             // console.log(object.arrayKey, prop === object.arrayKey ,obj[prop].constructor === Array);
+    //             if(prop === object.arrayKey && obj[prop].constructor === Array){
+    //                 if(object.data.constructor !== Array){
+    //                     var array = [object.data];
+    //                     object.data = array;
+    //                 }
+    //                 // new object to compare with the orignal
+    //                 var newObject = {};
+    //                 newObject.data = object.data.slice(0, object.data.lenght); // copy array
+    //                 newObject.keyvalue = object.keyvalue;
+    //                 newObject.checkvalue = object.checkvalue;
+    //                 // remove elements from the array
+    //                 $rootScope.objectInArray.remove(newObject);
+    //                 // if less elements are in the arrayKey => delete this object
+    //                 if(newObject.data.length !== object.data[i][object.arrayKey].length){
+    //                     object.data.splice(i ,1);
+    //                 }
+    //             }else if (prop === object.arrayKey) {
+    //                 return "the value for arrayKey is not an array";
+    //                 console.log("the value for arrayKey is not an array");
+    //             }
+    //         };
+    //     }
+    // }
+
+    // $rootScope.objectInArray.removeInArrayNew = function(object){
+    //     var newObject = {};
+    //     newObject.data = object.data.slice(0, object.data.lenght); // copy array
+    //     newObject.keyvalue = object.keyvalue;
+    //     newObject.checkvalue = object.checkvalue;
+    //     newObject.arrayKey = object.arrayKey;
+    //     $rootScope.objectInArray.removeInArray(newObject);
+    //     return newObject.data;
+    // }
 
     // CONVERT OBJECT TO AN ARRAY
     $rootScope.ObjToArray = function(obj) {
@@ -273,6 +446,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
         // Get messages and enter chatBroadcast channel
         $(".conversation-tab a")[0].click();
+        $("#load-content").addClass('active');
         if(chatID != $rootScope.chatID){
             $rootScope.makeBroadcastConnection = true;
             $rootScope.updateChat(chatID);
@@ -292,11 +466,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         }else{
             $rootScope.friendlist[index].unread_messages = 0;
         }
-        // retreive messages per paginate
-        $scope.readmessages = {};
-        $scope.readmessages.chatid = $rootScope.chatID;
-        $scope.readmessages.userid = $rootScope.Authuserid;
-        $rootScope.postRequest($scope.readmessages ,'readMessages', '');
     }
 
     $rootScope.resetChat = function() {
@@ -308,7 +477,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.chatFunction  = null;      
         $rootScope.groupFriends  = null;
         $rootScope.isChatAdmin   = null;
-        $rootScope.messages.items      = null;
+        $rootScope.messages.items = null;
     }
 
     // REMOVE LOADING SCREEN WHEN ANGULAR IS LOADED
@@ -428,8 +597,10 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
             admin : 0
         };
         $rootScope.postRequest(data ,'addFriendToGroup', '');
-        $rootScope.groupFriends.push(data);
-        $rootScope.adjustObjectElement($rootScope.FriendsNotInGroup, friendID, 'userid', 'remove', 0, 0, 0, 0);
+        if($rootScope.FriendsNotInGroup){
+            $rootScope.groupFriends.push(data);
+            $rootScope.adjustObjectElement($rootScope.FriendsNotInGroup, friendID, 'userid', 'remove', 0, 0, 0, 0);
+        }
         $rootScope.adjustArrayFromObject($rootScope.groups, [chatID, data], ['chat_id', 'friends'], 'update', 0, 0,1,0);
     }
 
@@ -440,6 +611,28 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
             friends     : $rootScope.groupFriends
         };
         $rootScope.removeGroup();
+        $rootScope.postRequest(data ,'decline', '');
+        $scope.Close();
+    }
+
+    // REVOKE FRIEND TO GROUP INVITE
+    $rootScope.revokeInvite = function (friends, chatid){
+        var data = {
+            chatid      : chatid,
+            userid      : $rootScope.toDeleteUserId,
+            friends     : friends
+        };
+        $rootScope.postRequest(data ,'decline', '');
+        $scope.Close();
+    }
+
+    // REVOKE FRIEND TO GROUP INVITE
+    $rootScope.revokeInvitefromGroup = function (userid){
+        var data = {
+            chatid      : $rootScope.chatID,
+            userid      : userid,
+            friends     : $rootScope.groupFriends
+        };
         $rootScope.postRequest(data ,'decline', '');
         $scope.Close();
     }
@@ -540,11 +733,19 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     }
 
     // ADD NEW FRIEND
-    $scope.addFriend = function(friendID,friendrequest) {
+    $scope.addFriend = function(friendID,friendrequest,index) {
         var newfriend = {
             newfriend: friendID
         };
         var url = API_URL + "addFriend";
+        if($scope.searchedfriends){
+            if($scope.searchedfriends[index].removeRequest){
+                newfriend.removeRequest = $scope.searchedfriends[index].removeRequest;
+                $scope.searchedfriends[index].removeRequest = null;
+            }else{
+                $scope.searchedfriends[index].removeRequest = 1;
+            }
+        }
         $http({
                 method: 'POST',
                 url: url,
@@ -759,8 +960,8 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
       }
 })
 app.controller('MessageController', function($scope, $http, API_URL, $rootScope, Messages) {
-    $scope.message = {};
-    $scope.message.theme = '1';
+    $rootScope.message = {};
+    $rootScope.message.theme = '1';
     $rootScope.makeBroadcastConnection = false;
     $rootScope.messagesLoaded = 0;
 
@@ -772,8 +973,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
         $rootScope.messages.nextPage();
         $rootScope.themes = response.data.themes;
         $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1,'is_general', 'retreive',0,'id',0)[0];
-        $scope.message.theme = $rootScope.generalThemeID;
-        $scope.message.profileImage = response.data.profileImage;
+        $rootScope.message.theme = $rootScope.generalThemeID;
+        $rootScope.message.profileImage = response.data.profileImage;
         $scope.chatID = $rootScope.chatID;
         if ($rootScope.makeBroadcastConnection) {
             // If you are already in a chatroom. First leave this one. => than make a new broadcast connection.
@@ -783,7 +984,16 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
             $rootScope.makeBroadcastConnection = false;
             $scope.broadcast($scope.chatID);
         }
-        console.log($rootScope.themes ,$rootScope.messages.items);
+        // shortcuts
+        $rootScope.initShortcut();
+        // remove unread messages notifcation
+        $scope.readmessages = {};
+        $scope.readmessages.chatid = $rootScope.chatID;
+        $scope.readmessages.userid = $rootScope.Authuserid;
+        $rootScope.postRequest($scope.readmessages ,'readMessages', '');
+        
+        // remove loadscreen
+        $("#load-content").removeClass('active');
     };
 
     $rootScope.updateChat = function(chatid) {
@@ -794,24 +1004,24 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     //SEND A MESSAGE
     $scope.sendMessage = function(keyEvent) {
         if (keyEvent.which === 13 || keyEvent === 13) {
-            $scope.message.chatid = $rootScope.chatID;
+            $rootScope.message.chatid = $rootScope.chatID;
             // force theme message
-            if($scope.message.filter){
-                $scope.message.theme = $scope.message.filter
+            if($rootScope.message.filter){
+                $rootScope.message.theme = $rootScope.message.filter
             }else{
-                $scope.message.theme = $rootScope.generalThemeID;
+                $rootScope.message.theme = $rootScope.generalThemeID;
             }
             var $textInput = $('#message-text');
             // if the text Input is not empty send the message
             if ($textInput.val() != "" && $rootScope.chatID) {
-                $scope.message.text = $textInput.val();
+                $rootScope.message.text = $textInput.val();
                 $textInput.val('');
                 var url = API_URL + "message";
 
                 $http({
                     method: 'POST',
                     url: url,
-                    data: $.param($scope.message),
+                    data: $.param($rootScope.message),
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
@@ -819,7 +1029,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                     $rootScope.postRequest($scope.chatfriends ,'newMessage', '');
                     $scope.scrollDown();
                 }, $rootScope.errorCallback);
-                $scope.message.text = null;
+                $rootScope.message.text = null;
             }
         }
     };
@@ -871,6 +1081,11 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                     $rootScope.adjustObjectElement($rootScope.messages.items ,e.userid, 'user_id', 'edit', e.profileImage, 'profile_image', 0);
                 });
             })
+            .listen('EditUsername', (e) => {
+                $scope.$apply(function() {
+                    $rootScope.adjustArrayFromObject($rootScope.groups, e.userid, 'user_id', 'edit',e.newUsername, 'name', 0, 0);
+                })
+            })
             .listen('ThemeEvent', (e) => {
                 $scope.$apply(function() {
                     if($rootScope.themes){
@@ -909,7 +1124,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                             }
                             $rootScope.adjustObjectElement($rootScope.themes, e.data.themeid, 'id', 'edit', e.data.isActive, 'is_active', 0);
                             $rootScope.updateThemeUsage(); //update Theme usage
-                        }                                
+                        }
+                        $rootScope.initShortcut();
                     }
                 });
             });            
@@ -923,8 +1139,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
         }, 1);
     };
 
-    $scope.messageColor = function(color) {
-        $scope.message.color = color;
+    $rootScope.messageColor = function(color) {
+        $rootScope.message.color = color;
         $scope.scrollDown();
     }
 
@@ -994,7 +1210,13 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
     // ADD FRIEND TO NEW GROUP (Send to alert)
     $scope.addFriendToGroup = function() {
         // get the groups were you'r friend isn't already in
+        console.log($rootScope.groups, $rootScope.friendID);
         $rootScope.groupsWithoutFriend = $rootScope.adjustArrayElementNewArray($rootScope.groups, $rootScope.friendID, 'user_id', 'remove',1,0,0,0);
+        // TODO deze retreive is  slecht geschrven
+        $rootScope.groupsNotConfirmed = $rootScope.adjustArrayElementNewArray($rootScope.groups, [$rootScope.friendID, 0], ['user_id', 'confirmed'], 'retreive',0,0,0,1);
+        $rootScope.toDeleteUserId = $rootScope.friendID;
+
+        console.log($rootScope.groupsWithoutFriend,$rootScope.groupsNotConfirmed);
         // send data to alert
         $('#Alerts').addClass('open');
         $('#addFriendToGroupAlert').addClass('open');
@@ -1130,6 +1352,24 @@ app.controller('ProfileController', function($scope, $http, API_URL, $rootScope)
             var url = window.URL.createObjectURL(file)
             $('.profile-pic').attr('src', url);
     }
+
+    $scope.editUserName = function(){
+        $('.js-username').html($scope.user.newUserName);
+        $rootScope.adjustArrayFromObject($rootScope.groups, $rootScope.Authuserid, 'user_id', 'edit', $scope.user.newUserName, 'name', 0, 0);
+        console.log($rootScope.chatID);
+        if($rootScope.chatID){
+           $scope.user.chatid = $rootScope.chatID;
+        }
+        $rootScope.postRequest($scope.user ,'username', '');
+    }
+
+    $scope.editUserEmail = function(newEmail){
+        $('.js-email').html($scope.user.newUserEmail);
+        if($rootScope.chatID){
+           $scope.user.chatid = $rootScope.chatID;
+        }
+        $rootScope.postRequest($scope.user ,'email', '');
+    }    
 })
 
 // app.directive("ngFileSelect",function(){
@@ -1153,12 +1393,15 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 		if($scope.NewTheme.chatid){
 			$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
 			$scope.resetForm($scope.NewTheme);
+			$scope.NewTheme = {color :"red"};
+			$rootScope.initShortcut();
 		}
 	}
 
 	$scope.editTheme = function(theme){
 		theme.generalID = $rootScope.generalThemeID;
 		$rootScope.postRequest(theme ,'updateTheme', '');
+		$rootScope.initShortcut();
 	}
 
 
@@ -1242,6 +1485,46 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 			}
 		}
 
+	}
+
+	$rootScope.initShortcut = function (){
+		$scope.shortcuts = [];
+		var shortcuts = $rootScope.adjustElementNewArray($rootScope.themes , 0,'shortcut', 'retreive',0,0,0);
+		$rootScope.themes.forEach( function(element, index) {
+			if(element.is_general !== 1 && element.is_active === 1 && element.is_deleted === 0){
+				if(element.shortcut){
+				    var code = element.shortcut.charCodeAt(0);
+				    var msg = "The Key Code for the \""+element.shortcut+"\" character is "+code+".";
+				    $scope.shortcut = {};
+				    $scope.shortcut.code = code;
+				    $scope.shortcut.themeid = element.id;
+				    $scope.shortcut.color = element.color;
+				    $scope.shortcuts.push($scope.shortcut);
+				}
+			}
+		});
+		$scope.useShortcut($scope.shortcuts);
+	}
+
+	$scope.useShortcut = function (shortcuts){
+		$(document).keydown(function(evt){
+			shortcuts.forEach( function(element, index) {
+	    		if (evt.keyCode== element.code && (evt.ctrlKey)){
+	   				evt.preventDefault();
+	   				$scope.$apply(function() {
+		    			$rootScope.message.filter = element.themeid;
+		    			$rootScope.messageColor(element.color);
+	   				});
+	    		}
+			});
+			if (evt.keyCode== 27){
+   				evt.preventDefault();
+   				$scope.$apply(function() {
+	    			$rootScope.message.filter = undefined;
+	    			$rootScope.messageColor('');
+   				});
+    		}
+		});
 	}
 
 	// TODO maak loading screen ( i am creating your theme)

@@ -35,8 +35,10 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
             admin : 0
         };
         $rootScope.postRequest(data ,'addFriendToGroup', '');
-        $rootScope.groupFriends.push(data);
-        $rootScope.adjustObjectElement($rootScope.FriendsNotInGroup, friendID, 'userid', 'remove', 0, 0, 0, 0);
+        if($rootScope.FriendsNotInGroup){
+            $rootScope.groupFriends.push(data);
+            $rootScope.adjustObjectElement($rootScope.FriendsNotInGroup, friendID, 'userid', 'remove', 0, 0, 0, 0);
+        }
         $rootScope.adjustArrayFromObject($rootScope.groups, [chatID, data], ['chat_id', 'friends'], 'update', 0, 0,1,0);
     }
 
@@ -47,6 +49,28 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
             friends     : $rootScope.groupFriends
         };
         $rootScope.removeGroup();
+        $rootScope.postRequest(data ,'decline', '');
+        $scope.Close();
+    }
+
+    // REVOKE FRIEND TO GROUP INVITE
+    $rootScope.revokeInvite = function (friends, chatid){
+        var data = {
+            chatid      : chatid,
+            userid      : $rootScope.toDeleteUserId,
+            friends     : friends
+        };
+        $rootScope.postRequest(data ,'decline', '');
+        $scope.Close();
+    }
+
+    // REVOKE FRIEND TO GROUP INVITE
+    $rootScope.revokeInvitefromGroup = function (userid){
+        var data = {
+            chatid      : $rootScope.chatID,
+            userid      : userid,
+            friends     : $rootScope.groupFriends
+        };
         $rootScope.postRequest(data ,'decline', '');
         $scope.Close();
     }

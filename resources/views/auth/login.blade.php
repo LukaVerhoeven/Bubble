@@ -102,14 +102,13 @@
                                     {{ csrf_field() }}
 
                                     <div class="input-field col s12{{ $errors->has('email') ? ' has-error' : '' }}">
-
-                                            <input id="email" type="email" class="validate" name="email" value="{{ old('email') }}" required autofocus>
-                                            <label for="email">E-Mail Address</label>
-                                            @if ($errors->has('email'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->getBag('login')->first('email') }}</strong>
-                                                </span>
-                                            @endif
+                                        <input id="email" type="email" class="validate" name="email" value="{{ old('email') }}" required autofocus>
+                                        <label for="email">E-Mail Address</label>
+                                        @if ($errors->has('email'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->getBag('login')->first('email') }}</strong>
+                                            </span>
+                                        @endif
                                     </div>
 
                                     <div class="input-field col s12{{ $errors->has('password') ? ' has-error' : '' }}">
@@ -160,8 +159,8 @@
                                     </div>
 
                                     <div class="input-field col s12{{ $errors->has('email') ? ' has-error' : '' }}">
-                                        <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-                                        <label for="email" data-error="this is not a valid e-mail" data-success="valid e-mail">E-Mail Address</label>
+                                        <input id="register-email" type="email" class="validate" name="email" value="{{ old('email') }}" required>
+                                        <label for="register-email" data-error="this is not a valid e-mail" data-success="valid e-mail">E-Mail Address</label>
                                         @if ($errors->has('email'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('email') }}</strong>
@@ -170,25 +169,18 @@
                                     </div>
 
                                     <div class="input-field col s12{{ $errors->has('password') ? ' has-error' : '' }}">
-                                        <label for="password" class="col-md-4 control-label">Password</label>
-
-                                        <div class="col-md-6">
-                                            <input id="password" type="password" class="form-control" name="password" required>
-
-                                            @if ($errors->has('password'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->first('password') }}</strong>
-                                                </span>
-                                            @endif
-                                        </div>
+                                        <input pattern=".{0}|.{6,}" id="register-password" type="password" class="validate" name="password" required>
+                                        <label for="register-password" data-error="password needs to minimum 6 characters" data-success="Good job! almost done">Password</label>
+                                        @if ($errors->has('password'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('password') }}</strong>
+                                            </span>
+                                        @endif
                                     </div>
 
                                     <div class="input-field col s12">
-                                        <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-
-                                        <div class="col-md-6">
-                                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-                                        </div>
+                                        <input id="password-confirm" type="password" class="validate" name="password_confirmation" required>
+                                        <label for="password-confirm" >Confirm Password</label>
                                     </div>
 
                                     <div class="input-field col s12">
@@ -211,8 +203,5 @@
     <!-- {{-- <script src="/js/app.js"></script> --}} -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
     <script src="/js/materialize.js"></script>
-             <script id="__bs_script__">//<![CDATA[
-     document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.18.11'><\/script>".replace("HOST", location.hostname));
- //]]></script>
 </body>
 </html>

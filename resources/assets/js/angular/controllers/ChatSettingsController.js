@@ -2,7 +2,13 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
     // ADD FRIEND TO NEW GROUP (Send to alert)
     $scope.addFriendToGroup = function() {
         // get the groups were you'r friend isn't already in
+        console.log($rootScope.groups, $rootScope.friendID);
         $rootScope.groupsWithoutFriend = $rootScope.adjustArrayElementNewArray($rootScope.groups, $rootScope.friendID, 'user_id', 'remove',1,0,0,0);
+        // TODO deze retreive is  slecht geschrven
+        $rootScope.groupsNotConfirmed = $rootScope.adjustArrayElementNewArray($rootScope.groups, [$rootScope.friendID, 0], ['user_id', 'confirmed'], 'retreive',0,0,0,1);
+        $rootScope.toDeleteUserId = $rootScope.friendID;
+
+        console.log($rootScope.groupsWithoutFriend,$rootScope.groupsNotConfirmed);
         // send data to alert
         $('#Alerts').addClass('open');
         $('#addFriendToGroupAlert').addClass('open');

@@ -28,6 +28,48 @@ html,body{
 					height: 100%;
 					padding-top: $content-nav-height;
 				}
+
+				#no-content.active{
+					background: white;
+					position: absolute;
+					z-index: 6;
+					text-align: center;
+
+					// icon -> No content
+					.bubble-icon{
+						color: #ececec;
+						font-size: 90px;
+
+						p{
+							position: absolute;
+							font-family: roboto;
+							top: 0;
+							font-size: 13px;
+							font-weight: bold;
+							color: #b7b7b7;
+							margin-left: 11px;
+							margin-top: 17px;
+
+							&:last-child{
+								margin-top: 57px;
+								margin-left: 63px;
+							}
+						}
+					}
+				}
+
+				#load-content.active{
+					z-index: 7;
+					background: white;
+					text-align: center;
+					width: 100%;
+					height: 100%;
+					position: absolute;
+
+					.message-loader{
+						height: 100%;
+					}
+				}
 			}
 		}
 	}

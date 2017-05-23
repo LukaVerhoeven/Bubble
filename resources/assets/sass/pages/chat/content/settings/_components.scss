@@ -18,65 +18,65 @@
 		line-height: 50px;
 	}
 
-	#editChatNameInput{
-		width: 300px;
-		position: absolute;
-		right: 24px;
-		opacity: 0;
-		&{
-			@include transition(all .5s ease-out);
-		}
+	// #editChatNameInput{
+	// 	width: 300px;
+	// 	position: absolute;
+	// 	right: 24px;
+	// 	opacity: 0;
+	// 	&{
+	// 		@include transition(all .5s ease-out);
+	// 	}
 
-		&.edit{
-			opacity: 1;
-			a:last-child i{
-				@include transform(rotate(90deg));
-			}
-		}
+	// 	&.edit{
+	// 		opacity: 1;
+	// 		a:last-child i{
+	// 			@include transform(rotate(90deg));
+	// 		}
+	// 	}
 
-		i{
-			@include transition(all .3s ease-out);
-		}
+	// 	i{
+	// 		@include transition(all .3s ease-out);
+	// 	}
 
-		.buttons{
-			display: inline-block;
-			margin-top: 5px;
-		}
+	// 	.buttons{
+	// 		display: inline-block;
+	// 		margin-top: 5px;
+	// 	}
 
-		input{
-			width: 70%;
-		}
-	}
+	// 	input{
+	// 		width: 70%;
+	// 	}
+	// }
 
-	#editChatName{
-		opacity: 1;
-		&,p {
-			@include transition(all .5s ease-out);
-		}
-		&.edit{
-			opacity: 0;
+	// #editChatName{
+	// 	opacity: 1;
+	// 	&,p {
+	// 		@include transition(all .5s ease-out);
+	// 	}
+	// 	&.edit{
+	// 		opacity: 0;
 
-			p{
-				margin-left: -257px;
-			}
-			i{
-				font-size: 10px;
-				@include transform(rotate(90deg));
-			}
-		}
+	// 		p{
+	// 			margin-left: -257px;
+	// 		}
+	// 		i{
+	// 			font-size: 10px;
+	// 			@include transform(rotate(90deg));
+	// 		}
+	// 	}
 
-		i{
-			@include transition(all .3s ease-out);
-		}
+	// 	i{
+	// 		@include transition(all .3s ease-out);
+	// 	}
 
-		p{
-			margin-right: $gutter;
-		}
+	// 	p{
+	// 		margin-right: $gutter;
+	// 	}
 
-		a{
-			margin-right: 3px;
-		}
-	}
+	// 	a{
+	// 		margin-right: 3px;
+	// 	}
+	// }
 
 	// member & themes
 	.header 

@@ -7,12 +7,15 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 		if($scope.NewTheme.chatid){
 			$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
 			$scope.resetForm($scope.NewTheme);
+			$scope.NewTheme = {color :"red"};
+			$rootScope.initShortcut();
 		}
 	}
 
 	$scope.editTheme = function(theme){
 		theme.generalID = $rootScope.generalThemeID;
 		$rootScope.postRequest(theme ,'updateTheme', '');
+		$rootScope.initShortcut();
 	}
 
 
@@ -96,6 +99,46 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 			}
 		}
 
+	}
+
+	$rootScope.initShortcut = function (){
+		$scope.shortcuts = [];
+		var shortcuts = $rootScope.adjustElementNewArray($rootScope.themes , 0,'shortcut', 'retreive',0,0,0);
+		$rootScope.themes.forEach( function(element, index) {
+			if(element.is_general !== 1 && element.is_active === 1 && element.is_deleted === 0){
+				if(element.shortcut){
+				    var code = element.shortcut.charCodeAt(0);
+				    var msg = "The Key Code for the \""+element.shortcut+"\" character is "+code+".";
+				    $scope.shortcut = {};
+				    $scope.shortcut.code = code;
+				    $scope.shortcut.themeid = element.id;
+				    $scope.shortcut.color = element.color;
+				    $scope.shortcuts.push($scope.shortcut);
+				}
+			}
+		});
+		$scope.useShortcut($scope.shortcuts);
+	}
+
+	$scope.useShortcut = function (shortcuts){
+		$(document).keydown(function(evt){
+			shortcuts.forEach( function(element, index) {
+	    		if (evt.keyCode== element.code && (evt.ctrlKey)){
+	   				evt.preventDefault();
+	   				$scope.$apply(function() {
+		    			$rootScope.message.filter = element.themeid;
+		    			$rootScope.messageColor(element.color);
+	   				});
+	    		}
+			});
+			if (evt.keyCode== 27){
+   				evt.preventDefault();
+   				$scope.$apply(function() {
+	    			$rootScope.message.filter = undefined;
+	    			$rootScope.messageColor('');
+   				});
+    		}
+		});
 	}
 
 	// TODO maak loading screen ( i am creating your theme)

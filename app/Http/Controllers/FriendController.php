@@ -17,12 +17,15 @@ class FriendController extends Controller
     {   
         $user = Auth::user();
         $friends = Friendship::getList();
+        $requests = Friendship::getListFriendrequest();  // non-confirmed friends (friendrequest)
         $disabledIDs = array();
-
         //DON'T FIND YOURSELF AND FRIENDS
         array_push($disabledIDs, $user->id);
         foreach ($friends as $key => $friend) {
             array_push($disabledIDs, $friend->id);
+        }
+        foreach ($requests as $key => $request) {
+            array_push($disabledIDs, $request->id);
         }
         
         //ONLY RETURN NON-FRIEND USERS
@@ -34,16 +37,12 @@ class FriendController extends Controller
         }
     }
 
-    // public function getFriendList()
-    // {
-    //     return Friendship::getList();
-    // }
-
     public function addFriend(Request $request)
     {
         try {
     	    $user = Auth::user();
             $newFriendID = (int)$request->input('newfriend');
+            $removeRequest = (int)$request->input('removeRequest');
             $friendRequested = User::where('id', $newFriendID)->first();
 
             //if user already requested this friendship
@@ -52,7 +51,10 @@ class FriendController extends Controller
             $friendrequest = Friendship::where('user_id', $friendRequested->id)->where('friend_id', $user->id)->first();
 
             if ($userAlreadyRequested) {
-                return 'friendship is already requested';
+                if($removeRequest){
+                    $userAlreadyRequested->delete();
+                }
+                return 'friendsrequest revoked';
             }elseif ($friendrequest) {
                 //CONFIRM FRIEND REQUEST
                 $ids = array($newFriendID,$user->id);
