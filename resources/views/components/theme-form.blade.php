@@ -6,10 +6,10 @@
 	     	 	<i class="material-icons grey-text text-darken-3 js-toggle-slide-menu">keyboard_arrow_up</i>
 	    	</a>
 		</div>
-	<form class="row" ng-submit="createNewTheme({{$model}}.$valid)" id="createThemeForm" name="createThemeForm">
+	<form class="row" ng-submit="createNewTheme({{$model}}.$valid, $event)" id="createThemeForm" name="createThemeForm">
 @else
-<div class="js-edit-form edit-form top-gutter-double-margin js-slide-menu js-open-slide-menu">	
-	<form class="row" ng-submit="editTheme(theme)" >
+<div class="js-edit-form edit-form top-gutter-double-margin js-slide-menu">	
+	<form class="row" ng-submit="editTheme(theme, $event)" >
 @endif
         <div class="input-field col s12">
 			<input placeholder="Ex: Sport" id="@{{key}}theme_name" type="text" ng-model="{{$model}}.name" class="validate" autocomplete="off" required>
@@ -25,7 +25,7 @@
 				@foreach (['red','orange','blue','purple','green','cyan'] as $color)
 				  	<li>
 				      <input name="@{{key}}color" type="radio" id="@{{key}}{{$color}}" ng-model="{{$model}}.color" value="{{$color}}" required/>
-				      <label class="{{$color}}-radio" for="@{{key}}{{$color}}"></label>
+				      <label class="{{$color}}-radio {{$color}}-before" for="@{{key}}{{$color}}"></label>
 				    </li>
 				@endforeach
 			</ul>
@@ -34,7 +34,7 @@
 			<p class="inline-block col s1">Icon</p>
 			<div class="col s11 center-align">
 				<div class="inline-block">
-					@foreach (['school','work','star', 'favorite', 'extension' ,'euro_symbol', 'query_builder', 'shopping_cart', 'theaters', 'flight', 'toys', 'brightness_5', 'healing', 'music_note', 'flash_on', 'photo_camera', 'wb_cloudy', 'directions_car', 'local_bar','local_dining', 'hotel', 'local_grocery_store', 'local_shipping', 'beach_access', 'fitness_center', 'casino', 'child_friendly','free_breakfast', 'kitchen', 'ac_unit', 'cake', 'public', 'weekend', 'account_balance', 'pets', 'timeline'] as $icon)
+					@foreach (['school','work','star', 'favorite', 'extension' ,'euro_symbol', 'query_builder', 'theaters','build' , 'home', 'videogame_asset', 'brush', 'local_florist', 'terrain' ,  'flight', 'toys', 'wb_sunny', 'healing', 'music_note', 'flash_on', 'photo_camera', 'wb_cloudy', 'directions_car', 'local_bar','local_dining', 'local_hospital',  'hotel', 'local_grocery_store', 'local_shipping', 'beach_access', 'fitness_center', 'casino', 'child_friendly','free_breakfast', 'kitchen', 'ac_unit', 'cake', 'public', 'weekend', 'account_balance', 'pets', 'timeline'] as $icon)
 						<div class="btn-floating btn white inline-block js-parent-selector">
 							<input name="@{{key}}icon" type="radio" id="@{{key}}{{$icon}}" ng-model="{{$model}}.icon" value="{{$icon}}" required/>
 							<label for="@{{key}}{{$icon}}" class="no-button js-NIcon"></label>
@@ -72,7 +72,7 @@
         </div>
         <div class="col s12 center">
 
-        <input type="submit" class="submit-theme waves-effect waves-light btn red inline-block {{$submit}}" value="{{ $action }} theme">        
+        <input type="submit" class="submit-theme waves-effect waves-light btn red inline-block" value="{{ $action }} theme">        
         	{{-- <a class="waves-effect waves-light btn red inline-block" ng-click="createNewTheme()">Create theme</a>     --}}
         </div>
 	</form>

@@ -38,6 +38,12 @@ i.bubble-icon{
 	}
 }
 
+.bubble-icon.logout:before {
+  content: "\3c";
+}
+.bubble-icon.profile:before {
+  content: "\4f";
+}
 .bubble-icon.arrow:before {
   content: "\3d";
 }
@@ -50,22 +56,22 @@ i.bubble-icon{
 .bubble-icon.cross:before {
   content: "\1f5f4";
 }
-.bubble-icon.triangle-you .path1:before {
-  content: "\e900";
-  color: rgb(255, 255, 255);
-}
-.bubble-icon.triangle-you .path2:before {
-  content: "\e901";
-  margin-left: -1.2001953125em;
-  color: rgb(0, 0, 0);
-}
 .bubble-icon.triangle .path1:before {
-  content: "\e902";
+  content: "\2d";
   color: rgb(255, 255, 255);
 }
 .bubble-icon.triangle .path2:before {
-  content: "\e903";
-  margin-left: -1.2001953125em;
+  content: "\2e";
+  margin-left: -1.4208984375em;
+  color: rgb(0, 0, 0);
+}
+.bubble-icon.triangle-you .path1:before {
+  content: "\2b";
+  color: rgb(255, 255, 255);
+}
+.bubble-icon.triangle-you .path2:before {
+  content: "\2c";
+  margin-left: -1.4169921875em;
   color: rgb(0, 0, 0);
 }
 .bubble-icon.no-content:before {

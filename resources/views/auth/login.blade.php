@@ -102,7 +102,7 @@
                                     {{ csrf_field() }}
 
                                     <div class="input-field col s12{{ $errors->has('email') ? ' has-error' : '' }}">
-                                        <input id="email" type="email" class="validate" name="email" value="{{ old('email') }}" required autofocus>
+                                        <input id="email" type="email" maxlength="100" class="validate" name="email" value="{{ old('email') }}" required autofocus>
                                         <label for="email">E-Mail Address</label>
                                         @if ($errors->has('email'))
                                             <span class="help-block">
@@ -112,7 +112,7 @@
                                     </div>
 
                                     <div class="input-field col s12{{ $errors->has('password') ? ' has-error' : '' }}">
-                                        <input id="password" type="password" class="validate" name="password" required>
+                                        <input id="password" type="password" maxlength="100" class="validate" name="password" required>
                                         <label for="password">Password</label>
                                         @if ($errors->has('password'))
                                             <span class="help-block">
@@ -149,7 +149,7 @@
                                     {{ csrf_field() }}
 
                                     <div class="input-field col s12{{ $errors->has('name') ? ' has-error' : '' }}">
-                                        <input id="name" type="text" class="validate" name="name" value="{{ old('name') }}" required>
+                                        <input id="name" type="text" class="validate" name="name" value="{{ old('name') }}" maxlength="100" required>
                                         <label for="name">Name</label>
                                         @if ($errors->has('name'))
                                             <span class="help-block">
@@ -159,7 +159,7 @@
                                     </div>
 
                                     <div class="input-field col s12{{ $errors->has('email') ? ' has-error' : '' }}">
-                                        <input id="register-email" type="email" class="validate" name="email" value="{{ old('email') }}" required>
+                                        <input id="register-email" maxlength="100" type="email" class="validate" name="email" value="{{ old('email') }}" required>
                                         <label for="register-email" data-error="this is not a valid e-mail" data-success="valid e-mail">E-Mail Address</label>
                                         @if ($errors->has('email'))
                                             <span class="help-block">
@@ -169,7 +169,7 @@
                                     </div>
 
                                     <div class="input-field col s12{{ $errors->has('password') ? ' has-error' : '' }}">
-                                        <input pattern=".{0}|.{6,}" id="register-password" type="password" class="validate" name="password" required>
+                                        <input pattern=".{0}|.{6,}" maxlength="100" id="register-password" type="password" class="validate" name="password" required>
                                         <label for="register-password" data-error="password needs to minimum 6 characters" data-success="Good job! almost done">Password</label>
                                         @if ($errors->has('password'))
                                             <span class="help-block">
@@ -179,7 +179,7 @@
                                     </div>
 
                                     <div class="input-field col s12">
-                                        <input id="password-confirm" type="password" class="validate" name="password_confirmation" required>
+                                        <input id="password-confirm" maxlength="100" type="password" class="validate" name="password_confirmation" required>
                                         <label for="password-confirm" >Confirm Password</label>
                                     </div>
 

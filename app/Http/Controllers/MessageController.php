@@ -20,7 +20,7 @@ class MessageController extends Controller
         ->join('users', 'users.id', '=', 'messages.user_id')
         ->join('themes', 'themes.id', '=', 'messages.theme_id')
         ->orderBy('messages.id','desc')
-        ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image', 'themes.color')->paginate(10)->items();
+        ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image', 'themes.color')->paginate(20)->items();
         return $messages;
     }
 
@@ -67,9 +67,9 @@ class MessageController extends Controller
                 'text'         =>   'string',
             ]);
             $user = Auth::user();
-            $chatid = $request->input('chatid');
+            $chatid = (int)$request->input('chatid');
             $text = $request->input('text');
-            $themeid =  $request->input('theme');
+            $themeid =  (int)$request->input('theme');
             $profileImage = $request->input('profileImage');
             $theme = Theme::where('id', $themeid)->where('chat_id', $chatid)->first();
             // replace smileys
@@ -83,7 +83,10 @@ class MessageController extends Controller
                 } catch (\Exception $e) {
                 }
             }
-            // forced theme message
+            // forced messages and no-theme messages
+            $color = $theme->color;
+            $forceTheme = 0;
+            //normal messages that contains theme-word
             if($theme->is_general === 1){
                 // if no theme was selected => check theme
                 $keywords = Theme::select('keywords.*', 'themes.color')
@@ -95,27 +98,27 @@ class MessageController extends Controller
                     if($word->word){
                         if (strpos($text, $word->word) !== false) {
                             $color = $word->color;
-                            $theme = $word->theme_id;
+                            $themeid = $word->theme_id;
                             break;
                         }
                     }
                 }
-                $forceTheme = 0;
             }else{
-                $forceTheme = 1;
-                $color = $theme->color;
+            // forced message
+                $forceTheme = $themeid;
             }
+            
             // save message
             $message = New Message;
             $message->text = $text;
             $message->User()->associate($user);
             $message->chat_id = $chatid;
             $message->force_theme = $forceTheme;
-            if (is_int($theme)) {
-                $message->theme_id = $theme;
-            }else{
-                $message->Theme()->associate($theme);
-            }
+            // if (is_int($theme)) {
+            $message->theme_id = $themeid;
+            // }else{
+            //     $message->Theme()->associate($theme);
+            // }
             $message->save();
             $message = collect($message)->put("profile_image", $profileImage);
             if(isset($color)){

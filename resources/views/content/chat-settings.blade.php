@@ -24,19 +24,19 @@
 	          	</div>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'friendchat'">
-    	   		<p class="text-block-center">Invite to group</p><a ng-click="addFriendToGroup()" class=" v-align waves-effect waves-light btn right">add to group +</a>
+    	   		<p class="text-block-center">Invite to group</p><a ng-click="addFriendToGroup()" class=" v-align waves-effect waves-light btn right settings-btn">add to group +</a>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'groupschat'">
-    	   		<p class="text-block-center">Add friend to group</p><a ng-click="inviteFriendToGroup()" class=" v-align waves-effect waves-light btn right">invite friend +</a>
+    	   		<p class="text-block-center">Add friend to group</p><a ng-click="inviteFriendToGroup()" class=" v-align waves-effect waves-light btn right settings-btn">invite friend +</a>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'friendchat'">
-	        	<p class="text-block-center">Delete friend</p><a ng-click="deleteFriend()" class=" v-align waves-effect waves-light btn red right">delete</a>
+	        	<p class="text-block-center">Delete friend</p><a ng-click="deleteFriend()" class=" v-align waves-effect waves-light btn red right settings-btn">delete</a>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'groupschat' && isChatAdmin">
-	        	<p class="text-block-center">Delete group</p><a ng-click="deleteGroup()" class=" v-align waves-effect waves-light btn red right">delete</a>
+	        	<p class="text-block-center">Delete group</p><a ng-click="deleteGroup()" class=" v-align waves-effect waves-light btn red right settings-btn">delete</a>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'groupschat'">
-	        	<p class="text-block-center">Leave group</p><a ng-click="LeaveGroup()" class=" v-align waves-effect waves-light btn red right">Leave</a>
+	        	<p class="text-block-center">Leave group</p><a ng-click="LeaveGroup()" class=" v-align waves-effect waves-light btn red right settings-btn">Leave</a>
 	        </div>
         <!-- Theme-option -->
 	        <div class="card-content col s12 theme-settings" ng-if="themes.length > 1">
@@ -79,7 +79,7 @@
 			        </div>
 			        <!-- tables -->
 			        <div class="col s12 no-pad" ng-repeat="(key, friend) in groupFriends" ng-if="friend.confirmed">
-			        	<p class="text-block-center">@{{ friend.name }}</p>
+			        	<p class="text-block-center first-letter-capital">@{{ friend.name }}</p>
 			        	<div class="right actions" ng-if="isChatAdmin">
 		        		    <p class="checkbox left v-align ">
 						      <input type="checkbox" class="filled-in" id="filled-in-box@{{key}}" checked="checked" ng-if="friend.admin" ng-click="toggleAdmin(friend.admin, friend.user_id, key)"/>

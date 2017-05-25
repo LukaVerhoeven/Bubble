@@ -142,8 +142,8 @@ $panel-default-heading-bg: #fff;
 }
 
 #Alerts .alertbox.open .alert-icon i {
-  font-size: 60px;
-  margin-top: 15px;
+  font-size: 80px;
+  margin-top: 30px;
 }
 
 #Alerts .alertbox.open li {
@@ -163,7 +163,7 @@ $panel-default-heading-bg: #fff;
   background-color: #26a69a;
   color: white;
   border-radius: 2px;
-  padding: .3rem 2rem;
+  padding: .3rem;
 }
 
 #Alerts .alertbox.open .btn {
@@ -181,8 +181,8 @@ $panel-default-heading-bg: #fff;
 
 #Alerts .alertbox.open .close {
   position: absolute;
-  top: 2px;
-  right: 20px;
+  top: 11px;
+  right: 30px;
   font-size: 30px;
   color: gray;
   cursor: pointer;
@@ -193,14 +193,28 @@ $panel-default-heading-bg: #fff;
   width: 6.5rem;
   height: 6.5rem;
   margin: 0 auto;
+  position: absolute;
 }
 
 #bubble .img-overflow .profile-pic,
 #bubble .img-overflow .friend-pic {
-  margin: 0 auto;
   min-width: 100%;
   height: 100%;
-  width: auto;
+  position: absolute;
+  margin: auto;
+  display: block;
+  bottom: -9999px;
+  left: -9999px;
+  top: -9999px;
+  right: -9999px;
+}
+
+#bubble .img-container {
+  position: relative;
+  display: inline-block;
+  float: left;
+  width: 5rem;
+  height: 5rem;
 }
 
 #bubble .no-button-container {
@@ -276,6 +290,14 @@ i.bubble-icon {
   margin-top: 9px;
 }
 
+.bubble-icon.logout:before {
+  content: "<";
+}
+
+.bubble-icon.profile:before {
+  content: "O";
+}
+
 .bubble-icon.arrow:before {
   content: "=";
 }
@@ -292,25 +314,25 @@ i.bubble-icon {
   content: "\1F5F4";
 }
 
-.bubble-icon.triangle-you .path1:before {
-  content: "\E900";
-  color: white;
-}
-
-.bubble-icon.triangle-you .path2:before {
-  content: "\E901";
-  margin-left: -1.2001953125em;
-  color: black;
-}
-
 .bubble-icon.triangle .path1:before {
-  content: "\E902";
+  content: "-";
   color: white;
 }
 
 .bubble-icon.triangle .path2:before {
-  content: "\E903";
-  margin-left: -1.2001953125em;
+  content: ".";
+  margin-left: -1.4208984375em;
+  color: black;
+}
+
+.bubble-icon.triangle-you .path1:before {
+  content: "+";
+  color: white;
+}
+
+.bubble-icon.triangle-you .path2:before {
+  content: ",";
+  margin-left: -1.4169921875em;
   color: black;
 }
 
@@ -554,7 +576,7 @@ body {
 }
 
 .fixed-container #content .content-div .content-body #load-content.active {
-  z-index: 7;
+  z-index: 9;
   background: white;
   text-align: center;
   width: 100%;
@@ -579,9 +601,30 @@ body {
   height: 100%;
 }
 
+#content .nav-content .tabs a {
+  padding: 0 0.75rem;
+}
+
+#content .nav-content .tabs a i,
+#content .nav-content .tabs a span {
+  display: inline-block;
+}
+
+#content .nav-content .tabs a span {
+  max-width: 70%;
+}
+
+#content .nav-content .tabs a i {
+  vertical-align: top;
+  font-size: 30px;
+  margin: 0 0.75rem;
+  line-height: 50px;
+  height: 50px;
+  font-size: 29px;
+}
+
 #content .nav-content .tabs a span {
   font-size: 1.5rem;
-  width: 58%;
 }
 
 #content .nav-content .tabs .indicator {
@@ -636,8 +679,8 @@ body {
   position: absolute;
   font-size: 20px;
   margin: 0;
-  bottom: -1px;
-  right: 2px;
+  bottom: 0px;
+  right: -3px;
   z-index: 8;
 }
 
@@ -646,8 +689,8 @@ body {
 }
 
 #content .message-wrapper .message-container .bubble-icon.left {
-  left: 3px;
-  top: -2px;
+  left: -3px;
+  top: 0px;
 }
 
 #content .message-wrapper .text-container {
@@ -709,10 +752,6 @@ body {
   cursor: pointer;
 }
 
-#content .chat-input .nav-wrapper {
-  border-bottom: 2px solid grey;
-}
-
 #content .chat-input .input-field {
   border: 2px solid transparent;
 }
@@ -734,7 +773,7 @@ body {
   color: white;
 }
 
-.filter {
+#content .filter {
   right: 0;
   top: 0;
   height: 100vh;
@@ -743,7 +782,47 @@ body {
   position: absolute;
 }
 
-.filter .side-nav {
+#content .filter form {
+  height: 100%;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+#content .filter ul {
+  overflow-x: hidden;
+  height: auto;
+  margin: 0;
+  -ms-flex-item-align: end;
+      align-self: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+#content .filter ul .filter-button-container {
+  text-align: center;
+  margin-top: 0.75rem;
+  width: 100%;
+}
+
+#content .filter ul .btn-floating {
+  vertical-align: top;
+}
+
+#content .filter ul .no-button {
+  top: auto;
+  left: auto;
+  width: 3rem;
+  height: 3rem;
+}
+
+#content .filter .side-nav {
   -webkit-transform: translateX(0);
   transform: translateX(0);
   position: relative;
@@ -771,10 +850,26 @@ body {
   float: right;
 }
 
+#chat-settings .settings-layout {
+  overflow-x: hidden;
+}
+
 #chat-settings .card-content {
   padding-bottom: 0;
   padding-top: 0;
   margin-top: 24px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  #chat-settings .card-content {
+    padding-right: 16px;
+  }
+}
+
+@supports (-ms-ime-align: auto) {
+  #chat-settings .card-content {
+    padding-right: 24px;
+  }
 }
 
 #chat-settings .card-content > p {
@@ -788,6 +883,14 @@ body {
 #chat-settings .text-block-center {
   height: 50px;
   line-height: 50px;
+}
+
+#chat-settings .settings-btn {
+  width: 13rem;
+}
+
+#chat-settings #editChatName .bubble-editButton {
+  margin-right: 0.75rem;
 }
 
 #chat-settings .header {
@@ -937,6 +1040,22 @@ body {
 
 #themes .margin-div {
   height: 100%;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  #themes .margin-div {
+    padding-right: 5px;
+  }
+}
+
+@supports (-ms-ime-align: auto) {
+  #themes .margin-div {
+    padding-right: 0.75rem;
+  }
+}
+
+#themes .margin-div .card:first-child {
+  margin-top: 0;
 }
 
 #themes h2 {
@@ -1110,6 +1229,10 @@ body {
   color: white;
 }
 
+#sidebar .sidebar header .profile-info .user-info {
+  margin-left: 8.2rem;
+}
+
 #sidebar .sidebar header .profile-info .bubble-username {
   display: block;
   font-size: 1.5rem;
@@ -1121,6 +1244,10 @@ body {
   display: block;
   font-size: 1.3rem;
   margin-top: 8px;
+}
+
+#sidebar .sidebar header .profile-info .img-overflow {
+  margin-left: 0.75rem;
 }
 
 #sidebar .sidebar header nav div:not(.indicator),
@@ -1138,10 +1265,20 @@ body {
   color: #fff !important;
 }
 
+#sidebar .sidebar header nav div:not(.indicator) .tab .profile:before,
+#sidebar .sidebar header nav ul .tab .profile:before {
+  font-size: 28px;
+}
+
+#sidebar .sidebar header nav div:not(.indicator) .tab .group:before,
+#sidebar .sidebar header nav ul .tab .group:before {
+  font-size: 32px;
+}
+
 #sidebar .sidebar .side-nav-content {
   height: 100%;
   width: 100%;
-  padding-top: 49%;
+  padding-top: 13.3rem;
   float: left;
 }
 
@@ -1188,6 +1325,7 @@ body {
   display: inline-block;
   margin: 0;
   line-height: 50px;
+  max-width: 90%;
   padding-left: 0.75rem;
 }
 
@@ -1238,10 +1376,10 @@ body {
   text-align: center;
   background-color: red;
   margin-left: 0.75rem;
-  margin-top: 3px;
+  vertical-align: top;
   color: white;
   min-width: 20px;
-  padding: 0 4px;
+  padding: 0 5px 0 4px;
   height: 20px;
   border-radius: 20px;
 }
@@ -1308,6 +1446,7 @@ body {
 #groups .request .groupname {
   margin: 0;
   margin-left: 1rem;
+  max-width: 90%;
   font-weight: 500;
   font-size: 18px;
 }
@@ -1348,7 +1487,7 @@ body {
 #friends .bottom.full,
 #groups .bottom.full {
   z-index: 50;
-  padding-top: 138px;
+  padding-top: 134px;
 }
 
 #friends .bottom.full .search-new-friends,
@@ -1441,8 +1580,8 @@ body {
   background-color: white;
   font-size: 20px;
   font-weight: normal;
-  height: 4rem;
-  line-height: 4rem;
+  height: 54px;
+  line-height: 54px;
   padding: 0 0.75rem;
   margin: 0 -.75rem 10px -.75rem;
 }
@@ -1486,8 +1625,13 @@ body {
   padding-right: 12px;
 }
 
+#bubble #profile .img-container {
+  margin: 4vw auto;
+  width: 9rem;
+  height: 9rem;
+}
+
 #bubble #profile .img-overflow {
-  margin-top: 4vw;
   width: 9rem;
   height: 9rem;
   cursor: pointer;
@@ -1541,8 +1685,12 @@ body {
 
 .side-nav-content .side-header {
   font-size: 20px;
-  margin-bottom: 0;
-  padding: 0.75rem;
+  margin: 0;
+  padding: 1rem 0.75rem;
+}
+
+.side-nav-content #logout-tab a {
+  margin-top: 1.5rem;
 }
 
 #bubble {

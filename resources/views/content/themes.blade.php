@@ -21,10 +21,10 @@
 		<div>
 			
 		</div>
-		@include('components.theme-form', ['model' => 'theme', 'action' => 'update', 'submit' => 'js-submit-edit-form'])
+		@include('components.theme-form', ['model' => 'theme', 'action' => 'update'])
 	</div>
 	<!-- New theme -->
-	@include('components.theme-form', ['model' => 'NewTheme', 'action' => 'create', 'submit' =>'js-toggle-slide-menu'])
+	@include('components.theme-form', ['model' => 'NewTheme', 'action' => 'create'])
  
 </div>		
 </div>

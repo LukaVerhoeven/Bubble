@@ -8,7 +8,7 @@
 					<i class="bubble-icon friend"></i>
 					<p class="inline-block v-align">Friend request</p>
 				</div>
-				<p class="inline-block col s12 groupname first-letter-capital">@{{request.name}}  </p> 
+				<p class="inline-block col s12 groupname first-letter-capital truncate">@{{request.name}}  </p> 
 				<div class="col s12 buttons">
 					<a class="btn waves-effect waves-light red ns" ng-click="decline(request.user_id)">Decline</a> 
 					<a class="btn waves-effect waves-light ns" ng-click="addFriend(request.user_id, true)">Accept</a>
@@ -17,8 +17,8 @@
 		</ul>
 		<ul class="js-active-container no-margin-top">
 			<li ng-repeat="(key, friend) in friendlist | filter:searchfriend" data-id="@{{friend.userid}}" ng-click="openChat(friend.chatid , friend.userid , friend.name , 'friendchat', null, 1, key)" class="first-letter-capital friend-item js-give-active">
-				<p class="friend-name">@{{friend.name}}</p> 
-				<span class="unread-messages" ng-if="friend.unread_messages">@{{friend.unread_messages}}</span>
+				<p class="friend-name truncate">@{{friend.name}}</p> 
+				<span class="unread-messages v-align" ng-if="friend.unread_messages">@{{friend.unread_messages}}</span>
 				<span class="online-state offline v-align" ng-if="!friend.isOnline"></span><span class="online-state online v-align" ng-if="friend.isOnline"></span>
 			</li>
 		</ul>
@@ -34,7 +34,7 @@
 				    <div class="input-field">
 				      <input id="search-friends" type="search" placeholder="search friends" ng-model="searchfriend" required>
 				      <label class="label-icon" for="search-friends"><i class="material-icons">search</i></label>
-				      <i class="material-icons">close</i>
+				      <i class="material-icons js-empty-input">close</i>
 				    </div>
 				  </form>
 				</div>
@@ -46,7 +46,7 @@
 				    <div class="input-field">
 				      <input id="search-add-friend" type="search" ng-model="newFriendInput" ng-keyup="updateFriendSearch(newFriendInput)" placeholder="add friends" autocomplete="off" required>
 				      <label class="label-icon" for="search-add-friend"><i class="material-icons">search</i></label>
-				      <i class="material-icons close-search">close</i>
+				      <i class="material-icons close-search js-empty-input">close</i>
 				    </div>
 				  </form>
 				</div>
@@ -55,7 +55,7 @@
 			<!-- search results: users -->
 			<ul class="collection" ng-if="searchedfriends.length > 0">
 				<li class="collection-item" data-id="@{{friend.id}}" ng-repeat="(key, friend) in searchedfriends">
-				<p class="name">@{{friend.name}}</p>
+				<p class="name first-letter-capital">@{{friend.name}}</p>
 				    <a href="#!" class="secondary-content js-send-friendrequest" ng-click="addFriend(friend.id,false,key)">
 							<i class="material-icons">add</i>
 				    </a> 

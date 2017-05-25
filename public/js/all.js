@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "./";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 21);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10472,16 +10472,20 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                                     }
                                     if (action === 'update') {
                                         //add new element then update
-                                        var prop = editKey;
-                                        obj[prop] = editValue;
+                                        if (editKey) {
+                                            var prop = editKey;
+                                            obj[prop] = editValue;
+                                        } else {
+                                            for (prpty in obj) {
+                                                obj[prpty] = editValue[prpty];
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                         // Retreive data
                         if (action === 'retreive') {
-                            // console.log('key', key, 'value', obj[key], 'myval', value);
-                            // console.log(obj[key] == value)
                             if (value) {
                                 if (obj[key] == value) {
                                     retreiveData.push(obj[editKey]);
@@ -10601,7 +10605,8 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                     }
                     if (action === 'retreive') {
                         var foundObj = $rootScope.adjustElementNewArray(array, [elementValue[0], elementValue[1]], [keyvalue[0], keyvalue[1]], 'retreive', editValue, editKey, 1);
-                        if (foundObj[0]) {
+                        console.log(foundObj.length);
+                        if (foundObj.length > 0) {
                             editElements.push(obj);
                         }
                     }
@@ -10614,7 +10619,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                 data.splice(index, 1);
             });
         }
-        if (editElements.length > 0 && action === 'retreive') {
+        if (action === 'retreive') {
             data.splice(0, data.length);
             data.push.apply(data, editElements);
         }
@@ -10776,6 +10781,10 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         } else {
             $rootScope.friendlist[index].unread_messages = 0;
         }
+        // if after 5 seconds content still not loaded => remove the loading screen
+        setTimeout(function () {
+            $("#load-content").removeClass('active');console.log('something went wrong');
+        }, 5000);
     };
 
     $rootScope.resetChat = function () {
@@ -11262,6 +11271,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
     $rootScope.message.theme = '1';
     $rootScope.makeBroadcastConnection = false;
     $rootScope.messagesLoaded = 0;
+    $scope.currentAmount = 1;
 
     //UPDATE CHAT
     $scope.successGetMessage = function (response) {
@@ -11406,8 +11416,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
                         var keywords = $rootScope.ObjToArray(e.data.keywords);
                         keywords = $rootScope.keywordToObjectArray(keywords);
                         e.data.keywords = keywords;
-                        $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'remove', 0, 0, 0);
-                        $rootScope.themes.push(e.data);
+                        $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'update', e.data, 0, 0);
                         $rootScope.updateMessages(keywords, e.data.color, e.data.id);
                         $rootScope.updateThemeUsage(); //update Theme usage
                     }
@@ -11439,8 +11448,24 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
     $rootScope.messageColor = function (color) {
         $rootScope.message.color = color;
         $scope.scrollDown();
+        $scope.loadMessages();
+        $('#scrollMessages').offset().top;
     };
 
+    // !! TODO !! Danger !! can start to loads All messages ever send => really heavy => maak post call voor theme-messages->paginate()
+    // Keep loading messages until you can scroll in the theme messages
+    $scope.loadMessages = function () {
+        if ($('#scrollMessages').offset().top < 100) {
+            $rootScope.messages.nextPage();
+            $rootScope.scrollDown();
+            if ($('#scrollMessages').offset().top < 100 && $rootScope.messages.itemAmount > $scope.currentAmount) {
+                $scope.currentAmount = $rootScope.messages.itemAmount;
+                $scope.loadMessages();
+            }
+        }
+    };
+
+    // on refresh or url change => leave chat channel
     $scope.$on('$routeChangeStart', function () {
         Echo.leave($scope.currentChatroom);
     });
@@ -11470,10 +11495,12 @@ app.factory('Messages', function ($http, API_URL, $rootScope) {
         this.items = [];
         this.busy = false;
         this.page = 1;
+        this.itemAmount = 1;
     };
 
     Messages.prototype.nextPage = function () {
         if (this.busy) return;
+        if (this.items.length === this.itemAmount) return;
         this.busy = true;
         var url = API_URL + 'getMessages/' + $rootScope.chatID + '?page=' + this.page;
         $http.get(url).then(function (response) {
@@ -11489,6 +11516,7 @@ app.factory('Messages', function ($http, API_URL, $rootScope) {
                 $rootScope.loadingScroll();
             }
         }.bind(this));
+        this.itemAmount = this.items.length;
     };
 
     return Messages;
@@ -11682,22 +11710,28 @@ app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope
 // })
 app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) {
     $scope.NewTheme = { color: "red" };
-    $scope.createNewTheme = function () {
-        $scope.NewTheme.chatid = $rootScope.chatID;
-        $scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g, ",").replace(/[^a-zA-Z0-9,@#]/g, '');
-        $scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/[^a-zA-Z0-9,@#]/g, ''); //sanitize
-        if ($scope.NewTheme.chatid) {
-            $rootScope.postRequest($scope.NewTheme, 'NewTheme', '');
-            $scope.resetForm($scope.NewTheme);
-            $scope.NewTheme = { color: "red" };
-            $rootScope.initShortcut();
+    $scope.createNewTheme = function (valid, $event) {
+        if ($scope.NewTheme.keywordString && $scope.NewTheme.name) {
+            $scope.closeForm($event, 'create');
+            $scope.NewTheme.chatid = $rootScope.chatID;
+            $scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g, ",").replace(/[^a-zA-Z0-9,@#]/g, '');
+            $scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/[^a-zA-Z0-9,@#]/g, ''); //sanitize
+            if ($scope.NewTheme.chatid) {
+                $rootScope.postRequest($scope.NewTheme, 'NewTheme', '');
+                $scope.resetForm($scope.NewTheme);
+                $scope.NewTheme = { color: "red" };
+                $rootScope.initShortcut();
+            }
         }
     };
 
-    $scope.editTheme = function (theme) {
-        theme.generalID = $rootScope.generalThemeID;
-        $rootScope.postRequest(theme, 'updateTheme', '');
-        $rootScope.initShortcut();
+    $scope.editTheme = function (theme, $event) {
+        if (theme.keywordString && theme.name) {
+            $scope.closeForm($event, 'edit');
+            theme.generalID = $rootScope.generalThemeID;
+            $rootScope.postRequest(theme, 'updateTheme', '');
+            $rootScope.initShortcut();
+        }
     };
 
     $scope.resetForm = function (form) {
@@ -11735,8 +11769,12 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
                         themeMessages.push($rootScope.messages.items[$prop].id);
                     }
                 }
+            } else if ($rootScope.messages.items[$prop].force_theme === themeid) {
+                $rootScope.messages.items[$prop].theme_id = themeid;
+                $rootScope.messages.items[$prop].color = color;
             }
         }
+
         for ($prop in $rootScope.messages.items) {
             // if messages contains none of the keywords but has the themeID => remove the theme from it
             if ($rootScope.messages.items[$prop].theme_id == themeid && themeMessages.indexOf($rootScope.messages.items[$prop].id) === -1 && $rootScope.messages.items[$prop].force_theme === 0) {
@@ -11748,7 +11786,7 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
 
     $rootScope.removeThemeFromMessages = function (themeid) {
         for ($prop in $rootScope.messages.items) {
-            if ($rootScope.messages.items[$prop].theme_id == themeid && $rootScope.messages.items[$prop].force_theme === 0) {
+            if ($rootScope.messages.items[$prop].theme_id == themeid) {
                 $rootScope.messages.items[$prop].theme_id = $rootScope.generalThemeID;
                 $rootScope.messages.items[$prop].color = "white";
             }
@@ -11821,22 +11859,24 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
         });
     };
 
-    // TODO maak loading screen ( i am creating your theme)
-    // geen theme->id dus kan functie niet gberuiken ( maar wel leerijke functie dus ni weg doen)
-    // $scope.pushNewTheme = function (newCreatedTheme){
-    // 	var newTheme = JSON.parse(JSON.stringify(newCreatedTheme)); //Create unique new object
-    // 	newTheme.themeUsage = "0%";
-    // 	newTheme.is_active = 1;
-    // 	newTheme.is_deleted = 0;
-    // 	newTheme.is_general = 0;
-    // 	newTheme.keywordString = newTheme.keywordString.replace(/\s+/g, ',').toLowerCase();
-    // 	var filteredString = newTheme.keywordString.split(",").filter(function(e){return e}).join(',');
-    // 	var objectString = filteredString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
-    // 	var newJson = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-    // 	newJson = newJson.replace(/'/g, '"');
-    // 	newTheme.keywords = JSON.parse(newJson);
-    // 	$rootScope.themes.push(newTheme);
-    // }
+    $scope.closeForm = function (e, action) {
+        e.stopPropagation();
+        var currentElement = $(e.currentTarget);
+        if (action === 'edit') {
+            var parent = currentElement.parents('.js-theme-card');
+            var status = parent.find('.js-theme-status');
+            parent.find('.js-toggle-edit-menu').removeClass('exit-theme');
+            parent.removeClass('open');
+            // status message
+            status.css('color', '#26a69a');
+            status.html('Theme saved');
+            status.removeClass('hidden').addClass('fadeout');
+        } else if (action === 'create') {
+            var parent = currentElement.parents('.js-slide-menu');
+            parent.find('.js-toggle-slide-menu').removeClass('close');
+            parent.removeClass('open-slider');
+        }
+    };
 });
 app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 
@@ -11860,28 +11900,30 @@ app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 /* WEBPACK VAR INJECTION */(function(global) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_scrolling__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_addFriend__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_externalLink__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_externalLink__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_externalLink___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__helpers_externalLink__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__helpers_giveActive__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__helpers_giveActive__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__helpers_giveActive___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__helpers_giveActive__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_chatSettings__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_chatSettings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__pages_chatSettings__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_Conversation__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_Conversation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_Conversation__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_themes__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_themes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_themes__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_profile_settings__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_profile_settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_profile_settings__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_angular__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_angular__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular_sanitize__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular_sanitize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_angular_sanitize__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_laravel_echo__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_laravel_echo__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__helpers_emptyInput__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__helpers_emptyInput___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__helpers_emptyInput__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_chatSettings__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_chatSettings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_chatSettings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_Conversation__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_Conversation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_Conversation__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_themes__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_themes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_themes__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_profile_settings__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_profile_settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_profile_settings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_angular__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular_sanitize__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular_sanitize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_angular_sanitize__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_laravel_echo__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_laravel_echo__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -11890,6 +11932,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 // import AutoScrollDownChat from './helpers/autoScrollDownChat';
+
 
 
 
@@ -11933,14 +11976,15 @@ var App = function () {
         this.externallink = new __WEBPACK_IMPORTED_MODULE_2__helpers_externalLink___default.a();
         this.preventdefault = new __WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault___default.a();
         this.giveactive = new __WEBPACK_IMPORTED_MODULE_5__helpers_giveActive___default.a();
+        this.emptyinput = new __WEBPACK_IMPORTED_MODULE_6__helpers_emptyInput___default.a();
         // this.autoscrolldownchat = new AutoScrollDownChat();
         this.slideopen = new __WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen___default.a();
         // this.parentselector = new ParentSelector();
         // pages
-        this.chatsettings = new __WEBPACK_IMPORTED_MODULE_6__pages_chatSettings___default.a();
-        this.conversation = new __WEBPACK_IMPORTED_MODULE_7__pages_Conversation___default.a();
-        this.themes = new __WEBPACK_IMPORTED_MODULE_8__pages_themes___default.a();
-        this.profilesettings = new __WEBPACK_IMPORTED_MODULE_9__pages_profile_settings___default.a();
+        this.chatsettings = new __WEBPACK_IMPORTED_MODULE_7__pages_chatSettings___default.a();
+        this.conversation = new __WEBPACK_IMPORTED_MODULE_8__pages_Conversation___default.a();
+        this.themes = new __WEBPACK_IMPORTED_MODULE_9__pages_themes___default.a();
+        this.profilesettings = new __WEBPACK_IMPORTED_MODULE_10__pages_profile_settings___default.a();
     }
 
     _createClass(App, [{
@@ -11961,12 +12005,12 @@ $(document).ready(function () {
 
 
 
-window.Echo = new __WEBPACK_IMPORTED_MODULE_12_laravel_echo___default.a({
+window.Echo = new __WEBPACK_IMPORTED_MODULE_13_laravel_echo___default.a({
     cluster: 'eu',
     broadcaster: 'pusher',
     key: '02588819c60d53b60c81'
 });
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(21)))
 
 /***/ }),
 /* 3 */
@@ -46240,6 +46284,41 @@ var Scrolling = function () {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var EmptyInput = function () {
+    function EmptyInput() {
+        _classCallCheck(this, EmptyInput);
+
+        this.$empty = $('.js-empty-input');
+        this.init();
+    }
+
+    _createClass(EmptyInput, [{
+        key: 'init',
+        value: function init() {
+            this.$empty.on('click', function (e) {
+                var input = $(e.currentTarget).siblings('input');
+                input.focus();
+                input.val('');
+                input.trigger('input');
+                input.trigger('change');
+            });
+        }
+    }]);
+
+    return EmptyInput;
+}();
+
+module.exports = EmptyInput;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 // import $ from 'jquery'; --> geeft error
 
 var externalLink = function () {
@@ -46267,7 +46346,7 @@ module.exports = externalLink;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46311,7 +46390,7 @@ module.exports = GiveActive;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46342,7 +46421,7 @@ module.exports = PreventDefault;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46356,7 +46435,6 @@ var SlideOpen = function () {
         this.$toggleSlider = $('.js-toggle-slide-menu');
         this.$slideComponent = '.js-slide-menu';
         this.$swipeSlider = '.js-toggle-edit-menu';
-        this.$submitEdit = '.js-submit-edit-form';
         this.init();
     }
 
@@ -46367,8 +46445,9 @@ var SlideOpen = function () {
 
             this.$toggleSlider.on('click', function (event) {
                 event.stopPropagation();
-                _this.$toggleSlider.closest(_this.$slideComponent).toggleClass('open-slider');
-                _this.$toggleSlider.toggleClass('close');
+                var currentElement = $(event.currentTarget);
+                currentElement.closest(_this.$slideComponent).toggleClass('open-slider');
+                currentElement.toggleClass('close');
                 // this.$slideComponent.toggleClass('open-slider');
             });
 
@@ -46388,15 +46467,7 @@ var SlideOpen = function () {
                 parent.toggleClass('open');
             });
 
-            $(document).on('click', this.$submitEdit, function (event) {
-                var parent = $(event.currentTarget).parents('.js-theme-card');
-                var status = parent.find('.js-theme-status');
-                var button = parent.find('.exit-theme').removeClass('exit-theme');
-                status.css('color', '#26a69a');
-                status.html('Theme saved');
-                status.removeClass('hidden').addClass('fadeout');
-                parent.toggleClass('open');
-            });
+            // close on submit => angular themeController closeForm()
         }
     }]);
 
@@ -46407,7 +46478,7 @@ module.exports = SlideOpen;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46450,7 +46521,7 @@ module.exports = Conversation;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46490,7 +46561,7 @@ module.exports = chatSettings;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46529,7 +46600,7 @@ module.exports = ProfileSettings;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46623,7 +46694,7 @@ var Themes = function () {
 module.exports = Themes;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {var asyncGenerator = function () {
@@ -47397,7 +47468,7 @@ module.exports = Echo;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 var g;
@@ -47424,7 +47495,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(2);

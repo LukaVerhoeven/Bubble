@@ -1,7 +1,13 @@
 $profile-size: 9rem;
 #bubble #profile{
+	.img-container{
+		margin: 4vw auto; 
+		// margin-top: 4vw;
+		width: $profile-size;
+		height: $profile-size;
+
+	}
 	.img-overflow{
-		margin-top: 4vw;
 		width: $profile-size;
 		height: $profile-size;
 		cursor: pointer;

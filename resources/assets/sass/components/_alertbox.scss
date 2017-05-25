@@ -38,8 +38,8 @@
 				border-bottom: 2px solid map-get($colors, gray);
 			}
 			.alert-icon i{
-				font-size: 60px;
-				margin-top: 15px;
+				font-size: 80px;
+				margin-top: 30px;
 			}
 
 			li{
@@ -58,7 +58,7 @@
 					background-color: map-get($colors, green);
 					color: white;
 					border-radius: 2px;
-					padding: .3rem 2rem;
+					padding: .3rem;
 				}
 			}
 
@@ -75,8 +75,8 @@
 			}
 			.close{
 				position: absolute;
-				top: 2px;
-				right: 20px;
+				top: 11px;
+				right: 30px;
 				font-size: 30px;
 				color: gray;
 				cursor: pointer;

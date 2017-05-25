@@ -164,16 +164,20 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                                         obj[editKey]++;
                                     }                                    
                                     if(action === 'update'){ //add new element then update
-                                        var prop = editKey;
-                                        obj[prop] = editValue;
+                                        if(editKey){
+                                            var prop = editKey;
+                                            obj[prop] = editValue;
+                                        }else{
+                                            for (prpty in obj) {
+                                                obj[prpty] = editValue[prpty];
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                         // Retreive data
                         if(action === 'retreive'){
-                            // console.log('key', key, 'value', obj[key], 'myval', value);
-                            // console.log(obj[key] == value)
                            if(value){
                                 if(obj[key] == value){
                                     retreiveData.push(obj[editKey]); 
@@ -289,7 +293,8 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     }
                     if(action === 'retreive'){
                         var foundObj = $rootScope.adjustElementNewArray(array ,[elementValue[0], elementValue[1] ], [keyvalue[0], keyvalue[1]], 'retreive', editValue, editKey,1);
-                        if(foundObj[0]){
+                        console.log(foundObj.length);
+                        if(foundObj.length > 0){
                             editElements.push(obj);
                         }
                     }
@@ -302,9 +307,9 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                 data.splice(index,1);
             });
         }
-        if(editElements.length>0 && action === 'retreive'){
+        if(action === 'retreive'){
             data.splice(0,data.length);
-            data.push.apply(data, editElements);  
+            data.push.apply(data, editElements);
         }
     }
 
@@ -462,6 +467,8 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         }else{
             $rootScope.friendlist[index].unread_messages = 0;
         }
+        // if after 5 seconds content still not loaded => remove the loading screen
+        setTimeout(function(){ $("#load-content").removeClass('active'); console.log('something went wrong')}, 5000);
     }
 
     $rootScope.resetChat = function() {

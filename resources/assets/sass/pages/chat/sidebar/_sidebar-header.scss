@@ -16,6 +16,9 @@
 				padding: 1.5rem 0rem;
 				color: white;
 
+				.user-info{
+					margin-left: 8.2rem;
+				}
 				.bubble-username {
 					display: block;
 					font-size: $font-large;
@@ -26,6 +29,9 @@
 					display: block;
 					font-size: $font-medium;
 					margin-top: 8px;
+				}
+				.img-overflow{
+					margin-left: $gutter;
 				}
 			}
 
@@ -39,6 +45,12 @@
 						a.active i {
 							color: #fff !important;
 						}
+						.profile:before {
+							font-size: 28px;
+						}
+						.group:before {
+							font-size: 32px;
+						}
 					}
 				}
 			}
@@ -47,13 +59,14 @@
 		.side-nav-content{
 			height: 100%;
 			width: 100%;
-			padding-top: 49%;
+			padding-top: 13.3rem;
 			float: left;
 
 			.tab-item{
 				display: inline-block;
 				height: 100%;
 			}
+
 		}
 	}
 }

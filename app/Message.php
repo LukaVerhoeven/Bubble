@@ -29,13 +29,16 @@ class Message extends Model
 	public static function updateTheme($keywords, $themeid, $chatid, $generalid)
 	{
         if($generalid){
+        	// get all messages that contains the (new) keywords
 	        $messages = Message::where(function($query) use($keywords){
 	            foreach($keywords as $keyword) {
 	                $query->orWhere('text', 'LIKE', "%".$keyword."%");
 	            }
 	        })->where('force_theme',0)->where('chat_id', $chatid)->pluck('id');
-
-			Message::whereNotIn('id',$messages)->where('theme_id',$themeid)->update(['theme_id' => $generalid]);	
+	        // remove theme from messages that don't contain any keywords anymore
+			Message::whereNotIn('id',$messages)->where('theme_id',$themeid)->update(['theme_id' => $generalid]);
+			// toggle theme => reactivate forced messages
+			Message::where('force_theme', $themeid)->update(['theme_id' => $themeid]);
         }
 
         Message::where(function($query) use($keywords){

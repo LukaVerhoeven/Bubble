@@ -1,21 +1,27 @@
 app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	$scope.NewTheme = {color :"red"};
-	$scope.createNewTheme = function(){
-		$scope.NewTheme.chatid = $rootScope.chatID;
-		$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g,",").replace(/[^a-zA-Z0-9,@#]/g,'');
-		$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/[^a-zA-Z0-9,@#]/g,''); //sanitize
-		if($scope.NewTheme.chatid){
-			$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
-			$scope.resetForm($scope.NewTheme);
-			$scope.NewTheme = {color :"red"};
-			$rootScope.initShortcut();
+	$scope.createNewTheme = function(valid, $event){
+		if($scope.NewTheme.keywordString && $scope.NewTheme.name){
+			$scope.closeForm($event, 'create');
+			$scope.NewTheme.chatid = $rootScope.chatID;
+			$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g,",").replace(/[^a-zA-Z0-9,@#]/g,'');
+			$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/[^a-zA-Z0-9,@#]/g,''); //sanitize
+			if($scope.NewTheme.chatid){
+				$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
+				$scope.resetForm($scope.NewTheme);
+				$scope.NewTheme = {color :"red"};
+				$rootScope.initShortcut();
+			}
 		}
 	}
 
-	$scope.editTheme = function(theme){
-		theme.generalID = $rootScope.generalThemeID;
-		$rootScope.postRequest(theme ,'updateTheme', '');
-		$rootScope.initShortcut();
+	$scope.editTheme = function(theme, $event){
+		if(theme.keywordString && theme.name){
+			$scope.closeForm($event, 'edit');
+			theme.generalID = $rootScope.generalThemeID;
+			$rootScope.postRequest(theme ,'updateTheme', '');
+			$rootScope.initShortcut();
+		}
 	}
 
 
@@ -54,8 +60,12 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 						themeMessages.push($rootScope.messages.items[$prop].id);
 					}
 				}
+			}else if ($rootScope.messages.items[$prop].force_theme === themeid) {
+				$rootScope.messages.items[$prop].theme_id = themeid;
+				$rootScope.messages.items[$prop].color = color;
 			}
 		}
+
 		for ($prop in $rootScope.messages.items) {
 			// if messages contains none of the keywords but has the themeID => remove the theme from it
 			if ($rootScope.messages.items[$prop].theme_id == themeid && themeMessages.indexOf($rootScope.messages.items[$prop].id) === -1 && $rootScope.messages.items[$prop].force_theme === 0) {
@@ -67,7 +77,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 
 	$rootScope.removeThemeFromMessages = function(themeid){
 		for ($prop in $rootScope.messages.items) {
-			if($rootScope.messages.items[$prop].theme_id == themeid && $rootScope.messages.items[$prop].force_theme === 0){
+			if($rootScope.messages.items[$prop].theme_id == themeid){
 				$rootScope.messages.items[$prop].theme_id = $rootScope.generalThemeID;
 				$rootScope.messages.items[$prop].color = "white";
 			}
@@ -141,20 +151,23 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 		});
 	}
 
-	// TODO maak loading screen ( i am creating your theme)
-	// geen theme->id dus kan functie niet gberuiken ( maar wel leerijke functie dus ni weg doen)
-	// $scope.pushNewTheme = function (newCreatedTheme){
-	// 	var newTheme = JSON.parse(JSON.stringify(newCreatedTheme)); //Create unique new object
-	// 	newTheme.themeUsage = "0%";
-	// 	newTheme.is_active = 1;
-	// 	newTheme.is_deleted = 0;
-	// 	newTheme.is_general = 0;
-	// 	newTheme.keywordString = newTheme.keywordString.replace(/\s+/g, ',').toLowerCase();
-	// 	var filteredString = newTheme.keywordString.split(",").filter(function(e){return e}).join(',');
-	// 	var objectString = filteredString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
-	// 	var newJson = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-	// 	newJson = newJson.replace(/'/g, '"');
-	// 	newTheme.keywords = JSON.parse(newJson);
-	// 	$rootScope.themes.push(newTheme);
-	// }
+	$scope.closeForm = function(e, action){
+        e.stopPropagation();
+        var currentElement = $(e.currentTarget);
+        if(action === 'edit'){
+	        var parent = currentElement.parents('.js-theme-card')
+	        var status = parent.find('.js-theme-status');
+	        parent.find('.js-toggle-edit-menu').removeClass('exit-theme');
+	        parent.removeClass('open');
+	        // status message
+			status.css('color','#26a69a');
+            status.html('Theme saved');
+            status.removeClass('hidden').addClass('fadeout');
+
+        }else if (action === 'create') {
+	        var parent = currentElement.parents('.js-slide-menu');
+	        parent.find('.js-toggle-slide-menu').removeClass('close');
+	        parent.removeClass('open-slider');
+        }
+	}
 })

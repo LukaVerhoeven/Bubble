@@ -1,18 +1,52 @@
-.filter{
-	right:0;
-	top:0;
-	height: 100vh;
-	width: $filter-theme-width;
-	padding-top: $content-nav-height;
-	position: absolute;
-	
-	.side-nav{
-		-webkit-transform: translateX(0);
-		transform: translateX(0);
-		position: relative;
-		width: inherit;
-		height: 100%;
-		padding: 0;
-		z-index: 5;
+#content{
+	.filter{
+		right:0;
+		top:0;
+		height: 100vh;
+		width: $filter-theme-width;
+		padding-top: $content-nav-height;
+		position: absolute;
+		
+		form{
+			// display: inline-block;
+			height: 100%;
+			width: 100%;
+		  	display: flex;
+		 	align-items: center;
+		 	justify-content: center;
+		}
+
+		ul{
+			overflow-x: hidden;
+			height: auto;
+			margin:0;
+			align-self: flex-end;
+			margin-bottom: $gutter;
+
+			.filter-button-container{
+				text-align: center;
+				margin-top: $gutter;
+				width: 100%;
+			}
+			.btn-floating {
+				vertical-align: top;
+			}
+			.no-button{
+				top:auto;
+				left: auto;
+				width: 3rem;
+				height: 3rem;
+			}
+		}
+
+		.side-nav{
+			-webkit-transform: translateX(0);
+			transform: translateX(0);
+			position: relative;
+			width: inherit;
+			height: 100%;
+			padding: 0;
+			z-index: 5;
+		}
 	}
 }

@@ -8,7 +8,7 @@
 					<i class="bubble-icon group v-align"></i>
 					<p class="inline-block v-align">Group request</p>
 				</div>
-				<p class="inline-block col s12 groupname first-letter-capital">@{{group.chat_name}} </p> 
+				<p class="inline-block col s12 groupname first-letter-capital truncate">@{{group.chat_name}} </p> 
 				<div class="col s12 buttons">
 					<a class="btn waves-effect waves-light red ns" ng-click="decline(group.chat_id, group.friends)">Decline</a> 
 					<a class="btn waves-effect waves-light ns" ng-click="accept(group.chat_id, group.friends)">Accept</a>
@@ -17,8 +17,8 @@
 		</ul>
 		<ul class="js-active-container hide-scrollbar no-margin-top">
 			<li ng-repeat="(key, group) in groups | filter:searchgroup" ng-if="group.function === 'groupschat' && !is_deleted" data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , 0 , group.chat_name, 'groupschat', group.friends , group.userIsAdmin, key)"  ng-if="group.confirmed" class="first-letter-capital friend-item js-give-active">
-				<p class="friend-name">@{{group.chat_name}} </p>
-				<span class="unread-messages" ng-if="friend.unread_messages">@{{friend.unread_messages}}</span>
+				<p class="friend-name truncate">@{{group.chat_name}} </p>
+				<span class="unread-messages v-align" ng-if="friend.unread_messages">@{{friend.unread_messages}}</span>
 			</li>
 		</ul>
 	</div>
@@ -33,7 +33,7 @@
 				    <div class="input-field">
 				      <input id="search-groups" type="search" placeholder="search groups" ng-model="searchgroup" autocomplete="off" required>
 				      <label class="label-icon" for="search-groups"><i class="material-icons">search</i></label>
-				      <i class="material-icons">close</i>
+				      <i class="material-icons js-empty-input">close</i>
 				    </div>
 				  </form>
 				</div>
@@ -68,7 +68,7 @@
 				    <div class="input-field">
 				      <input id="search-groupfriends" type="search" placeholder="add friends" autocomplete="off" ng-model="newFriendInput" required>
 				      <label class="label-icon" for="search-groupfriends"><i class="material-icons">search</i></label>
-				      <i class="material-icons close-search">close</i>
+				      <i class="material-icons close-search js-empty-input">close</i>
 				    </div>
 				  </form>
 				</div>

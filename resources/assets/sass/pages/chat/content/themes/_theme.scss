@@ -4,6 +4,17 @@
 
 	.margin-div{
 		height: 100%;
+		// scrollbar
+	    @media screen and (-webkit-min-device-pixel-ratio:0) {  
+			padding-right: 5px;
+	    }
+		@supports (-ms-ime-align:auto) {
+			padding-right: $gutter;
+		}
+
+		& .card:first-child {
+			margin-top: 0;
+		}
 	}
 
 	h2{

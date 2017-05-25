@@ -10,9 +10,33 @@
 		.tabs{
 			height: 100%;
 
+			.chat-tab i{
+				
+			}
+
+			a {
+				padding: 0 $gutter;
+
+				i, span {
+					display: inline-block;
+				}
+
+				span {
+					max-width: 70%;
+				}
+
+				i {
+					vertical-align: top;
+					font-size: 30px;
+					margin: 0 $gutter;
+					line-height: 50px;
+					height: 50px;
+					font-size: 29px;
+				}
+			}
+
 			a span{
 				font-size: $font-large;
-				width: 58%;
 			}
 
 			.indicator{

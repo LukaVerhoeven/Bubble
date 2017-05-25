@@ -6,6 +6,7 @@ import externalLink from './helpers/externalLink';
 import PreventDefault from './helpers/preventDefault';
 import SlideOpen from './helpers/slideOpen';
 import GiveActive from './helpers/giveActive';
+import EmptyInput from './helpers/emptyInput';
 // import ParentSelector from './helpers/parentSelector';
 import chatSettings from './pages/chatSettings';
 import Conversation from './pages/Conversation';
@@ -43,6 +44,7 @@ class App {
         this.externallink = new externalLink();
         this.preventdefault = new PreventDefault();
         this.giveactive = new GiveActive();
+        this.emptyinput = new EmptyInput();
         // this.autoscrolldownchat = new AutoScrollDownChat();
         this.slideopen = new SlideOpen();
         // this.parentselector = new ParentSelector();

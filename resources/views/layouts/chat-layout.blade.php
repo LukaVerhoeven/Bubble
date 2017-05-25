@@ -20,12 +20,12 @@
 					<header class="row red darken-1">
 						<!-- profile info -->
 						<div class="valign-wrapper profile-info">
-							<div class="col s4 no-pad  img-overflow circle center fixed">
+							<div class="no-pad  img-overflow circle center fixed">
 								<img class="profile-pic " src="{{ Auth::user()->profile_image }}" alt="">
 							</div>
-							<div class="col s8 fixed"si>
-								<h1 class="bubble-username js-username">{{ Auth::user()->name }}</h1>
-								<h2 class="bubble-email js-email">{{ Auth::user()->email }}</h2>
+							<div class="fixed user-info">
+								<h1 class="bubble-username js-username truncate first-letter-capital">{{ Auth::user()->name }}</h1>
+								<h2 class="bubble-email js-email truncate">{{ Auth::user()->email }}</h2>
 							</div>
 						</div>
 						<!-- sidebar menu-items -->
@@ -34,9 +34,9 @@
 								<form id="logout" action="/logout" method="POST">
 								{{ csrf_field() }}
 								<ul class="tabs tabs-transparent valign-wrapper red darken-1">
-									<li class="tab" onclick=""><a  href="#" onclick="document.getElementById('logout').submit()"><i class="small material-icons col s2 ">input</i></a></li>
+									<li class="tab"><a href="#logout-tab"><i class="bubble-icon logout col s2"></i></a></li>
 									<li class="tab "><a href="#profilesettings"><i class="small material-icons col s2">settings</i></a></li>
-									<li class="tab "><a href="#profile"><i class="small material-icons col s2 ">perm_identity</i></a></li>
+									<li class="tab "><a href="#profile"><i class="small bubble-icon profile col s2 "></i></a></li>
 									<li class="tab "><a class="active" href="#friends"><i class="bubble-icon friend"></i></a></li>
 									<li class="tab "><a href="#groups"><i class="bubble-icon group"></i></a></li>
 								</ul>
@@ -48,6 +48,10 @@
 
 					<!-- sidebar content -->
 					<section class="side-nav-content row">
+						<div id="logout-tab" class="col s12 no-pad tab-item">
+							<h2 class="side-header card">Logout</h2>
+							<a class="btn red waves-effect waves-light" href="" onclick="document.getElementById('logout').submit()">Logout</a>
+						</div>
 						<div id="profilesettings" class="col s12 no-pad tab-item"><h2 class="side-header card">Settings</h2></div>
 						@include('sidebar.profile')
 						@include('sidebar.friends')
@@ -66,9 +70,9 @@
 						<nav class="nav-extended" ng-controller="NavController">
 							<div class="nav-content red darken-1">
 								<ul class="tabs tabs-transparent valign-wrapper">
-									<li class="tab col s4 conversation-tab"><a class="active" href="#chat-section"><i class="small material-icons  col s2 offset-s3">chatbubble</i><span class="col s2 truncate">@{{ chatname }} </span></a></li>
-									<li class="tab col s4 theme-tab"><a href="#themes"><i class="small material-icons  col s2 offset-s3">loyalty</i><span class="col s2">Theme</span></a></li>
-									<li class="tab col s4 settings-tab"><a href="#chat-settings"><i class="small material-icons  col s2 offset-s3">settings</i><span class="col s2">settings</span></a></li>
+									<li class="tab col s4 conversation-tab chat-tab"><a class="active" href="#chat-section"><i class="bubble-icon friend"></i><span class="truncate">@{{ chatname }} </span></a></li>
+									<li class="tab col s4 theme-tab"><a href="#themes"><i class="small material-icons">loyalty</i><span>Theme</span></a></li>
+									<li class="tab col s4 settings-tab"><a href="#chat-settings"><i class="small material-icons ">settings</i><span >settings</span></a></li>
 								</ul>
 							</div>
 						</nav>

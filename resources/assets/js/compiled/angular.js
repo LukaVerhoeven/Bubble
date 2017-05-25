@@ -168,16 +168,20 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                                         obj[editKey]++;
                                     }                                    
                                     if(action === 'update'){ //add new element then update
-                                        var prop = editKey;
-                                        obj[prop] = editValue;
+                                        if(editKey){
+                                            var prop = editKey;
+                                            obj[prop] = editValue;
+                                        }else{
+                                            for (prpty in obj) {
+                                                obj[prpty] = editValue[prpty];
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                         // Retreive data
                         if(action === 'retreive'){
-                            // console.log('key', key, 'value', obj[key], 'myval', value);
-                            // console.log(obj[key] == value)
                            if(value){
                                 if(obj[key] == value){
                                     retreiveData.push(obj[editKey]); 
@@ -293,7 +297,8 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     }
                     if(action === 'retreive'){
                         var foundObj = $rootScope.adjustElementNewArray(array ,[elementValue[0], elementValue[1] ], [keyvalue[0], keyvalue[1]], 'retreive', editValue, editKey,1);
-                        if(foundObj[0]){
+                        console.log(foundObj.length);
+                        if(foundObj.length > 0){
                             editElements.push(obj);
                         }
                     }
@@ -306,9 +311,9 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                 data.splice(index,1);
             });
         }
-        if(editElements.length>0 && action === 'retreive'){
+        if(action === 'retreive'){
             data.splice(0,data.length);
-            data.push.apply(data, editElements);  
+            data.push.apply(data, editElements);
         }
     }
 
@@ -466,6 +471,8 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         }else{
             $rootScope.friendlist[index].unread_messages = 0;
         }
+        // if after 5 seconds content still not loaded => remove the loading screen
+        setTimeout(function(){ $("#load-content").removeClass('active'); console.log('something went wrong')}, 5000);
     }
 
     $rootScope.resetChat = function() {
@@ -964,6 +971,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     $rootScope.message.theme = '1';
     $rootScope.makeBroadcastConnection = false;
     $rootScope.messagesLoaded = 0;
+    $scope.currentAmount = 1;
 
     //UPDATE CHAT
     $scope.successGetMessage = function(response) {
@@ -1109,8 +1117,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                             var keywords = $rootScope.ObjToArray(e.data.keywords);
                             keywords = $rootScope.keywordToObjectArray(keywords);
                             e.data.keywords = keywords;
-                            $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'remove', 0, 0, 0);
-                            $rootScope.themes.push(e.data);
+                            $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'update', e.data, 0, 0);
                             $rootScope.updateMessages(keywords, e.data.color, e.data.id);
                             $rootScope.updateThemeUsage(); //update Theme usage
                         }  
@@ -1142,8 +1149,24 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     $rootScope.messageColor = function(color) {
         $rootScope.message.color = color;
         $scope.scrollDown();
+        $scope.loadMessages();
+        $('#scrollMessages').offset().top;
     }
 
+    // !! TODO !! Danger !! can start to loads All messages ever send => really heavy => maak post call voor theme-messages->paginate()
+    // Keep loading messages until you can scroll in the theme messages
+    $scope.loadMessages = function(){
+        if($('#scrollMessages').offset().top < 100){
+            $rootScope.messages.nextPage();
+            $rootScope.scrollDown();
+            if($('#scrollMessages').offset().top < 100 && $rootScope.messages.itemAmount > $scope.currentAmount){
+                $scope.currentAmount = $rootScope.messages.itemAmount;
+                $scope.loadMessages();  
+            } 
+        }
+    }
+
+    // on refresh or url change => leave chat channel
     $scope.$on('$routeChangeStart', function() {
         Echo.leave($scope.currentChatroom);
     });
@@ -1173,10 +1196,12 @@ app.factory('Messages', function ($http, API_URL, $rootScope) {
         this.items = [];
         this.busy = false;
         this.page = 1;
+        this.itemAmount = 1;
     }
 
     Messages.prototype.nextPage = function() {
         if(this.busy) return;
+        if(this.items.length === this.itemAmount) return;
         this.busy = true;
         var url = API_URL + 'getMessages/'+ $rootScope.chatID +'?page='+this.page;
         $http.get(url).then(function(response){
@@ -1192,6 +1217,7 @@ app.factory('Messages', function ($http, API_URL, $rootScope) {
                 $rootScope.loadingScroll();
             }
         }.bind(this));
+        this.itemAmount = this.items.length;
     }
     
     return Messages;
@@ -1386,22 +1412,28 @@ app.controller('ProfileController', function($scope, $http, API_URL, $rootScope)
 // })
 app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	$scope.NewTheme = {color :"red"};
-	$scope.createNewTheme = function(){
-		$scope.NewTheme.chatid = $rootScope.chatID;
-		$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g,",").replace(/[^a-zA-Z0-9,@#]/g,'');
-		$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/[^a-zA-Z0-9,@#]/g,''); //sanitize
-		if($scope.NewTheme.chatid){
-			$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
-			$scope.resetForm($scope.NewTheme);
-			$scope.NewTheme = {color :"red"};
-			$rootScope.initShortcut();
+	$scope.createNewTheme = function(valid, $event){
+		if($scope.NewTheme.keywordString && $scope.NewTheme.name){
+			$scope.closeForm($event, 'create');
+			$scope.NewTheme.chatid = $rootScope.chatID;
+			$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/\s+/g,",").replace(/[^a-zA-Z0-9,@#]/g,'');
+			$scope.NewTheme.keywordString = $scope.NewTheme.keywordString.replace(/[^a-zA-Z0-9,@#]/g,''); //sanitize
+			if($scope.NewTheme.chatid){
+				$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
+				$scope.resetForm($scope.NewTheme);
+				$scope.NewTheme = {color :"red"};
+				$rootScope.initShortcut();
+			}
 		}
 	}
 
-	$scope.editTheme = function(theme){
-		theme.generalID = $rootScope.generalThemeID;
-		$rootScope.postRequest(theme ,'updateTheme', '');
-		$rootScope.initShortcut();
+	$scope.editTheme = function(theme, $event){
+		if(theme.keywordString && theme.name){
+			$scope.closeForm($event, 'edit');
+			theme.generalID = $rootScope.generalThemeID;
+			$rootScope.postRequest(theme ,'updateTheme', '');
+			$rootScope.initShortcut();
+		}
 	}
 
 
@@ -1440,8 +1472,12 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 						themeMessages.push($rootScope.messages.items[$prop].id);
 					}
 				}
+			}else if ($rootScope.messages.items[$prop].force_theme === themeid) {
+				$rootScope.messages.items[$prop].theme_id = themeid;
+				$rootScope.messages.items[$prop].color = color;
 			}
 		}
+
 		for ($prop in $rootScope.messages.items) {
 			// if messages contains none of the keywords but has the themeID => remove the theme from it
 			if ($rootScope.messages.items[$prop].theme_id == themeid && themeMessages.indexOf($rootScope.messages.items[$prop].id) === -1 && $rootScope.messages.items[$prop].force_theme === 0) {
@@ -1453,7 +1489,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 
 	$rootScope.removeThemeFromMessages = function(themeid){
 		for ($prop in $rootScope.messages.items) {
-			if($rootScope.messages.items[$prop].theme_id == themeid && $rootScope.messages.items[$prop].force_theme === 0){
+			if($rootScope.messages.items[$prop].theme_id == themeid){
 				$rootScope.messages.items[$prop].theme_id = $rootScope.generalThemeID;
 				$rootScope.messages.items[$prop].color = "white";
 			}
@@ -1527,22 +1563,25 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 		});
 	}
 
-	// TODO maak loading screen ( i am creating your theme)
-	// geen theme->id dus kan functie niet gberuiken ( maar wel leerijke functie dus ni weg doen)
-	// $scope.pushNewTheme = function (newCreatedTheme){
-	// 	var newTheme = JSON.parse(JSON.stringify(newCreatedTheme)); //Create unique new object
-	// 	newTheme.themeUsage = "0%";
-	// 	newTheme.is_active = 1;
-	// 	newTheme.is_deleted = 0;
-	// 	newTheme.is_general = 0;
-	// 	newTheme.keywordString = newTheme.keywordString.replace(/\s+/g, ',').toLowerCase();
-	// 	var filteredString = newTheme.keywordString.split(",").filter(function(e){return e}).join(',');
-	// 	var objectString = filteredString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
-	// 	var newJson = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-	// 	newJson = newJson.replace(/'/g, '"');
-	// 	newTheme.keywords = JSON.parse(newJson);
-	// 	$rootScope.themes.push(newTheme);
-	// }
+	$scope.closeForm = function(e, action){
+        e.stopPropagation();
+        var currentElement = $(e.currentTarget);
+        if(action === 'edit'){
+	        var parent = currentElement.parents('.js-theme-card')
+	        var status = parent.find('.js-theme-status');
+	        parent.find('.js-toggle-edit-menu').removeClass('exit-theme');
+	        parent.removeClass('open');
+	        // status message
+			status.css('color','#26a69a');
+            status.html('Theme saved');
+            status.removeClass('hidden').addClass('fadeout');
+
+        }else if (action === 'create') {
+	        var parent = currentElement.parents('.js-slide-menu');
+	        parent.find('.js-toggle-slide-menu').removeClass('close');
+	        parent.removeClass('open-slider');
+        }
+	}
 })
 app.controller('NavController', function($scope, $http, API_URL, $rootScope) {
 

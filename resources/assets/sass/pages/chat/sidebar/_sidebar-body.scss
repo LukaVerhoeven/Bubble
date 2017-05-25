@@ -1,7 +1,10 @@
 .side-nav-content{
 	.side-header{
 		font-size: map-get($font, big);
-		margin-bottom: 0;
-		padding: $gutter;
+		margin: 0;
+		padding: 1rem $gutter;
+	}
+	#logout-tab a {
+		margin-top: $gutter*2;
 	}
 }

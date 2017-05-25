@@ -3,15 +3,15 @@ class SlideOpen {
         this.$toggleSlider = $('.js-toggle-slide-menu');
         this.$slideComponent = '.js-slide-menu';
         this.$swipeSlider = '.js-toggle-edit-menu';
-        this.$submitEdit = '.js-submit-edit-form'; 
         this.init();
     }
 
     init() {
         this.$toggleSlider.on('click', ( event ) => {
             event.stopPropagation();
-            this.$toggleSlider.closest(this.$slideComponent).toggleClass('open-slider');
-            this.$toggleSlider.toggleClass('close');
+            var currentElement = $(event.currentTarget);
+            currentElement.closest(this.$slideComponent).toggleClass('open-slider');
+            currentElement.toggleClass('close');
             // this.$slideComponent.toggleClass('open-slider');
         });
 
@@ -31,16 +31,7 @@ class SlideOpen {
             parent.toggleClass('open');
         });
 
-        $(document).on('click',this.$submitEdit, (event) => {
-            var parent = $(event.currentTarget).parents('.js-theme-card');
-            var status = parent.find('.js-theme-status');
-            var button = parent.find('.exit-theme').removeClass('exit-theme');
-            status.css('color','#26a69a');
-            status.html('Theme saved');
-            status.removeClass('hidden').addClass('fadeout');
-            parent.toggleClass('open');
-        });
-        
+        // close on submit => angular themeController closeForm()
     }
 }
 

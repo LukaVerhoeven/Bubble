@@ -3,6 +3,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     $rootScope.message.theme = '1';
     $rootScope.makeBroadcastConnection = false;
     $rootScope.messagesLoaded = 0;
+    $scope.currentAmount = 1;
 
     //UPDATE CHAT
     $scope.successGetMessage = function(response) {
@@ -148,8 +149,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
                             var keywords = $rootScope.ObjToArray(e.data.keywords);
                             keywords = $rootScope.keywordToObjectArray(keywords);
                             e.data.keywords = keywords;
-                            $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'remove', 0, 0, 0);
-                            $rootScope.themes.push(e.data);
+                            $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'update', e.data, 0, 0);
                             $rootScope.updateMessages(keywords, e.data.color, e.data.id);
                             $rootScope.updateThemeUsage(); //update Theme usage
                         }  
@@ -181,8 +181,24 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     $rootScope.messageColor = function(color) {
         $rootScope.message.color = color;
         $scope.scrollDown();
+        $scope.loadMessages();
+        $('#scrollMessages').offset().top;
     }
 
+    // !! TODO !! Danger !! can start to loads All messages ever send => really heavy => maak post call voor theme-messages->paginate()
+    // Keep loading messages until you can scroll in the theme messages
+    $scope.loadMessages = function(){
+        if($('#scrollMessages').offset().top < 100){
+            $rootScope.messages.nextPage();
+            $rootScope.scrollDown();
+            if($('#scrollMessages').offset().top < 100 && $rootScope.messages.itemAmount > $scope.currentAmount){
+                $scope.currentAmount = $rootScope.messages.itemAmount;
+                $scope.loadMessages();  
+            } 
+        }
+    }
+
+    // on refresh or url change => leave chat channel
     $scope.$on('$routeChangeStart', function() {
         Echo.leave($scope.currentChatroom);
     });
@@ -212,10 +228,12 @@ app.factory('Messages', function ($http, API_URL, $rootScope) {
         this.items = [];
         this.busy = false;
         this.page = 1;
+        this.itemAmount = 1;
     }
 
     Messages.prototype.nextPage = function() {
         if(this.busy) return;
+        if(this.items.length === this.itemAmount) return;
         this.busy = true;
         var url = API_URL + 'getMessages/'+ $rootScope.chatID +'?page='+this.page;
         $http.get(url).then(function(response){
@@ -231,6 +249,7 @@ app.factory('Messages', function ($http, API_URL, $rootScope) {
                 $rootScope.loadingScroll();
             }
         }.bind(this));
+        this.itemAmount = this.items.length;
     }
     
     return Messages;

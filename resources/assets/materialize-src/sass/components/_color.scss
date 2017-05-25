@@ -378,6 +378,7 @@ $colors: (
       }   
       .#{$color_name}-before:before {
         color: $color_value !important;
+        border-color: $color_value !important;
       }   
       .#{$color_name}-radio:after {
         background-color: $color_value !important;
