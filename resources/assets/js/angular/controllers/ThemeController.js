@@ -1,5 +1,6 @@
 app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
-	$scope.NewTheme = {color :"red"};
+	$scope.initvalue = {color :"red", icon:"school",shortcut:"A"}
+	$scope.NewTheme = $scope.initvalue;
 	$scope.createNewTheme = function(valid, $event){
 		if($scope.NewTheme.keywordString && $scope.NewTheme.name){
 			$scope.closeForm($event, 'create');
@@ -9,7 +10,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 			if($scope.NewTheme.chatid){
 				$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
 				$scope.resetForm($scope.NewTheme);
-				$scope.NewTheme = {color :"red"};
+				$scope.NewTheme = $scope.initvalue;
 				$rootScope.initShortcut();
 			}
 		}
@@ -29,6 +30,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	    for (var prop in form) {
 	    	form[prop] = null;
 	    }
+	    $('#createThemeForm input').removeClass('valid');
 	    $scope.createThemeForm.$setPristine();
 	    $scope.createThemeForm.$setUntouched();
 	}

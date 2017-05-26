@@ -70,6 +70,7 @@
 						<nav class="nav-extended" ng-controller="NavController">
 							<div class="nav-content red darken-1">
 								<ul class="tabs tabs-transparent valign-wrapper">
+									<li><a href="#" data-activates="sidebar" class="button-collapse hamburger"><i class="material-icons">menu</i></a></li>
 									<li class="tab col s4 conversation-tab chat-tab"><a class="active" href="#chat-section"><i class="bubble-icon friend"></i><span class="truncate">@{{ chatname }} </span></a></li>
 									<li class="tab col s4 theme-tab"><a href="#themes"><i class="small material-icons">loyalty</i><span>Theme</span></a></li>
 									<li class="tab col s4 settings-tab"><a href="#chat-settings"><i class="small material-icons ">settings</i><span >settings</span></a></li>
@@ -107,13 +108,13 @@
 			window.Laravel = { 'csrfToken' : '{{ csrf_token() }}' };
 		</script>
 		
-		{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> --}}
+		 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>  -->
 		{{-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script> --}}
 		{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.6.4/angular-sanitize.js"></script> --}}
 
 		<script src="//js.pusher.com/4.0/pusher.min.js"></script>
 		<script src="/js/all.js"></script>
-		<script src="/js/materialize.js"></script>
+		<script src="/js/materialize.min.js"></script>
 		{{-- <script src="//cdnjs.cloudflare.com/ajax/libs/ngInfiniteScroll/1.3.0/ng-infinite-scroll.js"></script> --}}
 		{{-- <script src="/js/angular.js"></script> --}}
 		{{-- <script src="{{ asset('js/angular/app.js') }}"></script> --}}

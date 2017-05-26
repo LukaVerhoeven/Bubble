@@ -43,12 +43,19 @@
 ::-webkit-scrollbar {
   width: 8px;
   height: 4px;
+
 }
 
 ::-webkit-scrollbar-track {
   box-shadow: none;
   border-radius: 8px;
   background-color: transparent;
+  
+  &:hover{
+      box-shadow: none;
+      border-radius: 8px;
+      background-color: rgba(224, 220, 220, 0.51);
+  }
 }
 
 ::-webkit-scrollbar-thumb {
@@ -56,4 +63,10 @@
   background-color: red;
   box-shadow: none;
   background-color: transparent;
+
+  &:hover{
+      border-radius: 10px;
+      box-shadow: none;
+      background-color: rgba(70, 70, 70, 0.51);
+  }  
 }

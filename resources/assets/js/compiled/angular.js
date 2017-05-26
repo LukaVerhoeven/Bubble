@@ -1,7 +1,7 @@
 var app = angular.module('bubble',['ngSanitize'])
-        // .constant('API_URL','http://bubble.local/api/');
+        .constant('API_URL','http://bubble.local/api/');
         // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
-        .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
+        // .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
 app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) {
     //************ GLOBAL FUNCTIONS ************
     // ERROR
@@ -451,8 +451,8 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
         // Get messages and enter chatBroadcast channel
         $(".conversation-tab a")[0].click();
-        $("#load-content").addClass('active');
         if(chatID != $rootScope.chatID){
+            $("#load-content").addClass('active');
             $rootScope.makeBroadcastConnection = true;
             $rootScope.updateChat(chatID);
         }
@@ -472,7 +472,11 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
             $rootScope.friendlist[index].unread_messages = 0;
         }
         // if after 5 seconds content still not loaded => remove the loading screen
-        setTimeout(function(){ $("#load-content").removeClass('active'); console.log('something went wrong')}, 5000);
+        setTimeout(function(){ 
+            if($("#load-content").hasClass('active')){
+                $("#load-content").removeClass('active'); console.log('%cMessages not loaded', 'color: red')
+            }
+        }, 5000);
     }
 
     $rootScope.resetChat = function() {
@@ -1411,7 +1415,8 @@ app.controller('ProfileController', function($scope, $http, API_URL, $rootScope)
 //   }
 // })
 app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
-	$scope.NewTheme = {color :"red"};
+	$scope.initvalue = {color :"red", icon:"school",shortcut:"A"}
+	$scope.NewTheme = $scope.initvalue;
 	$scope.createNewTheme = function(valid, $event){
 		if($scope.NewTheme.keywordString && $scope.NewTheme.name){
 			$scope.closeForm($event, 'create');
@@ -1421,7 +1426,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 			if($scope.NewTheme.chatid){
 				$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
 				$scope.resetForm($scope.NewTheme);
-				$scope.NewTheme = {color :"red"};
+				$scope.NewTheme = $scope.initvalue;
 				$rootScope.initShortcut();
 			}
 		}
@@ -1441,6 +1446,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	    for (var prop in form) {
 	    	form[prop] = null;
 	    }
+	    $('#createThemeForm input').removeClass('valid');
 	    $scope.createThemeForm.$setPristine();
 	    $scope.createThemeForm.$setUntouched();
 	}

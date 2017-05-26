@@ -10299,10 +10299,9 @@ return jQuery;
 
 /* WEBPACK VAR INJECTION */(function($) {var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var app = angular.module('bubble', ['ngSanitize'])
-// .constant('API_URL','http://bubble.local/api/');
+var app = angular.module('bubble', ['ngSanitize']).constant('API_URL', 'http://bubble.local/api/');
 // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
-.constant('API_URL', 'http://bubble-lukaverhoeven.c9users.io/api/');
+// .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
 app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope) {
     //************ GLOBAL FUNCTIONS ************
     // ERROR
@@ -10759,8 +10758,8 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
     $rootScope.openChat = function (chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
         // Get messages and enter chatBroadcast channel
         $(".conversation-tab a")[0].click();
-        $("#load-content").addClass('active');
         if (chatID != $rootScope.chatID) {
+            $("#load-content").addClass('active');
             $rootScope.makeBroadcastConnection = true;
             $rootScope.updateChat(chatID);
         }
@@ -10783,7 +10782,9 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         }
         // if after 5 seconds content still not loaded => remove the loading screen
         setTimeout(function () {
-            $("#load-content").removeClass('active');console.log('something went wrong');
+            if ($("#load-content").hasClass('active')) {
+                $("#load-content").removeClass('active');console.log('%cMessages not loaded', 'color: red');
+            }
         }, 5000);
     };
 
@@ -11709,7 +11710,8 @@ app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope
 //   }
 // })
 app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) {
-    $scope.NewTheme = { color: "red" };
+    $scope.initvalue = { color: "red", icon: "school", shortcut: "A" };
+    $scope.NewTheme = $scope.initvalue;
     $scope.createNewTheme = function (valid, $event) {
         if ($scope.NewTheme.keywordString && $scope.NewTheme.name) {
             $scope.closeForm($event, 'create');
@@ -11719,7 +11721,7 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
             if ($scope.NewTheme.chatid) {
                 $rootScope.postRequest($scope.NewTheme, 'NewTheme', '');
                 $scope.resetForm($scope.NewTheme);
-                $scope.NewTheme = { color: "red" };
+                $scope.NewTheme = $scope.initvalue;
                 $rootScope.initShortcut();
             }
         }
@@ -11738,6 +11740,7 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
         for (var prop in form) {
             form[prop] = null;
         }
+        $('#createThemeForm input').removeClass('valid');
         $scope.createThemeForm.$setPristine();
         $scope.createThemeForm.$setUntouched();
     };
@@ -11916,14 +11919,16 @@ app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_Conversation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_Conversation__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_themes__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_themes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_themes__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_profile_settings__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_profile_settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_profile_settings__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_angular__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular_sanitize__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular_sanitize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_angular_sanitize__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_laravel_echo__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_laravel_echo__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_general__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_general___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_general__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_profile_settings__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_profile_settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_profile_settings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_angular__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_angular_sanitize__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_angular_sanitize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_angular_sanitize__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_laravel_echo__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_laravel_echo__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -11938,6 +11943,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
 // import ParentSelector from './helpers/parentSelector';
+
 
 
 
@@ -11984,7 +11990,8 @@ var App = function () {
         this.chatsettings = new __WEBPACK_IMPORTED_MODULE_7__pages_chatSettings___default.a();
         this.conversation = new __WEBPACK_IMPORTED_MODULE_8__pages_Conversation___default.a();
         this.themes = new __WEBPACK_IMPORTED_MODULE_9__pages_themes___default.a();
-        this.profilesettings = new __WEBPACK_IMPORTED_MODULE_10__pages_profile_settings___default.a();
+        this.profilesettings = new __WEBPACK_IMPORTED_MODULE_11__pages_profile_settings___default.a();
+        this.general = new __WEBPACK_IMPORTED_MODULE_10__pages_general___default.a();
     }
 
     _createClass(App, [{
@@ -12005,7 +12012,7 @@ $(document).ready(function () {
 
 
 
-window.Echo = new __WEBPACK_IMPORTED_MODULE_13_laravel_echo___default.a({
+window.Echo = new __WEBPACK_IMPORTED_MODULE_14_laravel_echo___default.a({
     cluster: 'eu',
     broadcaster: 'pusher',
     key: '02588819c60d53b60c81'
@@ -46265,7 +46272,7 @@ var Scrolling = function () {
                 clearTimeout($.data(this, 'scrollTimer'));
                 $.data(this, 'scrollTimer', setTimeout(function () {
                     $(e.target).removeClass("scolling");
-                }, 250));
+                }, 500));
             }, true);
         }
     }]);
@@ -47503,6 +47510,64 @@ __webpack_require__(1);
 __webpack_require__(3);
 module.exports = __webpack_require__(4);
 
+
+/***/ }),
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var General = function () {
+    function General() {
+        _classCallCheck(this, General);
+
+        this.init();
+    }
+
+    _createClass(General, [{
+        key: "init",
+        value: function init() {
+            // mobile sidebar
+            $("#slide-out").sideNav();
+            $(".button-collapse").sideNav();
+            $('.button-close-nav').sideNav({
+                menuWidth: 300, // Default is 240
+                closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            });
+        }
+    }]);
+
+    return General;
+}();
+
+module.exports = General;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ })
 /******/ ]);

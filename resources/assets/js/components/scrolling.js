@@ -12,7 +12,7 @@ class Scrolling {
            clearTimeout($.data(this, 'scrollTimer'));
             $.data(this, 'scrollTimer', setTimeout(function() {
                 $(e.target).removeClass("scolling");
-            }, 250));
+            }, 500));
         },true);
        
     }

@@ -19,7 +19,9 @@
 			cursor: pointer;
 		}
 	}
-
+	.message-scroll-container{
+		overflow-x: hidden;
+	}
 	.message-wrapper {
 		width: 100%;
 

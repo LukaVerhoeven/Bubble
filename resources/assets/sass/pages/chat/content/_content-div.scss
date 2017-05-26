@@ -11,7 +11,11 @@ html,body{
 	#content{
 		height:100%;
 		margin-bottom:0;
-		margin-left: $sidebar-width;
+		margin-left: 0;
+
+		@include media($large-screen-up) {
+			margin-left: $sidebar-width;
+		}
 
 		.content-div{
 			height: 100%;

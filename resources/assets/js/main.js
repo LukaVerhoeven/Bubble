@@ -11,6 +11,7 @@ import EmptyInput from './helpers/emptyInput';
 import chatSettings from './pages/chatSettings';
 import Conversation from './pages/Conversation';
 import Themes from './pages/themes';
+import General from './pages/general';
 import ProfileSettings from './pages/profile-settings';
 // import pusher from './plugins/Pusher';
 // import Sugar from 'sugar';
@@ -53,6 +54,7 @@ class App {
         this.conversation = new Conversation();
         this.themes = new Themes();
         this.profilesettings = new ProfileSettings();
+        this.general = new General();
 
 
     }
