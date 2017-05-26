@@ -1,6 +1,6 @@
 // Define your breakpoints
 $small-screen: em(415);
-$medium-screen: em(769);
+$medium-screen: em(767);
 $large-screen: em(1025);
 
 $small-screen-down: new-breakpoint(max-width $small-screen 2);

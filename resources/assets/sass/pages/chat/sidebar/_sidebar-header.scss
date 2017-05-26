@@ -1,9 +1,9 @@
 #sidebar {
 	width: $sidebar-width-mobile;
-	
-	@include media($large-screen-up) {
+
+	@include media($medium-screen-up) {
 		width: $sidebar-width;
-	}
+	}	
 
 	.sidebar {
 		height: 100%;

@@ -47557,9 +47557,10 @@ var General = function () {
             // mobile sidebar
             $("#slide-out").sideNav();
             $(".button-collapse").sideNav();
-            $('.button-close-nav').sideNav({
-                menuWidth: 300, // Default is 240
-                closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            $(document).on('click', '.button-close-nav', function () {
+                $(".drag-target").trigger("click");
+                console.log($(".drag-target"));
+                return false;
             });
         }
     }]);

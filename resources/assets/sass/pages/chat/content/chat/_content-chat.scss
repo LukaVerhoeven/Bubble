@@ -108,8 +108,15 @@
 			color: #252525;
 			position: absolute;
 			padding: 0 20px;
+			height: 54px;
+			line-height: 54px;
 			opacity: .7;
 			cursor: pointer;
+
+			@include media($medium-screen-up) {
+				height: 64px;
+				line-height: 64px;
+			}			
 		}
 
 		.input-field{
