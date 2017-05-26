@@ -109,7 +109,6 @@ class ChatController extends Controller
         $chatID = array();
         $groupchats = array();
         $groupchatsNoUsers = array();
-        dd($user);
         // Retreive ALL chats ( friendchats + groupchats)
         $chats = UsersInChat::where('users_in_chats.user_id', $user->id)
                 ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
