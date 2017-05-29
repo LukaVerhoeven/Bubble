@@ -10441,18 +10441,21 @@ body {
   transition: max-height 0.5s ease-out;
 }
 
-#themes .theme-card.open {
+#themes .theme-card.open,
+#themes .theme-card.open-slider {
   max-height: 1400px;
 }
 
 @media only screen and (max-width: 1190px) and (min-width: 1025px) {
-  #themes .theme-card.open {
+  #themes .theme-card.open,
+  #themes .theme-card.open-slider {
     max-height: 750px !important;
   }
 }
 
 @media screen and (min-width: 47.9375em) {
-  #themes .theme-card.open {
+  #themes .theme-card.open,
+  #themes .theme-card.open-slider {
     max-height: 675px;
   }
 }
@@ -10570,10 +10573,6 @@ body {
 #themes .new-theme h2 {
   margin-top: .8rem;
   margin-left: 0.75rem;
-}
-
-#themes .new-theme.open-slider {
-  max-height: 100%;
 }
 
 #themes .new-theme .arrow-toggle i {

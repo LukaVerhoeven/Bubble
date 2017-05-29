@@ -33,7 +33,7 @@
 		max-height: 121px;
 		@include transition(max-height .5s ease-out);
 
-		&.open{
+		&.open, &.open-slider{
 			max-height: 1400px;
 
 			@media only screen and (max-width:1190px) and (min-width: 1025px){
@@ -150,10 +150,6 @@
 		h2{
 			margin-top: .8rem;
 			margin-left: $gutter;
-		}
-
-		&.open-slider{
-			max-height: 100%;
 		}
 
 		.arrow-toggle i{
