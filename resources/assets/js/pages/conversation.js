@@ -1,9 +1,10 @@
 class Conversation {
-    constructor() {
+    constructor(isMobile) {
         this.$emojiClick = $('.js-emoji-click');
         this.$emojiPopup = $('.js-emoji-popup');
         this.$emoji = $('.js-emoji');
         this.$message = $('.js-message');
+        this.isMobile = isMobile;
         this.emojis();
     }
 
@@ -16,7 +17,9 @@ class Conversation {
             var textValue = this.$message.val();
             var emojiCode = $(e.currentTarget).data('value');
             this.$message.val(textValue+ ' :'+ emojiCode +':');
-            this.$message.focus();
+            if(!this.isMobile){
+                this.$message.focus();
+            }
         });
     }
 }
