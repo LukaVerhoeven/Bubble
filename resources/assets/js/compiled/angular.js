@@ -769,6 +769,8 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
                 if(friendrequest){
                     $scope.removeRequest(friendID);
                     $rootScope.addFriend(response.data);
+                    // TODO loginBroadcast naar 1 persoon
+                    $scope.loginBroadcast();
                 }
             }, $rootScope.errorCallback);
     }

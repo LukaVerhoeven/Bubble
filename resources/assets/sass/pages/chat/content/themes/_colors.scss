@@ -30,7 +30,7 @@
 
 		input[type="radio"]:not(:checked)~i, [type="radio"]:checked~a{
 			background-color:white !important;
-			color: #26A69A;
+			color: map-get($colors, red);
 			// box-shadow: none;
 			
 		}
@@ -39,6 +39,10 @@
 			position: relative;
 		}
 
+		i{
+			box-shadow: none;
+		}
+		
 		a{
 			padding: 0 .5rem;
 		}

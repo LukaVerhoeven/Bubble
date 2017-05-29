@@ -86,6 +86,7 @@ class MessageController extends Controller
             // forced messages and no-theme messages
             $color = $theme->color;
             $forceTheme = 0;
+            $lowerMsg = strtolower($text);
             //normal messages that contains theme-word
             if($theme->is_general === 1){
                 // if no theme was selected => check theme
@@ -96,7 +97,7 @@ class MessageController extends Controller
                             ->join('keywords','keywords.theme_id','themes.id')->get();
                 foreach ($keywords as $key => $word) {
                     if($word->word){
-                        if (strpos($text, $word->word) !== false) {
+                        if (strpos($lowerMsg, $word->word) !== false) {
                             $color = $word->color;
                             $themeid = $word->theme_id;
                             break;

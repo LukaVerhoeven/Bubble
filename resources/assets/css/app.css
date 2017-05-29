@@ -1030,12 +1030,17 @@ body {
 #themes .new-theme-shortcut input[type="radio"]:not(:checked) ~ i,
 #themes .new-theme-shortcut [type="radio"]:checked ~ a {
   background-color: white !important;
-  color: #26A69A;
+  color: #d32f2f;
 }
 
 #themes .new-theme-icon .new-shortcut,
 #themes .new-theme-shortcut .new-shortcut {
   position: relative;
+}
+
+#themes .new-theme-icon i,
+#themes .new-theme-shortcut i {
+  box-shadow: none;
 }
 
 #themes .new-theme-icon a,
@@ -1112,7 +1117,19 @@ body {
 }
 
 #themes .theme-card.open {
-  max-height: 675px;
+  max-height: 1400px;
+}
+
+@media only screen and (max-width: 1190px) and (min-width: 1025px) {
+  #themes .theme-card.open {
+    max-height: 750px !important;
+  }
+}
+
+@media screen and (min-width: 47.9375em) {
+  #themes .theme-card.open {
+    max-height: 675px;
+  }
 }
 
 #themes .theme-card h2 {
@@ -1534,8 +1551,8 @@ body {
 #friends .bottom.full,
 #groups .bottom.full {
   z-index: 50;
-  height: calc(100% - 136px);
-  top: 136px;
+  height: calc(100% - 131px);
+  top: 131px;
 }
 
 #friends .bottom.full .search-new-friends,
