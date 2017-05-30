@@ -1,0 +1,32 @@
+class AnimateWidthAuto {
+    constructor() {
+    	this.$get = $('.js-get-width');
+    	this.$element = $('.js-auto-width');
+        this.init();
+    }
+
+    init() {
+       this.$get.on('click', () => {
+        	this.setWidth();
+       });        
+    }
+
+    setWidth() {
+    	if(this.$element){
+		    $.each(this.$element, function(index, value){
+		    	var element = $(this);
+		    	// when the element is loaded ( => give width )
+		    	var WaitForWidth = setInterval(function(){
+		    					if(element.width() > 0){
+		    						clearInterval(WaitForWidth);
+       								element.css('width', $(element).width() + 'px');
+		    					}
+		    			}, 250);
+		    	// clear interval after 3seconds
+				setTimeout(function(){ clearInterval(WaitForWidth); }, 3000);
+		    })
+    	}
+    }
+}
+
+export default AnimateWidthAuto;

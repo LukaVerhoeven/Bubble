@@ -27,53 +27,53 @@
 	<div class="js-bottom-group bottom">
 		<div class="white col s12">
 			<!-- buttons & input -->
-			<nav class="js-search-friends search-friends">
+			<div class="js-search-friends search-friends">
 				<div class="nav-wrapper">
-				  <form>
 				    <div class="input-field">
-				      <input id="search-groups" type="search" placeholder="search groups" ng-model="searchgroup" autocomplete="off" required>
+				      <input id="search-groups" type="search" placeholder="search groups" ng-model="searchgroup" autocomplete="off">
 				      <label class="label-icon" for="search-groups"><i class="material-icons">search</i></label>
 				      <i class="material-icons js-empty-input">close</i>
 				    </div>
-				  </form>
 				</div>
-			</nav>
-			<a class="js-add-friend btn waves-effect waves-light add-friend">Create group<i class="material-icons close-add-friend">clear</i></a>
-			<div class="title-wrapper">
-				<input id="createGroupsName" type="text" placeholder="Chatname" ng-model="newGroup.chatname">
 			</div>
-			<!-- TODO filter laten werken ( endless scroll fixen ?) -->
-			
-			<!-- search results: users added to the group -->
-			<ul class="collection" ng-if="newGroup.friends.length > 0">
-				<li class="collection-item red" data-id="@{{friend.id}}" ng-repeat="friend in newGroup.friends">
-					<p class="name">@{{friend.name}}</p>
-				    <a href="#!" class="secondary-content" ng-click="toggleFriendToGroup(friend.chatid, newGroup.friends, friendsForGroup )">
-						<i class="material-icons">remove</i>
-				    </a> 
-				</li>
-			</ul>
-			<!-- search results: users -->
-			<ul class="collection" ng-if="friendlist.length > 0">
-				<li class="collection-item" data-id="@{{friend.id}}" ng-repeat="friend in friendlist | filter:newFriendInput"> 
-					<p class="name">@{{friend.name}}</p>
-				    <a href="#!" class="secondary-content" ng-click="toggleFriendToGroup(friend.chatid, friendsForGroup, newGroup.friends)">
-						<i class="material-icons">add</i>
-				    </a> 
-				</li>
-			</ul>
-			<nav class="search-new-groups">
-				<div class="nav-wrapper">
-				  <form>
-				    <div class="input-field">
-				      <input id="search-groupfriends" type="search" placeholder="add friends" autocomplete="off" ng-model="newFriendInput" required>
-				      <label class="label-icon" for="search-groupfriends"><i class="material-icons">search</i></label>
-				      <i class="material-icons close-search js-empty-input">close</i>
-				    </div>
-				  </form>
+			<a class="js-add-friend btn waves-effect waves-light add-friend">Create group<i class="material-icons close-add-friend">clear</i></a>
+			<form ng-submit="createGroup(newGroup.$valid)" id="createGroupForm" name="createGroupForm">
+				<div class="title-wrapper">
+					<input class="validate" autocomplete="off" id="createGroupsName" type="text" placeholder="Chatname" ng-model="newGroup.chatname" required>
 				</div>
-			</nav>
-			<a class="js-add-group btn waves-effect waves-light close-add-friend" ng-click="createGroup()">Create</a>
+				<!-- TODO filter laten werken ( endless scroll fixen ?) -->
+				
+				<!-- search results: users added to the group -->
+				<h2 ng-if="newGroup.friends.length > 0">Friends added to this group</h2>
+				<ul class="collection js-newGroupFriends" ng-if="newGroup.friends.length > 0">
+					<li class="collection-item teal-border newGroupFriends" data-id="@{{friend.id}}" ng-repeat="friend in newGroup.friends">
+						<p class="name">@{{friend.name}}</p>
+					    <a href="#!" class="secondary-content" ng-click="toggleFriendToGroup(friend.chatid, newGroup.friends, friendsForGroup )">
+							<i class="material-icons">remove</i>
+					    </a> 
+					</li>
+				</ul>
+				<!-- search results: users -->
+				<h2 ng-if="friendlist.length > 0">Your friends</h2>
+				<ul class="collection" ng-if="friendlist.length > 0">
+					<li class="collection-item" data-id="@{{friend.id}}" ng-repeat="friend in friendlist | filter:newFriendInput"> 
+						<p class="name">@{{friend.name}}</p>
+					    <a href="#!" class="secondary-content" ng-click="toggleFriendToGroup(friend.chatid, friendsForGroup, newGroup.friends)">
+							<i class="material-icons">add</i>
+					    </a> 
+					</li>
+				</ul>
+				<div class="search-new-groups" ng-if="friendlist.length > 0">
+					<div class="nav-wrapper">
+					    <div class="input-field">
+					      <input id="search-groupfriends" type="search" placeholder="search friends" autocomplete="off" ng-model="newFriendInput">
+					      <label class="label-icon" for="search-groupfriends"><i class="material-icons">search</i></label>
+					      <i class="material-icons close-search js-empty-input">close</i>
+					    </div>
+					</div>
+				</div>
+				<button type="submit" class="js-add-group js-creategroup col s12 submit-group-form btn waves-effect waves-light close-add-friend">Create</button>
+			</form>
 		</div>
 	</div>
 </div>

@@ -487,6 +487,15 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.messages.items = null;
     }
 
+    $rootScope.logout = function() {
+        $scope.logoutData = {};
+        $scope.logoutData.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist , 0,'userid', 'retreive',0,0,0);;
+        $scope.logoutData.authid = $rootScope.Authuserid;
+        if($scope.logoutData.friendids.length>0){
+            $rootScope.postRequest($scope.logoutData ,'sendLogout', '');
+        }        
+    }
+
     // REMOVE LOADING SCREEN WHEN ANGULAR IS LOADED
     $scope.$watch('$viewContentLoaded', function()
     {
@@ -556,11 +565,13 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
                         $rootScope.postRequest($scope.onlinestate ,'onlineAnswer', '');
                     }
+                    if(e.event === 'sendOffline'){
+                        $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 0, 'isOnline', 0);
+                    }
                     if(e.event === 'receiveOnline'){
                         $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
                     }
                     if(e.event === 'unreadmessage'){
-                        console.log(e)
                         $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'chatid', 'increment', 1, 'unread_messages', 0);
                     }                    
                 });

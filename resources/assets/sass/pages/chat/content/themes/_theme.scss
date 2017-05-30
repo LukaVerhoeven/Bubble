@@ -45,23 +45,41 @@
 			}
 		}
 
+		.right-side, .left-side{
+			width: 50%;
+			display: inline-block;
+		}
+
 		h2{
 			vertical-align: top;
 			margin-top: .5rem;
+			width: calc(100% - 61px);
+			margin-right: 0;
 		}
 		
 		.theme-line{
 			height: 50px;
+			&:nth-child(2){
+				.left-side{
+					width: 68%;
+				}
+				.right-side{
+					width: 32%
+				}
+			}
+
 		}
 		
 		.theme-status{
 			display: inline-block;
 			float: left;
 			opacity: 1;
+			margin: 0 $gutter;
 			margin-top: 11px;
 			margin-bottom: 0;
-			margin-right: $gutter;
+			width: calc(100% - 61px);
 			@include transition(opacity 1s linear 2s);
+			
 
 			&.fadeout{
 				opacity: 0;
@@ -101,6 +119,11 @@
 			margin-left: 5px;
 			font-size: 30px;
 		}
+
+		.keywords{
+			width: calc(100% - 63px);
+		}
+
 		.keywords, .shortcut{
 			vertical-align: top;
 			margin: 0;
@@ -140,7 +163,7 @@
 
 	.new-theme{
 		overflow: hidden;
-		max-height: 8%;
+		max-height: 4.3rem;
 		transition: max-height 1s ease-out;
 		
 		form{

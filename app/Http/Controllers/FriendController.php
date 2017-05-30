@@ -160,7 +160,23 @@ class FriendController extends Controller
         }
     }
 
- public function receiveOnline(Request $request)
+    public function sendOffline(Request $request)
+    {
+        $this->validate($request, [
+            'authid'      =>   'integer',
+            'friendids'   =>   'array'
+        ]);
+        $userid = (int)$request->input('authid');
+        $friendids = $request->input('friendids');
+        $noDuplicates = array();
+        foreach ($friendids as $id) {
+            if(!in_array($id, $noDuplicates)){
+                broadcast(new UserEvents($id , "sendOffline" , $userid))->toOthers();
+                array_push($noDuplicates, $id);
+            }
+        }
+    }
+    public function receiveOnline(Request $request)
     {
         $this->validate($request, [
             'authid'      =>   'integer',

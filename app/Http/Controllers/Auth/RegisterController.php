@@ -63,7 +63,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'profile_image' => 'http://i.imgur.com/Uf9MlA5.png',
+            'profile_image' => 'http://i.imgur.com/HiWlviT.jpg',
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),

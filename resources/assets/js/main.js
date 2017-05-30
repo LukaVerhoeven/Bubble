@@ -1,6 +1,7 @@
 // import Carousel from './components/carousel';
 import Scrolling from './components/scrolling';
 import addFriend from './components/addFriend';
+import AnimateWidthAuto from './components/animateWidthAuto';
 // import AutoScrollDownChat from './helpers/autoScrollDownChat';
 import externalLink from './helpers/externalLink';
 import PreventDefault from './helpers/preventDefault';
@@ -45,6 +46,7 @@ class App {
         this.scrolling = new Scrolling();
         this.injector = { app: this };
         this.addfriend = new addFriend();
+        this.animatewidthauto = new AnimateWidthAuto();
         //helpers
         this.externallink = new externalLink();
         this.preventdefault = new PreventDefault();

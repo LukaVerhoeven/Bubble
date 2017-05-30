@@ -1,11 +1,17 @@
-#chat-settings {
+#bubble #chat-settings {
 	.settings-layout{
 		overflow-x:  hidden;
+	}
+	.btn{
+		@include media($medium-screen-up) {
+			@include vertical-align;
+		}	
 	}
 	.card-content {
 		padding-bottom: 0;
 		padding-top: 0;
 		margin-top: 24px;
+
 		
 		// scrollbar
 	    @media screen and (-webkit-min-device-pixel-ratio:0) {  
@@ -17,6 +23,76 @@
 
 		&>p{
 			font-size: map-get($font, medium);
+		}
+		
+		&.solid-block{
+			height: auto;
+			@include media($medium-screen-up) {
+				height: 50px;
+			}
+
+			.right{
+				float: none !important;
+				margin: auto;
+				display: block;
+				@include media($medium-screen-up) {
+					float: right !important;
+					display: inline-block;
+				}
+			}
+		}
+		&>.text-block-center:first-child{
+			display: block;
+			float: none;
+			text-align: center;
+
+			@include media($medium-screen-up) {
+				text-align: left;
+				float: left;
+				height: 50px;
+				line-height: 50px;
+			}	
+		}
+
+		@include media($medium-screen-down) {
+			.bubble-editName {
+				text-align: center;
+				display: block;
+				margin-right: -9px;
+				width: 103%;
+			
+				&.edit {
+					a.bubble-editButton {
+						margin-right: 0;
+					}
+
+					p{
+						width: calc(100% - 76px) !important;
+						margin-left: 0;
+					}
+				}
+
+				p{
+					@include transition(width .5s ease-out);
+					float: none;
+					text-align: left;
+					display: inline-block;
+				}
+			}
+			.bubble-editInput{
+				right: auto;
+				left: auto;
+				text-align: center;
+				width: calc(100% - 30px);
+
+				&.edit input{
+					width: calc(100% - 110px);
+				}
+				input{
+					@include transition(width .5s ease-out);
+					width: 0;
+				}
+			}
 		}
 	}
 
@@ -31,10 +107,6 @@
 
 	.settings-btn{
 		width: 13rem;
-	}
-
-	#editChatName .bubble-editButton{
-		margin-right: $gutter;
 	}
 
 	// member & themes

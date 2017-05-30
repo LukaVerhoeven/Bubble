@@ -49,8 +49,8 @@
 					<!-- sidebar content -->
 					<section class="side-nav-content row">
 						<div id="logout-tab" class="col s12 no-pad tab-item">
-							<h2 class="side-header card">Logout</h2>
-							<a class="btn red waves-effect waves-light" href="" onclick="document.getElementById('logout').submit()">Logout</a>
+							<h2 class="side-header card" >Logout</h2>
+							<a class="btn red waves-effect waves-light" ng-click="logout()" href="" onclick="document.getElementById('logout').submit()">Logout</a>
 						</div>
 						<div id="profilesettings" class="col s12 no-pad tab-item"><h2 class="side-header card">Settings</h2></div>
 						@include('sidebar.profile')
@@ -73,7 +73,7 @@
 									<li><a href="#" data-activates="sidebar" class="button-collapse hamburger"><i class="material-icons">menu</i></a></li>
 									<li class="tab col s4 conversation-tab chat-tab"><a class="active" href="#chat-section"><i class="bubble-icon friend"></i><span class="truncate">@{{ chatname }} </span></a></li>
 									<li class="tab col s4 theme-tab"><a href="#themes"><i class="small material-icons">loyalty</i><span>Theme</span></a></li>
-									<li class="tab col s4 settings-tab"><a href="#chat-settings"><i class="small material-icons ">settings</i><span >settings</span></a></li>
+									<li class="tab col s4 settings-tab js-get-width"><a href="#chat-settings"><i class="small material-icons ">settings</i><span >settings</span></a></li>
 								</ul>
 							</div>
 						</nav>
@@ -124,9 +124,7 @@
     	<script src="{{ asset('js/angular/controllers/GlobalController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/GroupController.js') }}"></script> --}}
     	<!-- browser sync -->
-<!--     	<script id="__bs_script__">//<![CDATA[
-    document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.18.11'><\/script>".replace("HOST", location.hostname));
-//]]></script> -->
+
 
 	</body>
 </html>

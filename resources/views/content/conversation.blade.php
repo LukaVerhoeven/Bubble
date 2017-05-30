@@ -6,7 +6,7 @@
 			<div lr-infinite-scroll="messages.nextPage()" infinite-scroll="messages.nextPage()" infinite-scroll-distance="2" infinite-scroll-container='".chat"' infinite-scroll-disabled="messages.busy" class="message-scroll-container">
 				<div class="message-wrapper"  ng-repeat="message in messages.items | filter:{theme_id: message.filter}:true | reverse">
 					<div ng-if="message.user_id != Authuserid" class="friend-message inline-block message-block">
-						<div class="img-container">
+						<div class="img-container hide-on-small-only">
 							<div class="col s4 no-pad  img-overflow circle left image">
 								<img class="friend-pic" ng-src="@{{ message.profile_image }}" alt="Bubble profile image" >
 							</div>

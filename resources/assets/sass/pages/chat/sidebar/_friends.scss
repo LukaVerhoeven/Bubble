@@ -162,8 +162,13 @@
 
 		&.full{
 			z-index: 50;
-			height: calc(100% - 131px);
-			top: 131px;
+			height: calc(100% - 105px);
+			top: 105px;
+
+			@media only screen and (min-width: 600px){
+				height: calc(100% - 115px);
+				top: 115px;
+			}
 
 			.search-new-friends{
 				margin-top: 10px;
@@ -179,12 +184,18 @@
 			}
 		}
 
+		h2{
+			font-size: map-get($font,medium);
+			border-bottom: 1px solid map-get($colors, light-gray);
+		}
+
 		.collection{
 			opacity:  0;
 			@include transition(opacity .8s ease-in-out);
  
 			.collection-item{
 				display: inline-block;
+				padding: 0 20px;
 				width: 100%;
 				float: left;
 			}
@@ -210,6 +221,7 @@
 		.search-new-friends{
 			margin-top: -80px;
 			height: 0;
+			padding-top: 10px;
 			@include transition(margin-top .4s ease-in-out .7s, height 0s ease-in-out .7s);
 
 			&.remove{
@@ -228,6 +240,10 @@
 			@include transition(all .8s ease-in-out, line-height .4s);
 			padding: 0 35%;
 			text-align: left;
+
+			@media only screen and (max-width: 373px ){
+				padding: 0 31%;
+			}
 
 			&.button-header{
 				color: black;
@@ -274,6 +290,24 @@
 		.close-search{
 			font-size: 20px;
 			padding-right: 12px;
+		}
+
+		.newGroupFriends{
+    		border-width: 1px !important;
+
+			&:not(:first-of-type){
+				margin-top: -1px;
+			}
+		}
+
+		.submit-group-form{
+			height: 48px;
+		}
+
+		#createGroupForm{
+			height: calc(100% - 196px);
+			overflow-y: scroll;
+			margin-right: -7px;
 		}
 	}
 }

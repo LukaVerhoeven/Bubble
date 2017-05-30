@@ -7,6 +7,9 @@ class addFriend {
         this.$bottomgroup = $('.js-bottom-group');
         this.$searchNewFriends = $('.js-search-new-friends');
         this.$friendrequest = '.js-send-friendrequest';
+        this.$groupName = $('#createGroupsName');
+        this.$friends = '.js-newGroupFriends';
+        
         
         // group-tab
         this.$addgroup = $('.js-add-group');
@@ -25,17 +28,24 @@ class addFriend {
             });
     	})
 
-        $(document).on('click',this.$addfriendClose, () => {
-            if(this.$bottom.hasClass('full')){
-                this.$searchNewFriends.addClass('remove');
-                var searchbar =  this.$searchNewFriends;
-                setTimeout(function(){ searchbar.removeClass('remove');}, 800);
+        $(document).on('click',this.$addfriendClose, (e) => {
+            var closeForm = true;
+            if($(e.currentTarget).hasClass('js-creategroup')){
+                closeForm = false;
+                if(this.$groupName.val() && this.$bottomgroup.find(this.$friends).children().length) closeForm = true;
             }
-            this.$bottom.removeClass('full');
-            this.$bottomgroup.removeClass('full');
-            this.$addfriend.removeClass('button-header').delay(300).queue(function(){
-                $(this).removeClass("delayed-properties").dequeue();
-            });
+            if(closeForm){
+                if(this.$bottom.hasClass('full')){
+                    this.$searchNewFriends.addClass('remove');
+                    var searchbar =  this.$searchNewFriends;
+                    setTimeout(function(){ searchbar.removeClass('remove');}, 800);
+                }
+                this.$bottom.removeClass('full');
+                this.$bottomgroup.removeClass('full');
+                this.$addfriend.removeClass('button-header').delay(300).queue(function(){
+                    $(this).removeClass("delayed-properties").dequeue();
+                });
+            }
         });
  
 

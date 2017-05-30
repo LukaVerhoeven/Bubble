@@ -10801,6 +10801,15 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         $rootScope.messages.items = null;
     };
 
+    $rootScope.logout = function () {
+        $scope.logoutData = {};
+        $scope.logoutData.friendids = $rootScope.adjustElementNewArray($rootScope.friendlist, 0, 'userid', 'retreive', 0, 0, 0);;
+        $scope.logoutData.authid = $rootScope.Authuserid;
+        if ($scope.logoutData.friendids.length > 0) {
+            $rootScope.postRequest($scope.logoutData, 'sendLogout', '');
+        }
+    };
+
     // REMOVE LOADING SCREEN WHEN ANGULAR IS LOADED
     $scope.$watch('$viewContentLoaded', function () {
         $('.fullscreen-loader').addClass('hide');
@@ -10861,11 +10870,13 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                     $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
                     $rootScope.postRequest($scope.onlinestate, 'onlineAnswer', '');
                 }
+                if (e.event === 'sendOffline') {
+                    $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 0, 'isOnline', 0);
+                }
                 if (e.event === 'receiveOnline') {
                     $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'userid', 'update', 1, 'isOnline', 0);
                 }
                 if (e.event === 'unreadmessage') {
-                    console.log(e);
                     $rootScope.adjustObjectElement($rootScope.friendlist, e.data, 'chatid', 'increment', 1, 'unread_messages', 0);
                 }
             });
@@ -11142,10 +11153,10 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
             return a.toUpperCase();
         }));
     };
-
     //CREATES A GROUP
     $scope.createGroup = function () {
         var url = API_URL + "createGroup";
+        console.log('grop', $scope.newGroup);
         // $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
         $http({
             method: 'POST',
@@ -11162,7 +11173,10 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
             $('#createGroupsName').val('');
         }, $rootScope.errorCallback);
     };
+    $scope.test = function () {
 
+        console.log($scope.createGroup);
+    };
     //ACCEPT GROUP INVITE
     $scope.accept = function (chatid, friends) {
         friends = $rootScope.ObjToArray(friends);
@@ -11713,8 +11727,8 @@ app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope
 //   }
 // })
 app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) {
-    $scope.initvalue = { color: "red", icon: "school", shortcut: "A" };
-    $scope.NewTheme = $scope.initvalue;
+    // $scope.initvalue = {color :"red", icon:"school",shortcut:"A"}
+    $scope.NewTheme = { color: "red", icon: "school", shortcut: "A" };
     $scope.createNewTheme = function (valid, $event) {
         if ($scope.NewTheme.keywordString && $scope.NewTheme.name) {
             $scope.closeForm($event, 'create');
@@ -11724,7 +11738,7 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
             if ($scope.NewTheme.chatid) {
                 $rootScope.postRequest($scope.NewTheme, 'NewTheme', '');
                 $scope.resetForm($scope.NewTheme);
-                $scope.NewTheme = $scope.initvalue;
+                $scope.NewTheme = { color: "red", icon: "school", shortcut: "A" };
                 $rootScope.initShortcut();
             }
         }
@@ -11760,16 +11774,13 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
 
     $rootScope.updateMessages = function (keywords, color, themeid) {
         var themeMessages = [];
-        // check if themeid is passed to this function
-        // if (keywords[prop].theme_id) {
-        // 	themeid = keywords[prop].theme_id;
-        // }
 
         for ($prop in $rootScope.messages.items) {
             if ($rootScope.messages.items[$prop].force_theme === 0) {
                 for (prop in keywords) {
                     // if messages contains a keyword an has not been forced by  a theme => give new theme
-                    if ($rootScope.messages.items[$prop].text.indexOf(keywords[prop].word) !== -1) {
+                    var text = $rootScope.messages.items[$prop].text.toLowerCase();
+                    if (text.indexOf(keywords[prop].word.toLowerCase()) !== -1) {
                         $rootScope.messages.items[$prop].theme_id = themeid;
                         $rootScope.messages.items[$prop].color = color;
                         themeMessages.push($rootScope.messages.items[$prop].id);
@@ -11875,7 +11886,7 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
             parent.removeClass('open');
             // status message
             status.css('color', '#26a69a');
-            status.html('Theme saved');
+            status.html('<span class="hide-on-small-only">Theme </span> saved');
             status.removeClass('hidden').addClass('fadeout');
         } else if (action === 'create') {
             var parent = currentElement.parents('.js-slide-menu');
@@ -11906,37 +11917,39 @@ app.controller('NavController', function ($scope, $http, API_URL, $rootScope) {
 /* WEBPACK VAR INJECTION */(function(global) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_scrolling__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_addFriend__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_externalLink__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__helpers_externalLink___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__helpers_externalLink__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__helpers_giveActive__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__helpers_giveActive___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__helpers_giveActive__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__helpers_emptyInput__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__helpers_emptyInput___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__helpers_emptyInput__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_chatSettings__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_chatSettings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_chatSettings__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_Conversation__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_Conversation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_Conversation__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_themes__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_themes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_themes__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_general__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_general___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_general__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_profile_settings__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_profile_settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_profile_settings__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_angular__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_angular_sanitize__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_angular_sanitize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_angular_sanitize__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_laravel_echo__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_laravel_echo__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_animateWidthAuto__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_externalLink__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__helpers_externalLink___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__helpers_externalLink__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__helpers_preventDefault__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__helpers_preventDefault___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__helpers_preventDefault__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__helpers_slideOpen__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__helpers_slideOpen___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__helpers_slideOpen__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__helpers_giveActive__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__helpers_giveActive___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__helpers_giveActive__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__helpers_emptyInput__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__helpers_emptyInput___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__helpers_emptyInput__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_chatSettings__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_chatSettings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_chatSettings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_Conversation__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_Conversation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_Conversation__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_themes__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_themes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_themes__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_general__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_general___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_general__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_profile_settings__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_profile_settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__pages_profile_settings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_angular__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_angular___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_angular__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_angular_sanitize__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_angular_sanitize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_angular_sanitize__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_laravel_echo__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15_laravel_echo__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // import Carousel from './components/carousel';
+
 
 
 // import AutoScrollDownChat from './helpers/autoScrollDownChat';
@@ -11984,20 +11997,21 @@ var App = function () {
         this.scrolling = new __WEBPACK_IMPORTED_MODULE_0__components_scrolling__["a" /* default */]();
         this.injector = { app: this };
         this.addfriend = new __WEBPACK_IMPORTED_MODULE_1__components_addFriend__["a" /* default */]();
+        this.animatewidthauto = new __WEBPACK_IMPORTED_MODULE_2__components_animateWidthAuto__["a" /* default */]();
         //helpers
-        this.externallink = new __WEBPACK_IMPORTED_MODULE_2__helpers_externalLink___default.a();
-        this.preventdefault = new __WEBPACK_IMPORTED_MODULE_3__helpers_preventDefault___default.a();
-        this.giveactive = new __WEBPACK_IMPORTED_MODULE_5__helpers_giveActive___default.a();
-        this.emptyinput = new __WEBPACK_IMPORTED_MODULE_6__helpers_emptyInput___default.a();
+        this.externallink = new __WEBPACK_IMPORTED_MODULE_3__helpers_externalLink___default.a();
+        this.preventdefault = new __WEBPACK_IMPORTED_MODULE_4__helpers_preventDefault___default.a();
+        this.giveactive = new __WEBPACK_IMPORTED_MODULE_6__helpers_giveActive___default.a();
+        this.emptyinput = new __WEBPACK_IMPORTED_MODULE_7__helpers_emptyInput___default.a();
         // this.autoscrolldownchat = new AutoScrollDownChat();
-        this.slideopen = new __WEBPACK_IMPORTED_MODULE_4__helpers_slideOpen___default.a();
+        this.slideopen = new __WEBPACK_IMPORTED_MODULE_5__helpers_slideOpen___default.a();
         // this.parentselector = new ParentSelector();
         // pages
-        this.chatsettings = new __WEBPACK_IMPORTED_MODULE_7__pages_chatSettings___default.a();
-        this.conversation = new __WEBPACK_IMPORTED_MODULE_8__pages_Conversation___default.a(isMobile);
-        this.themes = new __WEBPACK_IMPORTED_MODULE_9__pages_themes___default.a();
-        this.profilesettings = new __WEBPACK_IMPORTED_MODULE_11__pages_profile_settings___default.a();
-        this.general = new __WEBPACK_IMPORTED_MODULE_10__pages_general___default.a();
+        this.chatsettings = new __WEBPACK_IMPORTED_MODULE_8__pages_chatSettings___default.a();
+        this.conversation = new __WEBPACK_IMPORTED_MODULE_9__pages_Conversation___default.a(isMobile);
+        this.themes = new __WEBPACK_IMPORTED_MODULE_10__pages_themes___default.a();
+        this.profilesettings = new __WEBPACK_IMPORTED_MODULE_12__pages_profile_settings___default.a();
+        this.general = new __WEBPACK_IMPORTED_MODULE_11__pages_general___default.a();
     }
 
     _createClass(App, [{
@@ -12018,7 +12032,7 @@ $(document).ready(function () {
 
 
 
-window.Echo = new __WEBPACK_IMPORTED_MODULE_14_laravel_echo___default.a({
+window.Echo = new __WEBPACK_IMPORTED_MODULE_15_laravel_echo___default.a({
     cluster: 'eu',
     broadcaster: 'pusher',
     key: '02588819c60d53b60c81'
@@ -46186,6 +46200,8 @@ var addFriend = function () {
         this.$bottomgroup = $('.js-bottom-group');
         this.$searchNewFriends = $('.js-search-new-friends');
         this.$friendrequest = '.js-send-friendrequest';
+        this.$groupName = $('#createGroupsName');
+        this.$friends = '.js-newGroupFriends';
 
         // group-tab
         this.$addgroup = $('.js-add-group');
@@ -46208,19 +46224,26 @@ var addFriend = function () {
                 });
             });
 
-            $(document).on('click', this.$addfriendClose, function () {
-                if (_this.$bottom.hasClass('full')) {
-                    _this.$searchNewFriends.addClass('remove');
-                    var searchbar = _this.$searchNewFriends;
-                    setTimeout(function () {
-                        searchbar.removeClass('remove');
-                    }, 800);
+            $(document).on('click', this.$addfriendClose, function (e) {
+                var closeForm = true;
+                if ($(e.currentTarget).hasClass('js-creategroup')) {
+                    closeForm = false;
+                    if (_this.$groupName.val() && _this.$bottomgroup.find(_this.$friends).children().length) closeForm = true;
                 }
-                _this.$bottom.removeClass('full');
-                _this.$bottomgroup.removeClass('full');
-                _this.$addfriend.removeClass('button-header').delay(300).queue(function () {
-                    $(this).removeClass("delayed-properties").dequeue();
-                });
+                if (closeForm) {
+                    if (_this.$bottom.hasClass('full')) {
+                        _this.$searchNewFriends.addClass('remove');
+                        var searchbar = _this.$searchNewFriends;
+                        setTimeout(function () {
+                            searchbar.removeClass('remove');
+                        }, 800);
+                    }
+                    _this.$bottom.removeClass('full');
+                    _this.$bottomgroup.removeClass('full');
+                    _this.$addfriend.removeClass('button-header').delay(300).queue(function () {
+                        $(this).removeClass("delayed-properties").dequeue();
+                    });
+                }
             });
 
             this.$tab.on('click', function () {
@@ -46472,7 +46495,7 @@ var SlideOpen = function () {
                 currentElement.toggleClass('exit-theme');
                 if (parent.hasClass('open')) {
                     status.css('color', 'red');
-                    status.html('Theme not saved');
+                    status.html('<span class="hide-on-small-only">Theme </span> not saved');
                     status.removeClass('hidden').addClass('fadeout');
                 } else {
                     status.removeClass('fadeout').addClass('hidden');
@@ -46588,6 +46611,15 @@ var General = function () {
     function General() {
         _classCallCheck(this, General);
 
+        var width = $(window).width();
+        this.IsDesktop = false;
+        if (width > 415) {
+            this.sidebarWidth = 400;
+        } else if (width > 900) {
+            this.IsDesktop = true;
+        } else {
+            this.sidebarWidth = 300;
+        }
         this.init();
     }
 
@@ -46595,11 +46627,24 @@ var General = function () {
         key: "init",
         value: function init() {
             // mobile sidebar
-            $("#slide-out").sideNav();
-            $(".button-collapse").sideNav();
+            if (this.IsDesktop) {
+                $("#slide-out").sideNav({
+                    menuWidth: this.sidebarWidth
+                });
+                $("#slide-out").sideNav({
+                    menuWidth: this.sidebarWidth
+                });
+                $(".button-collapse").sideNav({
+                    menuWidth: this.sidebarWidth
+                });
+            } else {
+                $("#slide-out").sideNav();
+                $("#slide-out").sideNav();
+                $(".button-collapse").sideNav();
+            }
+
             $(document).on('click', '.button-close-nav', function () {
                 $(".drag-target").trigger("click");
-                console.log($(".drag-target"));
                 return false;
             });
         }
@@ -47554,6 +47599,86 @@ __webpack_require__(1);
 __webpack_require__(3);
 module.exports = __webpack_require__(4);
 
+
+/***/ }),
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AnimateWidthAuto = function () {
+    function AnimateWidthAuto() {
+        _classCallCheck(this, AnimateWidthAuto);
+
+        this.$get = $('.js-get-width');
+        this.$element = $('.js-auto-width');
+        this.init();
+    }
+
+    _createClass(AnimateWidthAuto, [{
+        key: 'init',
+        value: function init() {
+            var _this = this;
+
+            this.$get.on('click', function () {
+                _this.setWidth();
+            });
+        }
+    }, {
+        key: 'setWidth',
+        value: function setWidth() {
+            if (this.$element) {
+                $.each(this.$element, function (index, value) {
+                    var element = $(this);
+                    // when the element is loaded ( => give width )
+                    var WaitForWidth = setInterval(function () {
+                        if (element.width() > 0) {
+                            clearInterval(WaitForWidth);
+                            element.css('width', $(element).width() + 'px');
+                        }
+                    }, 250);
+                    // clear interval after 3seconds
+                    setTimeout(function () {
+                        clearInterval(WaitForWidth);
+                    }, 3000);
+                });
+            }
+        }
+    }]);
+
+    return AnimateWidthAuto;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = AnimateWidthAuto;
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ })
 /******/ ]);

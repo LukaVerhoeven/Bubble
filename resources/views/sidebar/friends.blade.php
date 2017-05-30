@@ -28,29 +28,29 @@
 	<div class="js-bottom-add bottom">
 		<div class="white col s12">
 			<!-- buttons & input -->
-			<nav class="js-search-friends search-friends">
-				<div class="nav-wrapper">
-				  <form>
-				    <div class="input-field">
-				      <input id="search-friends" type="search" placeholder="search friends" ng-model="searchfriend" required>
-				      <label class="label-icon" for="search-friends"><i class="material-icons">search</i></label>
-				      <i class="material-icons js-empty-input">close</i>
-				    </div>
-				  </form>
+			<div class="bottom-container">
+				<div class="js-search-friends search-friends">
+					<div class="nav-wrapper">
+					  <form>
+					    <div class="input-field">
+					      <input id="search-friends" type="search" placeholder="search friends" ng-model="searchfriend" required>
+					      <label class="label-icon" for="search-friends"><i class="material-icons">search</i></label>
+					      <i class="material-icons js-empty-input">close</i>
+					    </div>
+					  </form>
+					</div>
 				</div>
-			</nav>
-			<a class="js-add-friend btn waves-effect waves-light add-friend">Add friend <i class="material-icons close-add-friend">clear</i></a>
-			<nav class="search-new-friends js-search-new-friends">
+				<a class="js-add-friend btn waves-effect waves-light add-friend">Add friend <i class="material-icons close-add-friend">clear</i></a>
+			</div>
+			<div class="search-new-friends js-search-new-friends">
 				<div class="nav-wrapper">
-				  <form>
-				    <div class="input-field">
+				    <div class="input-field no-margin-top">
 				      <input id="search-add-friend" type="search" ng-model="newFriendInput" ng-keyup="updateFriendSearch(newFriendInput)" placeholder="add friends" autocomplete="off" required>
 				      <label class="label-icon" for="search-add-friend"><i class="material-icons">search</i></label>
 				      <i class="material-icons close-search js-empty-input">close</i>
 				    </div>
-				  </form>
 				</div>
-			</nav>
+			</div>
 
 			<!-- search results: users -->
 			<ul class="collection" ng-if="searchedfriends.length > 0">

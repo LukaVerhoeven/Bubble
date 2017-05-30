@@ -22,7 +22,7 @@
         <div class="input-field col s12 new-theme-color">
 			<p class="inline-block col s1">Color</p>
 			<ul class="col s11 center-align">
-				@foreach (['red','orange','blue','purple','green','cyan'] as $color)
+				@foreach (['red','orange','blue','purple','green','cyan', 'pink', 'teal'] as $color)
 				  	<li>
 				      <input name="@{{key}}color" type="radio" id="@{{key}}{{$color}}" ng-model="{{$model}}.color" value="{{$color}}" required/>
 				      <label class="{{$color}}-radio {{$color}}-before" for="@{{key}}{{$color}}"></label>
@@ -72,7 +72,7 @@
         </div>
         <div class="col s12 center">
 
-        <input type="submit" class="submit-theme waves-effect waves-light btn red inline-block" value="{{ $action }} theme">        
+        <input type="submit" class="submit-theme waves-effect waves-light btn red inline-block" value="{{ $action }} theme">
         	{{-- <a class="waves-effect waves-light btn red inline-block" ng-click="createNewTheme()">Create theme</a>     --}}
         </div>
 	</form>

@@ -37,6 +37,7 @@ Route::get('/api/friendRequests', 'FriendController@getFriendRequests');
 Route::get('/api/searchFriend/{id?}', 'FriendController@searchFriend');
 Route::post('/api/onlineState', 'FriendController@sendOnline');
 Route::post('/api/onlineAnswer', 'FriendController@receiveOnline');
+Route::post('/api/sendLogout', 'FriendController@sendOffline');
 
 //groups
 Route::post('/api/createGroup', 'GroupController@createGroup');
@@ -55,6 +56,7 @@ Route::post('/api/deleteTheme', 'ThemeController@delete');
 // User
 Auth::routes();
 Route::post('/api/profileImage', 'ChatController@profileImage');
+
 // Route::get('logout','auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index');

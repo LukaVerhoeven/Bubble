@@ -1,6 +1,6 @@
 app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
-	$scope.initvalue = {color :"red", icon:"school",shortcut:"A"}
-	$scope.NewTheme = $scope.initvalue;
+	// $scope.initvalue = {color :"red", icon:"school",shortcut:"A"}
+	$scope.NewTheme = {color :"red", icon:"school",shortcut:"A"};
 	$scope.createNewTheme = function(valid, $event){
 		if($scope.NewTheme.keywordString && $scope.NewTheme.name){
 			$scope.closeForm($event, 'create');
@@ -10,7 +10,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 			if($scope.NewTheme.chatid){
 				$rootScope.postRequest($scope.NewTheme ,'NewTheme', '');
 				$scope.resetForm($scope.NewTheme);
-				$scope.NewTheme = $scope.initvalue;
+				$scope.NewTheme = {color :"red", icon:"school",shortcut:"A"};
 				$rootScope.initShortcut();
 			}
 		}
@@ -47,16 +47,13 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 
 	$rootScope.updateMessages = function(keywords, color, themeid){
 		var themeMessages = []
-		// check if themeid is passed to this function
-		// if (keywords[prop].theme_id) {
-		// 	themeid = keywords[prop].theme_id;
-		// }
 
 		for ($prop in $rootScope.messages.items) {
 			if($rootScope.messages.items[$prop].force_theme === 0){
 				for (prop in keywords) {
 					// if messages contains a keyword an has not been forced by  a theme => give new theme
-					if($rootScope.messages.items[$prop].text.indexOf(keywords[prop].word) !== -1){
+					var text = $rootScope.messages.items[$prop].text.toLowerCase();
+					if(text.indexOf(keywords[prop].word.toLowerCase()) !== -1){
 						$rootScope.messages.items[$prop].theme_id = themeid;
 						$rootScope.messages.items[$prop].color = color;
 						themeMessages.push($rootScope.messages.items[$prop].id);
@@ -163,7 +160,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	        parent.removeClass('open');
 	        // status message
 			status.css('color','#26a69a');
-            status.html('Theme saved');
+            status.html('<span class="hide-on-small-only">Theme </span> saved');
             status.removeClass('hidden').addClass('fadeout');
 
         }else if (action === 'create') {

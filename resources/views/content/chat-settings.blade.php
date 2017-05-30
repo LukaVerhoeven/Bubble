@@ -6,8 +6,8 @@
 		        <p ng-if="chatFunction === 'friendchat'" class="text-block-center">Nickname</p>
 		        <p ng-if="chatFunction === 'groupschat'" class="text-block-center">Groupsname</p>
 		        <div class="right solid-block bubble-editName" id="editChatName">
-		          	<p class="text-block-center">@{{ chatname }}</p>
-		          	<a class="btn-floating btn red bubble-editButton v-align">
+		          	<p class="text-block-center js-auto-width">@{{ chatname }}</p>
+		          	<a class="btn-floating btn red bubble-editButton">
 			     	 	<i class="material-icons ">mode_edit</i>
 			    	</a>
 	          	</div>
@@ -24,26 +24,26 @@
 	          	</div>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'friendchat'">
-    	   		<p class="text-block-center">Invite to group</p><a ng-click="addFriendToGroup()" class=" v-align waves-effect waves-light btn right settings-btn">add to group +</a>
+    	   		<p class="text-block-center">Invite to group</p><a ng-click="addFriendToGroup()" class="waves-effect waves-light btn right settings-btn">add to group +</a>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'groupschat'">
-    	   		<p class="text-block-center">Add friend to group</p><a ng-click="inviteFriendToGroup()" class=" v-align waves-effect waves-light btn right settings-btn">invite friend +</a>
+    	   		<p class="text-block-center">Add friend to group</p><a ng-click="inviteFriendToGroup()" class="waves-effect waves-light btn right settings-btn">invite friend +</a>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'friendchat'">
-	        	<p class="text-block-center">Delete friend</p><a ng-click="deleteFriend()" class=" v-align waves-effect waves-light btn red right settings-btn">delete</a>
+	        	<p class="text-block-center">Delete friend</p><a ng-click="deleteFriend()" class="waves-effect waves-light btn red right settings-btn">delete</a>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'groupschat' && isChatAdmin">
-	        	<p class="text-block-center">Delete group</p><a ng-click="deleteGroup()" class=" v-align waves-effect waves-light btn red right settings-btn">delete</a>
+	        	<p class="text-block-center">Delete group</p><a ng-click="deleteGroup()" class="waves-effect waves-light btn red right settings-btn">delete</a>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'groupschat'">
-	        	<p class="text-block-center">Leave group</p><a ng-click="LeaveGroup()" class=" v-align waves-effect waves-light btn red right settings-btn">Leave</a>
+	        	<p class="text-block-center">Leave group</p><a ng-click="LeaveGroup()" class="waves-effect waves-light btn red right settings-btn">Leave</a>
 	        </div>
         <!-- Theme-option -->
 	        <div class="card-content col s12 theme-settings" ng-if="themes.length > 1">
 		        <div class="header">
 		        	<p>Theme</p>
 		        	<div class="right ">
-		        		<p> Usage</p>
+		        		<p class="hide-on-small-only"> Usage</p>
 		        		<p ng-if="isChatAdmin">Active</p>
 		        		<p ng-if="isChatAdmin">Delete</p>
 		        	</div>
@@ -56,7 +56,7 @@
 			        	<p class="left">@{{theme.name}}</p>
 		        	</div>
 		        	<div class="right actions">
-		        		<p class="left v-align usage">@{{theme.themeUsage}}</p>
+		        		<p class="left v-align usage hide-on-small-only">@{{theme.themeUsage}}</p>
 		        		<div ng-if="isChatAdmin" class="left v-align checkbox">
 							<input type="checkbox" class="filled-in" id="theme-active-box@{{key}}" checked="checked" ng-if="theme.is_active"/>
 						    <input type="checkbox" class="filled-in" id="theme-active-box@{{key}}" ng-if="!theme.is_active"/>

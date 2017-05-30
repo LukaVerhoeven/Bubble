@@ -1,7 +1,7 @@
 #sidebar {
 	width: $sidebar-width-mobile;
 
-	@include media($medium-screen-up) {
+	@include media($small-screen-up) {
 		width: $sidebar-width;
 	}	
 
@@ -49,11 +49,18 @@
 						a.active i {
 							color: #fff !important;
 						}
-						.profile:before {
+						.profile:before, .friend:before {
+							padding-left: 3px;
+						}
+						.profile:before{
 							font-size: 28px;
 						}
 						.group:before {
 							font-size: 32px;
+						}
+
+						i{
+							padding:0;
 						}
 					}
 				}

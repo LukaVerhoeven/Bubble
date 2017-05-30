@@ -13,7 +13,7 @@ html,body{
 		margin-bottom:0;
 		margin-left: 0;
 
-		@include media($large-screen-up) {
+		@media only screen and (min-width: 993px) {
 			margin-left: $sidebar-width;
 		}
 

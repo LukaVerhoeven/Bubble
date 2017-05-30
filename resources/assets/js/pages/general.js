@@ -1,15 +1,37 @@
 class General {
     constructor() {
+        var width = $(window).width();
+        this.IsDesktop = false;
+        if(width > 415){
+            this.sidebarWidth = 400
+        }else if(width > 900){
+          this.IsDesktop = true;
+        }else {
+            this.sidebarWidth = 300
+        }
         this.init();
     }
 
     init() {
         // mobile sidebar
-        $("#slide-out").sideNav();
-        $(".button-collapse").sideNav();
+        if(this.IsDesktop){
+          $("#slide-out").sideNav({
+                menuWidth: this.sidebarWidth,
+          });
+          $("#slide-out").sideNav({
+                menuWidth: this.sidebarWidth,
+          });
+          $(".button-collapse").sideNav({
+                menuWidth: this.sidebarWidth,
+          });
+        }else{
+          $("#slide-out").sideNav();
+          $("#slide-out").sideNav();
+          $(".button-collapse").sideNav();
+        }
+
        	$(document).on('click','.button-close-nav', () => {
   			$(".drag-target").trigger("click");
-		    console.log($(".drag-target"));
 		    return false;
         });		
     }

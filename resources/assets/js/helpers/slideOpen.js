@@ -23,7 +23,7 @@ class SlideOpen {
             currentElement.toggleClass('exit-theme');
             if(parent.hasClass('open')){
                 status.css('color','red');
-                status.html('Theme not saved');
+                status.html('<span class="hide-on-small-only">Theme </span> not saved');
                 status.removeClass('hidden').addClass('fadeout');
             }else{
                 status.removeClass('fadeout').addClass('hidden');

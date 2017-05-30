@@ -9375,7 +9375,7 @@ $panel-default-heading-bg: #fff;
 #bubble .first-letter-capital::first-letter,
 #Alerts .alertbox.open li p::first-letter,
 #content .message-wrapper .user-name::first-letter,
-#chat-settings .theme-settings .theme-info p::first-letter,
+#bubble #chat-settings .theme-settings .theme-info p::first-letter,
 #themes h2::first-letter,
 #friends .friend-item .friend-name::first-letter,
 #groups .friend-item .friend-name::first-letter,
@@ -9397,7 +9397,7 @@ $panel-default-heading-bg: #fff;
 }
 
 #bubble .no-margin-top {
-  margin-top: 0;
+  margin-top: 0 !important;
 }
 
 #bubble .inline-block {
@@ -9452,11 +9452,17 @@ $panel-default-heading-bg: #fff;
   top: 50%;
   -webkit-transform: translateY(-50%);
           transform: translateY(-50%);
-  width: 40%;
+  width: 100%;
   margin: auto;
   text-align: center;
   background-color: white;
   display: inline-block;
+}
+
+@media screen and (min-width: 25.9375em) {
+  #Alerts .alertbox.open .modal-content {
+    width: 40%;
+  }
 }
 
 #Alerts .alertbox.open .alert-header {
@@ -9524,7 +9530,7 @@ $panel-default-heading-bg: #fff;
 #bubble .img-overflow .profile-pic,
 #bubble .img-overflow .friend-pic {
   min-width: 100%;
-  height: 100%;
+  height: 105%;
   position: absolute;
   margin: auto;
   display: block;
@@ -9685,6 +9691,15 @@ i.bubble-icon {
 #bubble .btn.ns {
   height: 40px;
   line-height: 40px;
+}
+
+#bubble input[type=search]:focus {
+  border-bottom: 1px solid #9e9e9e;
+}
+
+#bubble input[type=search] ~ .material-icons {
+  font-size: 20px;
+  margin-top: 10px;
 }
 
 #bubble .bubble-editInput {
@@ -9866,7 +9881,7 @@ body {
   margin-left: 0;
 }
 
-@media screen and (min-width: 64.0625em) {
+@media only screen and (min-width: 993px) {
   .fixed-container #content {
     margin-left: 28rem;
   }
@@ -10214,56 +10229,142 @@ body {
   float: right;
 }
 
-#chat-settings .settings-layout {
+#bubble #chat-settings .settings-layout {
   overflow-x: hidden;
 }
 
-#chat-settings .card-content {
+@media screen and (min-width: 47.9375em) {
+  #bubble #chat-settings .btn {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+  }
+}
+
+#bubble #chat-settings .card-content {
   padding-bottom: 0;
   padding-top: 0;
   margin-top: 24px;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-  #chat-settings .card-content {
+  #bubble #chat-settings .card-content {
     padding-right: 16px;
   }
 }
 
 @supports (-ms-ime-align: auto) {
-  #chat-settings .card-content {
+  #bubble #chat-settings .card-content {
     padding-right: 24px;
   }
 }
 
-#chat-settings .card-content > p {
+#bubble #chat-settings .card-content > p {
   font-size: 18px;
 }
 
-#chat-settings .solid-block {
+#bubble #chat-settings .card-content.solid-block {
+  height: auto;
+}
+
+@media screen and (min-width: 47.9375em) {
+  #bubble #chat-settings .card-content.solid-block {
+    height: 50px;
+  }
+}
+
+#bubble #chat-settings .card-content.solid-block .right {
+  float: none !important;
+  margin: auto;
+  display: block;
+}
+
+@media screen and (min-width: 47.9375em) {
+  #bubble #chat-settings .card-content.solid-block .right {
+    float: right !important;
+    display: inline-block;
+  }
+}
+
+#bubble #chat-settings .card-content > .text-block-center:first-child {
+  display: block;
+  float: none;
+  text-align: center;
+}
+
+@media screen and (min-width: 47.9375em) {
+  #bubble #chat-settings .card-content > .text-block-center:first-child {
+    text-align: left;
+    float: left;
+    height: 50px;
+    line-height: 50px;
+  }
+}
+
+@media screen and (max-width: 47.9375em) {
+  #bubble #chat-settings .card-content .bubble-editName {
+    text-align: center;
+    display: block;
+    margin-right: -9px;
+    width: 103%;
+  }
+
+  #bubble #chat-settings .card-content .bubble-editName.edit a.bubble-editButton {
+    margin-right: 0;
+  }
+
+  #bubble #chat-settings .card-content .bubble-editName.edit p {
+    width: calc(100% - 76px) !important;
+    margin-left: 0;
+  }
+
+  #bubble #chat-settings .card-content .bubble-editName p {
+    -webkit-transition: width 0.5s ease-out;
+    transition: width 0.5s ease-out;
+    float: none;
+    text-align: left;
+    display: inline-block;
+  }
+
+  #bubble #chat-settings .card-content .bubble-editInput {
+    right: auto;
+    left: auto;
+    text-align: center;
+    width: calc(100% - 30px);
+  }
+
+  #bubble #chat-settings .card-content .bubble-editInput.edit input {
+    width: calc(100% - 110px);
+  }
+
+  #bubble #chat-settings .card-content .bubble-editInput input {
+    -webkit-transition: width 0.5s ease-out;
+    transition: width 0.5s ease-out;
+    width: 0;
+  }
+}
+
+#bubble #chat-settings .solid-block {
   height: 50px;
 }
 
-#chat-settings .text-block-center {
+#bubble #chat-settings .text-block-center {
   height: 50px;
   line-height: 50px;
 }
 
-#chat-settings .settings-btn {
+#bubble #chat-settings .settings-btn {
   width: 13rem;
 }
 
-#chat-settings #editChatName .bubble-editButton {
-  margin-right: 0.75rem;
-}
-
-#chat-settings .header {
+#bubble #chat-settings .header {
   height: 50px;
   border-bottom: 1px solid #d32f2f;
   margin-bottom: 0.75rem;
 }
 
-#chat-settings .header p {
+#bubble #chat-settings .header p {
   height: 50px;
   line-height: 50px;
   margin-left: .9rem;
@@ -10271,50 +10372,50 @@ body {
   font-size: 18px;
 }
 
-#chat-settings .header p:last-child {
+#bubble #chat-settings .header p:last-child {
   margin-right: 8px;
 }
 
-#chat-settings .header p:first-child {
+#bubble #chat-settings .header p:first-child {
   margin-left: 0;
 }
 
-#chat-settings .actions {
+#bubble #chat-settings .actions {
   display: inline-block;
   height: 50px;
 }
 
-#chat-settings .actions .usage {
+#bubble #chat-settings .actions .usage {
   margin-right: 1.5rem;
 }
 
-#chat-settings .actions .checkbox {
+#bubble #chat-settings .actions .checkbox {
   height: 50px;
   margin: 0 1.5rem;
 }
 
-#chat-settings .actions .checkbox label {
+#bubble #chat-settings .actions .checkbox label {
   padding-left: 20px;
   height: 20px;
 }
 
-#chat-settings .actions .delete {
+#bubble #chat-settings .actions .delete {
   width: 20px;
   cursor: pointer;
   margin: 0 1.5rem;
 }
 
-#chat-settings .actions .delete i {
+#bubble #chat-settings .actions .delete i {
   padding: 0;
   margin-left: -5px;
 }
 
-#chat-settings .theme-settings .theme-info {
+#bubble #chat-settings .theme-settings .theme-info {
   height: 50px;
   display: inline-block;
 }
 
-#chat-settings .theme-settings .theme-info p {
+#bubble #chat-settings .theme-settings .theme-info p {
   vertical-align: top;
   height: 50px;
   line-height: 50px;
@@ -10460,22 +10561,39 @@ body {
   }
 }
 
+#themes .theme-card .right-side,
+#themes .theme-card .left-side {
+  width: 50%;
+  display: inline-block;
+}
+
 #themes .theme-card h2 {
   vertical-align: top;
   margin-top: .5rem;
+  width: calc(100% - 61px);
+  margin-right: 0;
 }
 
 #themes .theme-card .theme-line {
   height: 50px;
 }
 
+#themes .theme-card .theme-line:nth-child(2) .left-side {
+  width: 68%;
+}
+
+#themes .theme-card .theme-line:nth-child(2) .right-side {
+  width: 32%;
+}
+
 #themes .theme-card .theme-status {
   display: inline-block;
   float: left;
   opacity: 1;
+  margin: 0 0.75rem;
   margin-top: 11px;
   margin-bottom: 0;
-  margin-right: 0.75rem;
+  width: calc(100% - 61px);
   -webkit-transition: opacity 1s linear 2s;
   transition: opacity 1s linear 2s;
 }
@@ -10523,6 +10641,10 @@ body {
   font-size: 30px;
 }
 
+#themes .theme-card .keywords {
+  width: calc(100% - 63px);
+}
+
 #themes .theme-card .keywords,
 #themes .theme-card .shortcut {
   vertical-align: top;
@@ -10561,7 +10683,7 @@ body {
 
 #themes .new-theme {
   overflow: hidden;
-  max-height: 8%;
+  max-height: 4.3rem;
   -webkit-transition: max-height 1s ease-out;
   transition: max-height 1s ease-out;
 }
@@ -10591,7 +10713,7 @@ body {
   width: 80%;
 }
 
-@media screen and (min-width: 47.9375em) {
+@media screen and (min-width: 25.9375em) {
   #sidebar {
     width: 28rem;
   }
@@ -10652,6 +10774,13 @@ body {
 }
 
 #sidebar .sidebar header nav div:not(.indicator) .tab .profile:before,
+#sidebar .sidebar header nav div:not(.indicator) .tab .friend:before,
+#sidebar .sidebar header nav ul .tab .profile:before,
+#sidebar .sidebar header nav ul .tab .friend:before {
+  padding-left: 3px;
+}
+
+#sidebar .sidebar header nav div:not(.indicator) .tab .profile:before,
 #sidebar .sidebar header nav ul .tab .profile:before {
   font-size: 28px;
 }
@@ -10659,6 +10788,11 @@ body {
 #sidebar .sidebar header nav div:not(.indicator) .tab .group:before,
 #sidebar .sidebar header nav ul .tab .group:before {
   font-size: 32px;
+}
+
+#sidebar .sidebar header nav div:not(.indicator) .tab i,
+#sidebar .sidebar header nav ul .tab i {
+  padding: 0;
 }
 
 #sidebar .sidebar .side-nav-content {
@@ -10875,8 +11009,16 @@ body {
 #friends .bottom.full,
 #groups .bottom.full {
   z-index: 50;
-  height: calc(100% - 131px);
-  top: 131px;
+  height: calc(100% - 105px);
+  top: 105px;
+}
+
+@media only screen and (min-width: 600px) {
+  #friends .bottom.full,
+  #groups .bottom.full {
+    height: calc(100% - 115px);
+    top: 115px;
+  }
 }
 
 #friends .bottom.full .search-new-friends,
@@ -10895,6 +11037,12 @@ body {
   opacity: 1;
 }
 
+#friends .bottom h2,
+#groups .bottom h2 {
+  font-size: 18px;
+  border-bottom: 1px solid #ececec;
+}
+
 #friends .bottom .collection,
 #groups .bottom .collection {
   opacity: 0;
@@ -10905,6 +11053,7 @@ body {
 #friends .bottom .collection .collection-item,
 #groups .bottom .collection .collection-item {
   display: inline-block;
+  padding: 0 20px;
   width: 100%;
   float: left;
 }
@@ -10934,6 +11083,7 @@ body {
 #groups .bottom .search-new-friends {
   margin-top: -80px;
   height: 0;
+  padding-top: 10px;
   -webkit-transition: margin-top 0.4s ease-in-out 0.7s, height 0s ease-in-out 0.7s;
   transition: margin-top 0.4s ease-in-out 0.7s, height 0s ease-in-out 0.7s;
 }
@@ -10960,6 +11110,13 @@ body {
   transition: all 0.8s ease-in-out, line-height 0.4s;
   padding: 0 35%;
   text-align: left;
+}
+
+@media only screen and (max-width: 373px) {
+  #friends .bottom .add-friend,
+  #groups .bottom .add-friend {
+    padding: 0 31%;
+  }
 }
 
 #friends .bottom .add-friend.button-header,
@@ -11015,6 +11172,28 @@ body {
   padding-right: 12px;
 }
 
+#friends .bottom .newGroupFriends,
+#groups .bottom .newGroupFriends {
+  border-width: 1px !important;
+}
+
+#friends .bottom .newGroupFriends:not(:first-of-type),
+#groups .bottom .newGroupFriends:not(:first-of-type) {
+  margin-top: -1px;
+}
+
+#friends .bottom .submit-group-form,
+#groups .bottom .submit-group-form {
+  height: 48px;
+}
+
+#friends .bottom #createGroupForm,
+#groups .bottom #createGroupForm {
+  height: calc(100% - 196px);
+  overflow-y: scroll;
+  margin-right: -7px;
+}
+
 #bubble #profile .img-container {
   margin: 4vw auto;
   width: 9rem;
@@ -11038,9 +11217,24 @@ body {
 }
 
 #bubble #profile .img-overflow:hover .edit-overlay {
-  background-color: red;
+  background-color: rgba(72, 72, 72, 0.53);
   border-radius: 50%;
-  opacity: 0.5;
+  opacity: 1;
+  z-index: 5;
+  text-align: center;
+}
+
+#bubble #profile .img-overflow:hover .edit-overlay .edit-text {
+  margin: 0;
+  vertical-align: top;
+  margin-right: 0.375rem;
+}
+
+#bubble #profile .img-overflow:hover .edit-overlay .edit-text,
+#bubble #profile .img-overflow:hover .edit-overlay i {
+  display: inline-block;
+  font-size: 18px;
+  color: white;
 }
 
 #bubble #profile .btn {
@@ -11055,7 +11249,7 @@ body {
 }
 
 #bubble #profile .solid-block {
-  height: 50px;
+  height: 60px;
 }
 
 #bubble #profile .solid-block p {
@@ -11067,10 +11261,18 @@ body {
   width: 100%;
 }
 
+#bubble #profile .username {
+  border-bottom: 2px solid #ececec;
+}
+
 #bubble #profile .bubble-editInput {
   right: 0;
   padding-left: 0.75rem;
   width: 100%;
+}
+
+#bubble #profile .bubble-editInput input {
+  padding-top: 5px;
 }
 
 .side-nav-content .side-header {

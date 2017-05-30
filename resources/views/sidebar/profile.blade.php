@@ -4,7 +4,10 @@
 		<div class="valign-wrapper profile-info">
 			<div class="img-container">
 				<label class="col s4 no-pad  img-overflow circle center fixed" for="profilepicUpload">
-					<div class="edit-overlay"></div>
+					<div class="edit-overlay">
+						<p class="edit-text v-align">Edit </p>
+						<i class="material-icons v-align">mode_edit</i>
+					</div>
 					<img class="profile-pic" src="{{ Auth::user()->profile_image }}" alt="bubble profile image">
 					<input type="file" name="profilepicUpload" id="profilepicUpload" accept="image/*" onchange="angular.element(this).scope().uploadImage(this.files)">
 					<input type="submit" ng-click="uploadImage()">
@@ -13,7 +16,7 @@
 		</div>
 
 	<!-- username -->
-    	<div class="col s12 js-parent">
+    	<div class="col s12 js-parent username">
 	        <div class="right solid-block bubble-editName">
 	          	<p class="left text-block-center js-edit-value js-username v-align first-letter-capital">{{ Auth::user()->name }}</p>
 	          	<a class="left btn-floating btn red bubble-editButton v-align js-edit-button right">

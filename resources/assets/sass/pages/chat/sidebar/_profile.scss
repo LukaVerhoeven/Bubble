@@ -24,9 +24,23 @@ $profile-size: 9rem;
 		
 		&:hover{
 			.edit-overlay{
-				background-color: red;
+				background-color: rgba(72, 72, 72, 0.53);
 				border-radius: 50%;
-				opacity: 0.5;
+				opacity: 1;
+				z-index: 5;
+				text-align: center;
+
+				.edit-text{
+					margin:0;
+					vertical-align: top;
+					margin-right: $gutter/2;
+				}
+				
+				.edit-text,i{
+					display: inline-block;
+					font-size: map-get($font, medium);
+					color: white;
+				}
 			}
 		}
 	}
@@ -40,8 +54,9 @@ $profile-size: 9rem;
 	.buttons{
 		margin: 0;
 	}
+
 	.solid-block{
-		height: 50px;
+		height: 60px;
 
 		p{
 			margin: 0;
@@ -51,9 +66,16 @@ $profile-size: 9rem;
 	.bubble-editName{
 		width: 100%;
 	}
+	.username {
+		border-bottom: 2px solid map-get($colors, light-gray);
+	}
 	.bubble-editInput{
 		right: 0;
 		padding-left: $gutter;
 		width: 100%;
+
+		input{
+			padding-top: 5px;
+		}
 	}
 }
