@@ -93,7 +93,7 @@
                         <nav class="nav-extended">
                             <ul class="tabs tabs-transparent">
                                 <li class="tab col s6 white"><a class="red-text text-darken-4 active"href="#login">Login</a></li>
-                                <li class="tab col s6 white"><a class="red-text text-darken-4" href="#register">Register</a></li>
+                                <li class="tab col s6 white js-register-tab"><a class="red-text text-darken-4" href="#register">Register</a></li>
                             </ul>
                         </nav>
                         <div class="panel panel-default" id="login">
@@ -185,7 +185,7 @@
 
                                     <div class="input-field col s12">
                                         <div class="col-md-6 col-md-offset-4">
-                                            <button type="submit" class="btn waves-effect waves-light col s12">
+                                            <button type="submit" class="btn waves-effect waves-light col s12 js-register">
                                                 Register
                                             </button>
                                         </div>
@@ -203,5 +203,6 @@
     <!-- {{-- <script src="/js/app.js"></script> --}} -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
     <script src="/js/materialize.min.js"></script>
+    <script src="/js/registerSession.js"></script>
 </body>
 </html>

@@ -104,6 +104,9 @@
 		margin-right: $filter-theme-width;
 		display: block;
 
+		input:focus{
+			border-bottom:none;
+		}
 		.insert-emo i{
 			color: #252525;
 			position: absolute;
@@ -113,7 +116,7 @@
 			opacity: .7;
 			cursor: pointer;
 
-			@include media($medium-screen-up) {
+			@media only screen and(min-width: 600px) {
 				height: 64px;
 				line-height: 64px;
 			}			
@@ -138,6 +141,7 @@
 
 			.send{
 				color: white;
+				margin-top: 0;
 			}
 		}
 	}

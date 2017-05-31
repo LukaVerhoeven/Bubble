@@ -24,8 +24,11 @@
 
 			.modal-content{
 				@include vertical-align;
-				@include media($small-screen-up) {
+				@include media($medium-screen-up) {
 					width: 40%;
+				}
+				@include media($small-screen-up) {
+					width: 70%;
 				}
 				width: 100%;
 			    margin: auto;

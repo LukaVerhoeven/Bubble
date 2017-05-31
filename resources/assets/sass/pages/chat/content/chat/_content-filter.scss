@@ -22,6 +22,10 @@
 			margin:0;
 			align-self: flex-end;
 			margin-bottom: $gutter;
+			width: 100%;
+			// overflow-y: scroll;
+			// z-index: 15;
+			margin-right: -8px;
 
 			.filter-button-container{
 				text-align: center;

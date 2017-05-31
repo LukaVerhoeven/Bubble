@@ -34,9 +34,9 @@
 								<form id="logout" action="/logout" method="POST">
 								{{ csrf_field() }}
 								<ul class="tabs tabs-transparent valign-wrapper red darken-1">
-									<li class="tab"><a href="#logout-tab"><i class="bubble-icon logout col s2"></i></a></li>
-									<li class="tab "><a href="#profilesettings"><i class="small material-icons col s2">settings</i></a></li>
-									<li class="tab "><a href="#profile"><i class="small bubble-icon profile col s2 "></i></a></li>
+									<li class="tab"><a href="#logout-tab"><i class="bubble-icon logout"></i></a></li>
+									<!-- <li class="tab "><a href="#profilesettings"><i class="small material-icons col s2">settings</i></a></li> -->
+									<li class="tab "><a href="#profile"><i class="small bubble-icon profile"></i></a></li>
 									<li class="tab "><a class="active" href="#friends"><i class="bubble-icon friend"></i></a></li>
 									<li class="tab "><a href="#groups"><i class="bubble-icon group"></i></a></li>
 								</ul>
@@ -52,7 +52,7 @@
 							<h2 class="side-header card" >Logout</h2>
 							<a class="btn red waves-effect waves-light" ng-click="logout()" href="" onclick="document.getElementById('logout').submit()">Logout</a>
 						</div>
-						<div id="profilesettings" class="col s12 no-pad tab-item"><h2 class="side-header card">Settings</h2></div>
+						<!-- <div id="profilesettings" class="col s12 no-pad tab-item"><h2 class="side-header card">Settings</h2></div> -->
 						@include('sidebar.profile')
 						@include('sidebar.friends')
 						@include('sidebar.groups')
@@ -104,6 +104,7 @@
 		</div>
 		@include('extras.alerts')
 		@include('components.fullscreen-preloader')
+		@include('components.tutorial-screen')
 		<script>
 			window.Laravel = { 'csrfToken' : '{{ csrf_token() }}' };
 		</script>
@@ -124,7 +125,6 @@
     	<script src="{{ asset('js/angular/controllers/GlobalController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/GroupController.js') }}"></script> --}}
     	<!-- browser sync -->
-
 
 	</body>
 </html>

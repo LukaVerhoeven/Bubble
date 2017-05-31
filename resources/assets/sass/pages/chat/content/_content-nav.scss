@@ -47,6 +47,10 @@
 
 		.hamburger{
 			margin: 0;
+			
+			&:hover{
+				background: none;
+			}
 		}
 	}
 }

@@ -69,22 +69,31 @@
 	 <div class="filter">
 		<div class="side-nav z-depth-1 hide-scrollbar">
 		<form>
-			<ul ng-if="themes.length > 1">	
+			<ul ng-if="themes.length > 1" class="theme-list">
+				<!-- all themes of the chat -->
 				<li class="filter-button-container" ng-repeat="(key, theme) in themes" ng-if="!theme.is_general && theme.is_active && !theme.is_deleted">
-					<input name="themeFilter" type="radio" id="themeFilter@{{key}}" ng-model="message.filter" ng-value="@{{theme.id}}" required/>
+					<input name="themeFilter" type="radio" id="themeFilter@{{key}}" ng-model="message.filter" ng-value="@{{theme.id}}"/>
 					<label for="themeFilter@{{key}}" class="no-button js-NIcon" ng-click="messageColor(theme.color)"></label>
 					<div class="btn-floating waves-effect waves-light @{{theme.color}}">
 	     	 			<i class="material-icons">@{{theme.icon}}</i>
 	    			</div>
 				</li>
+				<!-- reset themes -->
 				<li class="filter-button-container" ng-if="chatID">
-					<input name="themeFilter" type="radio" id="themeFilter" ng-model="message.filter" required/>
+					<input name="themeFilter" type="radio" id="themeFilter" ng-model="message.filter"/>
 					<label for="themeFilter" class="no-button js-NIcon" ng-click="messageColor('')"></label>
 					<div class="btn-floating waves-effect waves-light white">
 	     	 			<i class="material-icons red-text ">clear</i>
 	    			</div>
 				</li>
-
+			</ul>
+			<!-- demo theme for the tutorial -->
+			<ul class="theme-list hide js-tutorial-filter">
+				<li class="filter-button-container ">
+					<div class="btn-floating waves-effect waves-light blue">
+	     	 			<i class="material-icons">school</i>
+	    			</div>
+				</li>				
 			</ul>
 		</form>
 		</div>

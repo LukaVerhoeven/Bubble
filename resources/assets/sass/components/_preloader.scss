@@ -5,7 +5,13 @@
 	height: 100vh;
 	background: white;
 	text-align: center;
+	top: 0;
+	left: 0;
 
+	.v-align{
+		height: 283px;
+	}
+	
 	.loading-sentance{
 		margin-bottom: 60px;
 		font-size: map-get($font, big);

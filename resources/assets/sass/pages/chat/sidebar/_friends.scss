@@ -1,3 +1,76 @@
+.friend-item{
+	height: 50px;
+	cursor: pointer;
+
+	&.active .friend-name{
+		color: map-get($colors, red);
+		padding-left: 2rem;
+
+		&:before{
+			opacity: 1;
+		}
+	}
+
+	.friend-name{
+		@include transition(padding-left .3s ease-in-out);
+		display: inline-block;
+		margin: 0;
+		line-height: 50px;
+		max-width: 90%;
+		padding-left: $gutter;
+		@extend %first-capital;
+
+		&:before{
+			@include transition(opacity .1s ease-in-out .1s);
+			opacity: 0;
+			font-family: 'Bubble-icons' !important;
+			color: map-get($colors, red);
+			opacity: 0;
+			speak: none;
+			font-size: 20px;
+			margin-top: 15px;
+			left: .6rem;
+			position: absolute;
+			font-style: normal;
+			font-weight: normal;
+			font-variant: normal;
+			text-transform: none;
+			line-height: 1;
+			content: "\3d";
+		}
+	}
+}
+
+.online-state{
+	width: 12px;
+	height: 12px;
+	border-radius: 20px;
+	float: right;
+	margin-right: $gutter*2;
+	
+	&.online{
+		background-color: map-get($colors, light-green);
+	}
+
+	&.offline{
+		background-color: gray;
+	}
+}
+
+.unread-messages{
+	display: inline-block;
+	line-height: 21px;
+	text-align: center;
+	background-color: red;
+	margin-left: $gutter;
+	vertical-align: top;
+	color: white;
+	min-width: 20px;
+	padding: 0 5px 0 5px;
+	height: 20px;
+	border-radius: 20px;
+}
+
 #friends,#groups{
 	.friends{
 		height: 80%;
@@ -15,78 +88,6 @@
 		padding: 0;
 	}
 	
-	.friend-item{
-		height: 50px;
-		cursor: pointer;
-
-		&.active .friend-name{
-			color: map-get($colors, red);
-			padding-left: 2rem;
-
-			&:before{
-				opacity: 1;
-			}
-		}
-
-		.friend-name{
-			@include transition(padding-left .3s ease-in-out);
-			display: inline-block;
-			margin: 0;
-			line-height: 50px;
-			max-width: 90%;
-			padding-left: $gutter;
-			@extend %first-capital;
-
-			&:before{
-				@include transition(opacity .1s ease-in-out .1s);
-				opacity: 0;
-				font-family: 'Bubble-icons' !important;
-				color: map-get($colors, red);
-				opacity: 0;
-				speak: none;
-				font-size: 20px;
-				margin-top: 15px;
-				left: .6rem;
-				position: absolute;
-				font-style: normal;
-				font-weight: normal;
-				font-variant: normal;
-				text-transform: none;
-				line-height: 1;
-				content: "\3d";
-			}
-		}
-	}
-
-	.online-state{
-		width: 12px;
-		height: 12px;
-		border-radius: 20px;
-		float: right;
-		margin-right: $gutter*2;
-		
-		&.online{
-			background-color: map-get($colors, light-green);
-		}
-
-		&.offline{
-			background-color: gray;
-		}
-	}
-
-	.unread-messages{
-		display: inline-block;
-		line-height: 1.5em;
-		text-align: center;
-		background-color: red;
-		margin-left: $gutter;
-		vertical-align: top;
-		color: white;
-		min-width: 20px;
-		padding: 0 5px 0 4px;
-		height: 20px;
-		border-radius: 20px;
-	}
 
 	.request{
 		li{

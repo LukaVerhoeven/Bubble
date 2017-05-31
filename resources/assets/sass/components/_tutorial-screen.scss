@@ -1,0 +1,241 @@
+#tutorial{
+	display: none;
+
+	@include media($large-screen-up) {
+		display: block;
+		height: 100%;
+		width: 100%;
+		top: 0;
+		left: 0;
+
+		.tutorial-screen{
+			z-index: 1001;
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			width: 0px;
+			height: 0px;
+			box-shadow: 0 0 0 99999px rgba(255, 255, 255, 0.85);
+			// box-shadow: inset 0 0 10px 3px rgba(255, 255, 255, 0.8),  0 0 0 99999px rgba(255, 255, 255, 0.8);
+
+			&.step2{
+				top: 134px;
+				height: 57px;
+				@media only screen and (min-width: 1200px){
+					top:140px;
+				}
+			}
+
+			&.step3{
+				top: 196px;
+				height: 57px;
+				box-shadow: 400px -351vh 0 396vh rgba(255, 255, 255, 0.85);
+
+				@media only screen and (min-width: 1200px){
+					top: 201px;
+				}
+			}
+
+			&.step4{
+				height: 370px;
+				width: 100%;
+			}
+
+			&.step5{
+				height: 100px;
+				top: auto;
+				bottom: 0;
+				width: 100%;
+			}			
+		}
+		
+		// general step
+		.tutorial-div{
+			z-index: 1002;
+			position: absolute;
+
+			h2 {
+				font-size: map-get($font,big);
+			}
+		}
+
+		.tutorial-text{
+		    display: inline-block;
+		    padding: 0 $gutter;
+		}
+
+		.step-2, .step-3 , .add-friend-marker, .tutorial-screen.step2, .tutorial-screen.step3{ //SIDEBAR WIDTH
+			width: 405px;
+			@media only screen and (min-width: 1200px){
+				width: 420px;
+			}
+		}
+		.step-4, .tutorial-screen.step4, .step-5, .tutorial-screen.step5 { //SIDEBAR WIDTH
+			margin-left: 405px;
+			width: calc(100% - 405px);
+
+			@media only screen and (min-width: 1200px){
+				margin-left: 420px;
+				width: calc(100% - 420px);
+			}
+		}		
+
+		ul {
+			margin: 0;
+			display: inline-block;
+		}
+
+		li{
+			float: left;
+			color: map-get($colors, red);
+			text-align: center;
+
+			&:not(:last-child){
+				border-right: 2px solid map-get($colors, red);
+			}
+		}
+
+		.step-buttons{
+			text-align: right;
+			padding: 0 $gutter $gutter 0;
+
+			a:first-of-type{
+				margin-right: $gutter;
+			}			
+		}
+		
+		// steps
+		.step-1{
+			width: 100%;
+			height: 283px;
+
+			.red{
+				margin-right: $gutter;
+			}
+		}
+
+		.step-2{
+			top: 190px;
+			@media only screen and (min-width: 1200px){
+				top: 197px;
+			}
+
+			ul{
+				width: 100%;
+				padding: $gutter 0;
+				display: inline-block;
+				border: 2px solid  map-get($colors, red);
+				float: left;
+			}
+
+			li{
+				width: 25%;
+				font-size: map-get($font, medium);
+			}
+
+			.tutorial-text{
+    			border: 2px solid map-get($colors, red);
+    			border-top: none;
+    			padding: $gutter;
+
+    			h2{
+    				margin-top: $gutter;
+    				font-weight: bold;
+    			}
+			}
+		}
+
+		.step-3 {
+			top: 195px;
+			border: 2px solid map-get($colors, red);
+
+			@media only screen and (min-width: 1200px){
+				top: 200px;
+			}
+
+			.friend-item{
+				border-bottom: 2px solid map-get($colors, red);
+				margin-top: 48px;
+
+				@media only screen and (min-width: 1200px){
+					margin-top: 53px;
+				}				
+			}
+
+			h2{
+				margin-top: $gutter;
+				font-weight: bold;
+			}
+
+			ul.friend-info {
+				width: 100%;
+				border-bottom: 2px solid map-get($colors, red);
+
+				li {
+					padding: $gutter 0;
+					width: 36%;
+					font-weight: bold;
+
+					&:first-of-type {
+						width: 28%;
+					}
+				}
+			}
+			&.add-friend-marker{
+				position: absolute;
+				z-index: 1002;
+				top: auto;
+				bottom: 0;
+				height: 59px;
+				border: 2px solid map-get($colors, red);
+			}
+		}
+
+		.step-4{
+			margin-top: 90px;
+			padding-top: 280px;
+			border: 2px solid map-get($colors, red);
+			border-top: none;
+
+			h2{
+				margin-top: $gutter *2;
+				font-weight: bold;
+			}
+
+
+			.tutorial-text{
+				border-top: 2px solid map-get($colors, red);
+				background-color: rgba(255, 255, 255, 0.5);
+				width: 100%;
+			}
+
+			ul.chat-info{
+				width: 100%;
+
+				li{
+					width: 33%;
+					padding: $gutter 0;
+					font-size: map-get($font, big);
+					font-weight: bold;
+				}
+			}
+		}
+
+		.step-5{
+			border: 2px solid map-get($colors, red);
+			bottom: 100px;
+
+			h2{
+				font-weight: bold;
+			}
+			
+			.tutorial-text{
+				width: 100%;
+			}
+		}
+	}
+}
+
+.tutorial-theme{
+	z-index: 1000;
+}
