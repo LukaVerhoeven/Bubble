@@ -11,6 +11,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
         $rootScope.messagesLoaded = 0;
         $rootScope.messages = new Messages();
         $rootScope.messages.nextPage();
+        console.log($rootScope.messages);
         $rootScope.themes = response.data.themes;
         $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1,'is_general', 'retreive',0,'id',0)[0];
         $rootScope.message.theme = $rootScope.generalThemeID;

@@ -13,6 +13,9 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         });
         arrayToAdd.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
     }
+    $scope.hasChildren = function(list, model){
+        return list.filter(function(item){console.log(item.nickname,  $scope.$parent.groupFriendInput);return item.nickname.indexOf(model) !== -1});
+    }
     //CREATES A GROUP
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
@@ -137,10 +140,11 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         }
     }
 
-      $rootScope.renameChat = function(newname, chatid) {
-            $rootScope.adjustObjectElement($rootScope.groups, chatid, 'chat_id', 'edit', newname, 'chat_name', 0);
-            if ($rootScope.chatID === chatid) {
-                $rootScope.chatname = newname
-            }
-      }
+    // RENAME GROUPSCHAT
+    $rootScope.renameChat = function(newname, chatid) {
+        $rootScope.adjustObjectElement($rootScope.groups, chatid, 'chat_id', 'edit', newname, 'chat_name', 0);
+        if ($rootScope.chatID === chatid) {
+            $rootScope.chatname = newname
+        }
+    }
 })

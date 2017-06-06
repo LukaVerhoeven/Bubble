@@ -10,7 +10,7 @@
 	  	</div>
 	    <span class="close" ng-click="Close()">&times;</span>
 	    <p class="alert-header">Are you sure you want to remove this friend?</p>
-	    <a class="btn waves-effect waves-light" ng-click="deleteFriendConfirmed()">I'm sure</a>
+	    <a class="btn wavles-effect waves-light" ng-click="deleteFriendConfirmed()">I'm sure</a>
 	    <a class="btn waves-effect waves-light red" ng-click="Close()">No!</a>
 	  </div>
 	</div>

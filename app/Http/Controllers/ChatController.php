@@ -147,7 +147,7 @@ class ChatController extends Controller
         }
         // Get all friends that belong to the friendchat
         $friends = DB::table('users')
-                ->select('users.id as userid', 'users.name', 'chats.id as chatid', 'users_in_chats.unread_messages')
+                ->select('users.id as userid', 'users.name', 'chats.id as chatid', 'users_in_chats.unread_messages', 'users_in_chats.nickname')
                 ->join('users_in_chats', 'users_in_chats.user_id', '=', 'users.id')
                 ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
                 ->whereIn('chats.id',$chatID)

@@ -125,6 +125,9 @@
     	<script src="{{ asset('js/angular/controllers/GlobalController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/GroupController.js') }}"></script> --}}
     	<!-- browser sync -->
+<script id="__bs_script__">//<![CDATA[
+    document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.18.11'><\/script>".replace("HOST", location.hostname));
+//]]></script>
 
 	</body>
 </html>

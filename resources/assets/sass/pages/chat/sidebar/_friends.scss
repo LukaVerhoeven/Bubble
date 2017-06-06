@@ -154,7 +154,7 @@
 		position: absolute;
 		width: 100%;
 		z-index: 20;
-		top: calc(100% - 195px);
+		top: calc(100% - 200px);
 		height: 13rem;
 		overflow: hidden;
 		overflow-y: hidden;
@@ -233,7 +233,7 @@
 		.white{
 			height: 100%;
 		}
-		
+
 		.btn{
 			margin: 10px 0;
 		}
@@ -303,12 +303,26 @@
 
 		.submit-group-form{
 			height: 48px;
+			margin-bottom: 1.3rem;
 		}
 
 		#createGroupForm{
 			height: calc(100% - 196px);
 			overflow-y: scroll;
 			margin-right: -7px;
+			display: flex;
+			flex-direction: column;
+
+			ul{
+				overflow-y: scroll;
+			}
+
+			.createGroupBottom {
+				margin-top: auto;
+				width: 100%;
+				align-self: flex-end;
+			}
+
 		}
 	}
 }

@@ -176,6 +176,7 @@ class FriendController extends Controller
             }
         }
     }
+
     public function receiveOnline(Request $request)
     {
         $this->validate($request, [
@@ -186,5 +187,23 @@ class FriendController extends Controller
         $userid = $request->input('userid');
 
         broadcast(new UserEvents($userid , "receiveOnline" , $authid))->toOthers();
-    }    
+    }
+
+    public function renameFriend(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'newname'    =>   'string',
+                'chatid'     =>   'integer',
+                'friendid'   =>   'integer'
+            ]);
+
+            $newname = $request->input('newname');
+            $chatid = (int)$request->input('chatid');
+            $friendid = (int)$request->input('friendid');
+            UsersInChat::where('chat_id', $chatid)->where('user_id', $friendid)->update(['nickname' => $newname]);
+        } catch (Exception $e) {
+            return "something went wrong";
+        }
+    }          
 }

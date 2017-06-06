@@ -10441,6 +10441,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                         }
                     }
                     if (key === keyElement) {
+
                         if (!CheckMultipleValues) {
                             if (valueIsArray) {
                                 // this does not work with an array of objects because : x{data:1} != x{data:1}
@@ -10769,7 +10770,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         $rootScope.chatID = chatID;
         $rootScope.friendID = friendID;
         // Settings
-        $rootScope.groupFriends = friends;
+        $rootScope.groupFriends = $rootScope.ObjToArray(friends);
         $rootScope.chatFunction = chatFunction;
         $rootScope.isChatAdmin = userIsAdmin;
         if ($rootScope.groupFriends) {
@@ -10997,6 +10998,7 @@ app.controller('AlertController', function ($scope, $http, API_URL, $rootScope) 
 app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
 
     $scope.newFriendInput = '';
+    $scope.searchFriendLoaded = false;
 
     // GET FRIENDLIST AND GROUPCHATS
     $scope.friendList = function (response) {
@@ -11004,7 +11006,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         // console.log(response.data);
         $rootScope.friendlist = response.data.friends;
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
-        $rootScope.friendsForGroup = response.data.friends;
+        $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
         console.log($rootScope.friendlist, $rootScope.groups);
@@ -11042,6 +11044,11 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
     // SEARCH NEW FRIENDS
     $scope.newfriendsearch = function (response) {
         $scope.searchedfriends = response.data;
+        $scope.searchFriendLoaded = true;
+        setTimeout(function () {
+            $scope.searchFriendLoaded = false;
+        }, 1);
+
         // console.log($scope.searchedfriends);
     };
 
@@ -11135,6 +11142,17 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
             $rootScope.postRequest($scope.onlinestate, 'onlineState', '');
         }
     };
+
+    // GIVE USER NICKNAME
+    $rootScope.renameFriend = function (newname, chatid) {
+        console.log($rootScope.friendlist, chatid);
+        $rootScope.adjustObjectElement($rootScope.friendlist, chatid, 'chatid', 'edit', newname, 'nickname', 0);
+        $rootScope.adjustObjectElement($rootScope.messages.items, $rootScope.friendID, 'user_id', 'edit', newname, 'nickname', 0);
+        console.log($rootScope.friendlist);
+        if ($rootScope.chatID === chatid) {
+            $rootScope.chatname = newname;
+        }
+    };
 });
 app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $rootScope) {
 
@@ -11152,6 +11170,11 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
         arrayToAdd.sort($rootScope.sort_by('name', false, function (a) {
             return a.toUpperCase();
         }));
+    };
+    $scope.hasChildren = function (list, model) {
+        return list.filter(function (item) {
+            console.log(item.nickname, $scope.$parent.groupFriendInput);return item.nickname.indexOf(model) !== -1;
+        });
     };
     //CREATES A GROUP
     $scope.createGroup = function () {
@@ -11277,6 +11300,7 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
         }
     };
 
+    // RENAME GROUPSCHAT
     $rootScope.renameChat = function (newname, chatid) {
         $rootScope.adjustObjectElement($rootScope.groups, chatid, 'chat_id', 'edit', newname, 'chat_name', 0);
         if ($rootScope.chatID === chatid) {
@@ -11297,6 +11321,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
         $rootScope.messagesLoaded = 0;
         $rootScope.messages = new Messages();
         $rootScope.messages.nextPage();
+        console.log($rootScope.messages);
         $rootScope.themes = response.data.themes;
         $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1, 'is_general', 'retreive', 0, 'id', 0)[0];
         $rootScope.message.theme = $rootScope.generalThemeID;
@@ -11552,13 +11577,11 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
     // ADD FRIEND TO NEW GROUP (Send to alert)
     $scope.addFriendToGroup = function () {
         // get the groups were you'r friend isn't already in
-        console.log($rootScope.groups, $rootScope.friendID);
         $rootScope.groupsWithoutFriend = $rootScope.adjustArrayElementNewArray($rootScope.groups, $rootScope.friendID, 'user_id', 'remove', 1, 0, 0, 0);
         // TODO deze retreive is  slecht geschrven
         $rootScope.groupsNotConfirmed = $rootScope.adjustArrayElementNewArray($rootScope.groups, [$rootScope.friendID, 0], ['user_id', 'confirmed'], 'retreive', 0, 0, 0, 1);
         $rootScope.toDeleteUserId = $rootScope.friendID;
 
-        console.log($rootScope.groupsWithoutFriend, $rootScope.groupsNotConfirmed);
         // send data to alert
         $('#Alerts').addClass('open');
         $('#addFriendToGroupAlert').addClass('open');
@@ -11640,13 +11663,30 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
     // EDIT GROUP NAME
     $scope.editchatname = function (newChatName) {
         if (newChatName) {
-            var data = {
-                newname: newChatName,
-                chatid: $rootScope.chatID,
-                friends: $rootScope.groupFriends
-            };
-            $rootScope.postRequest(data, 'renameChat', '');
-            $rootScope.renameChat(newChatName, $rootScope.chatID);
+            if (!$rootScope.friendID) {
+                if (newChatName) {
+                    var data = {
+                        newname: newChatName,
+                        chatid: $rootScope.chatID,
+                        friends: $rootScope.groupFriends
+                    };
+                    $rootScope.postRequest(data, 'renameChat', '');
+                    $rootScope.renameChat(newChatName, $rootScope.chatID);
+                }
+            } else {
+                var data = {
+                    newname: newChatName,
+                    chatid: $rootScope.chatID,
+                    friendid: $rootScope.friendID
+                };
+                $rootScope.postRequest(data, 'renameFriend', '');
+                $rootScope.renameFriend(newChatName, $rootScope.chatID);
+            }
+            if ($('#editChatNameInput').hasClass('edit')) {
+                console.log($('#editChatNameInput .bubble-editButton.clear')[0].click()); //TODO moet ook zonder console werken
+                $('#editChatNameInput .bubble-editButton.clear')[0].click();
+            }
+            $('#chatname-input').val('');
         }
     };
 
@@ -46293,6 +46333,7 @@ var AnimateWidthAuto = function () {
         _classCallCheck(this, AnimateWidthAuto);
 
         this.$get = $('.js-get-width');
+        this.$reset = $('.js-reset-width');
         this.$element = $('.js-auto-width');
         this.init();
     }
@@ -46304,6 +46345,9 @@ var AnimateWidthAuto = function () {
 
             this.$get.on('click', function () {
                 _this.setWidth();
+            });
+            this.$reset.on('click', function (e) {
+                _this.resetWidth(e);
             });
         }
     }, {
@@ -46325,6 +46369,16 @@ var AnimateWidthAuto = function () {
                     }, 3000);
                 });
             }
+        }
+    }, {
+        key: 'resetWidth',
+        value: function resetWidth(e) {
+            var thisClass = this;
+            setTimeout(function () {
+                var auto = $(e.currentTarget).parents('.js-parent').find('.js-auto-width');
+                auto.css('width', 'auto');
+                thisClass.setWidth();
+            }, 300);
         }
     }]);
 
@@ -46734,6 +46788,7 @@ var chatSettings = function () {
                 var editInput = parent.find(_this.$editNameInput);
                 editName.toggleClass('edit');
                 editInput.toggleClass('edit');
+                editInput.find('input').focus();
             });
         }
     }]);
@@ -46807,6 +46862,7 @@ var General = function () {
             if (ClickedOnRegister !== null) {
                 if (ClickedOnRegister) {
                     this.$tutorial.removeClass('hide');
+                    sessionStorage.clear();
                 }
             }
         }

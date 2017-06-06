@@ -12,15 +12,17 @@
 			    	</a>
 	          	</div>
 	          	<div class="right solid-block bubble-editInput" id="editChatNameInput">
-		          	<input type="text" placeholder="@{{chatname}}" ng-model="newChatName" maxlength="20">
-		          	<div class="buttons">
-			          	<a class=" btn-floating btn bubble-editButton" ng-click="editchatname(newChatName)">
-				     	 	<i class="material-icons">done</i>
-				    	</a>
-			          	<a class=" btn-floating btn bubble-editButton grey clear">
-				     	 	<i class="material-icons">clear</i>
-				    	</a>
-		          	</div>
+		          	<form ng-submit="editchatname(newChatName)">
+			          	<input type="text" placeholder="@{{chatname}}" ng-model="newChatName" maxlength="20" id="chatname-input" autocomplete="off" required>
+			          	<div class="buttons">
+				          	<a class=" btn-floating btn bubble-editButton js-reset-width" ng-click="editchatname(newChatName)">
+					     	 	<i class="material-icons">done</i>
+					    	</a>
+				          	<a class=" btn-floating btn bubble-editButton grey clear">
+					     	 	<i class="material-icons">clear</i>
+					    	</a>
+			          	</div>
+		          	</form>
 	          	</div>
 	        </div>
 	        <div class="card-content col s12 solid-block" ng-if="chatFunction === 'friendchat'">

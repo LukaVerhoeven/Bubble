@@ -1,6 +1,7 @@
 class AnimateWidthAuto {
     constructor() {
     	this.$get = $('.js-get-width');
+        this.$reset = $('.js-reset-width');
     	this.$element = $('.js-auto-width');
         this.init();
     }
@@ -8,7 +9,10 @@ class AnimateWidthAuto {
     init() {
        this.$get.on('click', () => {
         	this.setWidth();
-       });        
+       });
+       this.$reset.on('click', (e) => {
+            this.resetWidth(e);
+       });       
     }
 
     setWidth() {
@@ -26,6 +30,15 @@ class AnimateWidthAuto {
 				setTimeout(function(){ clearInterval(WaitForWidth); }, 3000);
 		    })
     	}
+    }
+
+    resetWidth(e){
+        var thisClass = this;
+        setTimeout(function(){
+            var auto = $(e.currentTarget).parents('.js-parent').find('.js-auto-width');
+            auto.css('width', 'auto');
+            thisClass.setWidth();
+        }, 300);
     }
 }
 

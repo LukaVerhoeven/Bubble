@@ -38,6 +38,7 @@ Route::get('/api/searchFriend/{id?}', 'FriendController@searchFriend');
 Route::post('/api/onlineState', 'FriendController@sendOnline');
 Route::post('/api/onlineAnswer', 'FriendController@receiveOnline');
 Route::post('/api/sendLogout', 'FriendController@sendOffline');
+Route::post('/api/renameFriend', 'FriendController@renameFriend');
 
 //groups
 Route::post('/api/createGroup', 'GroupController@createGroup');

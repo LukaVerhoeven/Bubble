@@ -16,8 +16,8 @@
 			</li>
 		</ul>
 		<ul class="js-active-container no-margin-top">
-				<li ng-repeat="(key, friend) in friendlist | filter:searchfriend" data-id="@{{friend.userid}}" ng-click="openChat(friend.chatid , friend.userid , friend.name , 'friendchat', null, 1, key)" class="first-letter-capital friend-item js-give-active button-close-nav">
-						<p class="friend-name truncate">@{{friend.name}}</p> 
+				<li ng-repeat="(key, friend) in friendlist | filter:searchfriend" data-id="@{{friend.userid}}" ng-click="openChat(friend.chatid , friend.userid , friend.nickname , 'friendchat', null, 1, key)" class="first-letter-capital friend-item js-give-active button-close-nav">
+						<p class="friend-name truncate">@{{friend.nickname}}</p> 
 						<span class="unread-messages v-align" ng-if="friend.unread_messages">@{{friend.unread_messages}}</span>
 						<span class="online-state offline v-align" ng-if="!friend.isOnline"></span><span class="online-state online v-align" ng-if="friend.isOnline"></span>
 				</li>
@@ -61,6 +61,7 @@
 				    </a> 
 				</li>
 			</ul>
+			<p  ng-show="searchedfriends.length < 1 && newFriendInput && searchFriendLoaded" >No one found.</p>
 		</div>
 	</div>
 </div>

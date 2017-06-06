@@ -135,6 +135,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         }
                     }
                     if(key === keyElement){
+
                         if(!CheckMultipleValues){
                             if(valueIsArray){ // this does not work with an array of objects because : x{data:1} != x{data:1}
                                 if(obj[key].toString() == value.toString()){
@@ -457,7 +458,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.chatID = chatID;
         $rootScope.friendID = friendID;
         // Settings
-        $rootScope.groupFriends = friends;
+        $rootScope.groupFriends =  $rootScope.ObjToArray(friends);
         $rootScope.chatFunction = chatFunction;
         $rootScope.isChatAdmin = userIsAdmin;
         if($rootScope.groupFriends){

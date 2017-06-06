@@ -53,6 +53,9 @@
 				line-height: 50px;
 			}	
 		}
+		.bubble-editName{
+			margin-right: .65rem;	
+		}	
 
 		@include media($medium-screen-down) {
 			.bubble-editName {

@@ -18,9 +18,11 @@ class MessageController extends Controller
     public function getMessages($id){
         $messages = Message::where('messages.chat_id', $id)
         ->join('users', 'users.id', '=', 'messages.user_id')
+        ->join('users_in_chats', 'users_in_chats.user_id', '=', 'users.id')
         ->join('themes', 'themes.id', '=', 'messages.theme_id')
+        ->where('users_in_chats.chat_id',$id)
         ->orderBy('messages.id','desc')
-        ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image', 'themes.color')->paginate(20)->items();
+        ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image', 'themes.color', 'users_in_chats.nickname')->paginate(20)->items();
         return $messages;
     }
 

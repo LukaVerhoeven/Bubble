@@ -1,6 +1,7 @@
 app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $rootScope) {
 
     $scope.newFriendInput = '';
+    $scope.searchFriendLoaded = false;
 
     // GET FRIENDLIST AND GROUPCHATS
     $scope.friendList = function(response) {
@@ -8,7 +9,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         // console.log(response.data);
         $rootScope.friendlist = response.data.friends;
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
-        $rootScope.friendsForGroup = response.data.friends;
+        $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
         console.log($rootScope.friendlist, $rootScope.groups);
@@ -48,6 +49,9 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     // SEARCH NEW FRIENDS
     $scope.newfriendsearch = function(response) {
         $scope.searchedfriends = response.data;
+        $scope.searchFriendLoaded = true;
+        setTimeout(function(){ $scope.searchFriendLoaded = false; }, 1);
+        
         // console.log($scope.searchedfriends);
     }
 
@@ -144,4 +148,15 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
             $rootScope.postRequest($scope.onlinestate ,'onlineState', '');
         }
     }
+
+    // GIVE USER NICKNAME
+    $rootScope.renameFriend = function(newname, chatid) {
+        console.log($rootScope.friendlist, chatid);
+        $rootScope.adjustObjectElement($rootScope.friendlist, chatid, 'chatid', 'edit', newname, 'nickname', 0);
+        $rootScope.adjustObjectElement($rootScope.messages.items , $rootScope.friendID, 'user_id', 'edit', newname, 'nickname', 0);
+        console.log($rootScope.friendlist);
+        if ($rootScope.chatID === chatid) {
+            $rootScope.chatname = newname
+        }
+    }    
 })

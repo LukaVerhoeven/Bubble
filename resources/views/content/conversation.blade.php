@@ -13,7 +13,7 @@
 						</div>
 						<div class="left message-container">
 							<div class="block">
-								<p class="user-name first-letter-capital">@{{ message.name }}</p>
+								<p class="user-name first-letter-capital">@{{ message.nickname }}</p>
 							</div>
 							<div class="inline-block text-container">
 								<i class="bubble-icon triangle left"><path class="path1"></path><path class="path2 @{{message.color}}-before"></path></i>

@@ -2,13 +2,11 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
     // ADD FRIEND TO NEW GROUP (Send to alert)
     $scope.addFriendToGroup = function() {
         // get the groups were you'r friend isn't already in
-        console.log($rootScope.groups, $rootScope.friendID);
         $rootScope.groupsWithoutFriend = $rootScope.adjustArrayElementNewArray($rootScope.groups, $rootScope.friendID, 'user_id', 'remove',1,0,0,0);
         // TODO deze retreive is  slecht geschrven
         $rootScope.groupsNotConfirmed = $rootScope.adjustArrayElementNewArray($rootScope.groups, [$rootScope.friendID, 0], ['user_id', 'confirmed'], 'retreive',0,0,0,1);
         $rootScope.toDeleteUserId = $rootScope.friendID;
 
-        console.log($rootScope.groupsWithoutFriend,$rootScope.groupsNotConfirmed);
         // send data to alert
         $('#Alerts').addClass('open');
         $('#addFriendToGroupAlert').addClass('open');
@@ -90,13 +88,30 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
     // EDIT GROUP NAME
     $scope.editchatname = function(newChatName) {
         if(newChatName){
-            var data = {
-                newname : newChatName,
-                chatid  : $rootScope.chatID,
-                friends : $rootScope.groupFriends
-            };
-            $rootScope.postRequest(data ,'renameChat', '');
-            $rootScope.renameChat(newChatName, $rootScope.chatID);
+            if(!$rootScope.friendID){
+                if(newChatName){
+                    var data = {
+                        newname : newChatName,
+                        chatid  : $rootScope.chatID,
+                        friends : $rootScope.groupFriends
+                    };
+                    $rootScope.postRequest(data ,'renameChat', '');
+                    $rootScope.renameChat(newChatName, $rootScope.chatID);
+                }
+            }else{
+                    var data = {
+                        newname : newChatName,
+                        chatid  : $rootScope.chatID,
+                        friendid : $rootScope.friendID
+                    };
+                    $rootScope.postRequest(data ,'renameFriend', '');
+                    $rootScope.renameFriend(newChatName, $rootScope.chatID);
+            }
+            if($('#editChatNameInput').hasClass('edit')){
+                console.log($('#editChatNameInput .bubble-editButton.clear')[0].click()); //TODO moet ook zonder console werken
+                $('#editChatNameInput .bubble-editButton.clear')[0].click();
+            }
+            $('#chatname-input').val('');
         }
     }
 
