@@ -12,7 +12,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
-        console.log($rootScope.friendlist, $rootScope.groups);
+        $rootScope.countGroupRequests = ($rootScope.adjustElementNewArray($rootScope.groups, '0','confirmed', 'retreive',0,0,0)).length;
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
         $rootScope.broadcastUser($rootScope.Authuserid);
@@ -32,7 +32,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     $scope.showRequests = function(response) {
         $rootScope.friendRequests = response.data.friendrequests;
-        console.log($rootScope.friendRequests);
+        $rootScope.countFriendRequests = $rootScope.friendRequests.length;
     }
 
     $scope.removeRequest = function(userid) {
@@ -89,6 +89,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
                 if(friendrequest){
                     $scope.removeRequest(friendID);
                     $rootScope.addFriend(response.data);
+                    $rootScope.countFriendRequests--;
                     // TODO loginBroadcast naar 1 persoon
                     $scope.loginBroadcast();
                 }

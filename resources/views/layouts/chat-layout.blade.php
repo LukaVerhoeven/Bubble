@@ -37,8 +37,8 @@
 									<li class="tab"><a href="#logout-tab"><i class="bubble-icon logout"></i></a></li>
 									<!-- <li class="tab "><a href="#profilesettings"><i class="small material-icons col s2">settings</i></a></li> -->
 									<li class="tab "><a href="#profile"><i class="small bubble-icon profile"></i></a></li>
-									<li class="tab "><a class="active" href="#friends"><i class="bubble-icon friend"></i></a></li>
-									<li class="tab "><a href="#groups"><i class="bubble-icon group"></i></a></li>
+									<li class="tab "><a class="active" href="#friends"><i class="bubble-icon friend"></i><span class="countRequest" ng-if="countFriendRequests>0">@{{countFriendRequests}}</span></a></li>
+									<li class="tab "><a href="#groups"><i class="bubble-icon group"></i><span class="countRequest" ng-if="countGroupRequests>0">@{{countGroupRequests}}</span></a></li>
 								</ul>
 								</form>
 								
@@ -125,9 +125,5 @@
     	<script src="{{ asset('js/angular/controllers/GlobalController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/GroupController.js') }}"></script> --}}
     	<!-- browser sync -->
-<script id="__bs_script__">//<![CDATA[
-    document.write("<script async src='http://HOST:3000/browser-sync/browser-sync-client.js?v=2.18.11'><\/script>".replace("HOST", location.hostname));
-//]]></script>
-
 	</body>
 </html>

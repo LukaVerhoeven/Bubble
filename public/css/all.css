@@ -9628,6 +9628,7 @@ i.bubble-icon {
 
 .bubble-icon.background {
   font-size: 42px;
+  cursor: default;
 }
 
 .bubble-icon.background i {
@@ -9692,6 +9693,7 @@ i.bubble-icon {
 }
 
 .bubble-icon.key:before {
+  cursor: default;
   content: "\1F3F4";
 }
 
@@ -11117,6 +11119,18 @@ body {
   float: none !important;
 }
 
+#sidebar .sidebar header nav div:not(.indicator) .tab .countRequest,
+#sidebar .sidebar header nav ul .tab .countRequest {
+  background-color: red;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  line-height: 20px;
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: -15px;
+}
+
 #sidebar .sidebar .side-nav-content {
   height: 100%;
   width: 100%;
@@ -11340,11 +11354,6 @@ body {
   height: 64px;
 }
 
-#friends .bottom.full .search-new-friends .close-search,
-#groups .bottom.full .search-new-friends .close-search {
-  padding-right: 6px;
-}
-
 #friends .bottom.full .collection,
 #groups .bottom.full .collection {
   opacity: 1;
@@ -11366,7 +11375,8 @@ body {
 #friends .bottom .collection .collection-item,
 #groups .bottom .collection .collection-item {
   display: inline-block;
-  padding: 0 20px;
+  padding: 0;
+  padding-left: 20px;
   width: 100%;
   float: left;
 }
@@ -11380,6 +11390,7 @@ body {
 #groups .bottom .collection a {
   float: right;
   padding: 0 0 0 0.75rem;
+  margin-right: 0.75rem;
 }
 
 #friends .bottom .collection a:hover,
@@ -11450,7 +11461,7 @@ body {
   opacity: 1;
   cursor: pointer;
   padding-right: 20px;
-  margin-right: 19px;
+  margin-right: 16px;
   pointer-events: auto;
   height: 100%;
 }
@@ -11482,7 +11493,7 @@ body {
 #friends .bottom .close-search,
 #groups .bottom .close-search {
   font-size: 20px;
-  padding-right: 12px;
+  padding-right: 2px;
 }
 
 #friends .bottom .newGroupFriends,
@@ -11518,6 +11529,7 @@ body {
 #friends .bottom #createGroupForm ul,
 #groups .bottom #createGroupForm ul {
   overflow-y: scroll;
+  min-height: 52px;
 }
 
 #friends .bottom #createGroupForm .createGroupBottom,

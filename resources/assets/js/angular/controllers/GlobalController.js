@@ -519,9 +519,11 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                 $scope.$apply(function() {
                     if(e.event === 'grouprequest'){
                         $rootScope.groups.push(e.data);
+                        $rootScope.countGroupRequests++;
                     }
                     if(e.event === 'friendrequest'){
                         $rootScope.friendRequests.push(e.data);
+                        $rootScope.countFriendRequests--;
                     }
                     if(e.event === 'groupaccept'){
                         $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);

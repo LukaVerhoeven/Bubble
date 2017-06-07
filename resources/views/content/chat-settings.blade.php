@@ -52,9 +52,7 @@
 		        </div>
 		        <div class="col s12 no-pad" ng-repeat="(key, theme) in themes" ng-if="!theme.is_general && !theme.is_deleted">
 		        	<div class="theme-info">
-	        			<div class="btn-floating waves-effect waves-light left v-align @{{theme.color}} icon">
-				     	 	<i class="material-icons ">@{{theme.icon}}</i>
-				    	</div>
+		        		<i class="bubble-icon friend @{{theme.color}}-text background waves-effect waves-light left v-align "><i class="material-icons white-text">@{{theme.icon}}</i></i>
 			        	<p class="left">@{{theme.name}}</p>
 		        	</div>
 		        	<div class="right actions">

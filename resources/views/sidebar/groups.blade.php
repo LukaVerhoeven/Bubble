@@ -55,7 +55,7 @@
 				</ul>
 				<!-- search results: users -->
 				<h2 ng-if="friendsForGroup.length > 0">Your friends</h2>
-				<ul class="collection" ng-show="(friendsForGroup|filter:{name: groupFriendInput}).length > 0">
+				<ul class="collection hide-scrollbar" ng-show="(friendsForGroup|filter:{name: groupFriendInput}).length > 0">
 					<li class="collection-item" data-id="@{{friend.userid}}" ng-repeat="friend in friendsForGroup | filter:groupFriendInput"> 
 						<p class="name">@{{friend.name}}</p>
 					    <a href="#!" class="secondary-content" ng-click="toggleFriendToGroup(friend.chatid, friendsForGroup, newGroup.friends)">

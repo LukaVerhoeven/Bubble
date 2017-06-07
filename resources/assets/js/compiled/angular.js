@@ -523,9 +523,11 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                 $scope.$apply(function() {
                     if(e.event === 'grouprequest'){
                         $rootScope.groups.push(e.data);
+                        $rootScope.countGroupRequests++;
                     }
                     if(e.event === 'friendrequest'){
                         $rootScope.friendRequests.push(e.data);
+                        $rootScope.countFriendRequests--;
                     }
                     if(e.event === 'groupaccept'){
                         $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
@@ -708,7 +710,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
-        console.log($rootScope.friendlist, $rootScope.groups);
+        $rootScope.countGroupRequests = ($rootScope.adjustElementNewArray($rootScope.groups, '0','confirmed', 'retreive',0,0,0)).length;
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
         $rootScope.broadcastUser($rootScope.Authuserid);
@@ -728,7 +730,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     $scope.showRequests = function(response) {
         $rootScope.friendRequests = response.data.friendrequests;
-        console.log($rootScope.friendRequests);
+        $rootScope.countFriendRequests = $rootScope.friendRequests.length;
     }
 
     $scope.removeRequest = function(userid) {
@@ -785,6 +787,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
                 if(friendrequest){
                     $scope.removeRequest(friendID);
                     $rootScope.addFriend(response.data);
+                    $rootScope.countFriendRequests--;
                     // TODO loginBroadcast naar 1 persoon
                     $scope.loginBroadcast();
                 }
@@ -901,6 +904,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     //ACCEPT GROUP INVITE
     $scope.accept = function (chatid, friends) {
         friends = $rootScope.ObjToArray(friends);
+        $rootScope.countGroupRequests--;
         var url = API_URL + "accept";
         var data = {
             chatid : chatid,
@@ -923,6 +927,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     //DECLINE GROUP INVITE
     $scope.decline = function (chatid, friends) {
         var url = API_URL + "decline";
+        $rootScope.countGroupRequests--;
         var data = {
             chatid : chatid,
             friends: friends

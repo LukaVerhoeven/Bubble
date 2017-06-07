@@ -43,6 +43,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     //ACCEPT GROUP INVITE
     $scope.accept = function (chatid, friends) {
         friends = $rootScope.ObjToArray(friends);
+        $rootScope.countGroupRequests--;
         var url = API_URL + "accept";
         var data = {
             chatid : chatid,
@@ -65,6 +66,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     //DECLINE GROUP INVITE
     $scope.decline = function (chatid, friends) {
         var url = API_URL + "decline";
+        $rootScope.countGroupRequests--;
         var data = {
             chatid : chatid,
             friends: friends

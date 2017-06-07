@@ -30,6 +30,8 @@ i.bubble-icon{
 
 	&.background{
 		font-size: 42px;
+    cursor: default;
+
 		i{
 			position: absolute;
 			margin-left: -32.5px;
@@ -82,6 +84,7 @@ i.bubble-icon{
   content: "\1f31e";
 }
 .bubble-icon.key:before {
+  cursor: default;
   content: "\1f3f4";
 }
 .bubble-icon.friend:before {
