@@ -152,10 +152,8 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     // GIVE USER NICKNAME
     $rootScope.renameFriend = function(newname, chatid) {
-        console.log($rootScope.friendlist, chatid);
         $rootScope.adjustObjectElement($rootScope.friendlist, chatid, 'chatid', 'edit', newname, 'nickname', 0);
         $rootScope.adjustObjectElement($rootScope.messages.items , $rootScope.friendID, 'user_id', 'edit', newname, 'nickname', 0);
-        console.log($rootScope.friendlist);
         if ($rootScope.chatID === chatid) {
             $rootScope.chatname = newname
         }

@@ -22,7 +22,6 @@ app.controller('ProfileController', function($scope, $http, API_URL, $rootScope)
     $scope.editUserName = function(){
         $('.js-username').html($scope.user.newUserName);
         $rootScope.adjustArrayFromObject($rootScope.groups, $rootScope.Authuserid, 'user_id', 'edit', $scope.user.newUserName, 'name', 0, 0);
-        console.log($rootScope.chatID);
         if($rootScope.chatID){
            $scope.user.chatid = $rootScope.chatID;
         }

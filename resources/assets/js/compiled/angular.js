@@ -850,10 +850,8 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     // GIVE USER NICKNAME
     $rootScope.renameFriend = function(newname, chatid) {
-        console.log($rootScope.friendlist, chatid);
         $rootScope.adjustObjectElement($rootScope.friendlist, chatid, 'chatid', 'edit', newname, 'nickname', 0);
         $rootScope.adjustObjectElement($rootScope.messages.items , $rootScope.friendID, 'user_id', 'edit', newname, 'nickname', 0);
-        console.log($rootScope.friendlist);
         if ($rootScope.chatID === chatid) {
             $rootScope.chatname = newname
         }
@@ -880,7 +878,12 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     //CREATES A GROUP
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
-        console.log('grop', $scope.newGroup);
+        if($scope.newGroup.friends.length>0){
+            // remove all friends added to group front-end
+            $rootScope.friendsForGroup = $rootScope.friendlist;
+            $scope.newGroup.friends = [];
+            $('#createGroupsName').val('');
+        }
         // $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
         $http({
             method: 'POST',
@@ -891,16 +894,9 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
             }
         }).then(function(response) {
             $rootScope.getFriendChats(); //TODO do this asynchrone front-end
-            // remove all friends added to group front-end
-            $rootScope.friendsForGroup = $rootScope.friendlist;
-            $scope.newGroup.friends = [];
-            $('#createGroupsName').val('');
         }, $rootScope.errorCallback);
     }
-    $scope.test = function(){
-
-        console.log($scope.createGroup);
-    }
+  
     //ACCEPT GROUP INVITE
     $scope.accept = function (chatid, friends) {
         friends = $rootScope.ObjToArray(friends);
@@ -1024,7 +1020,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
         $rootScope.messagesLoaded = 0;
         $rootScope.messages = new Messages();
         $rootScope.messages.nextPage();
-        console.log($rootScope.messages);
+        // console.log($rootScope.messages);
         $rootScope.themes = response.data.themes;
         $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1,'is_general', 'retreive',0,'id',0)[0];
         $rootScope.message.theme = $rootScope.generalThemeID;
@@ -1091,7 +1087,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     //BROADCAST CONNECTION
     $scope.broadcast = function(chatid) {
         $scope.currentChatroom = `chatroom.${chatid}`;
-        console.log(`chatroom.${chatid}`);
+        // console.log(`chatroom.${chatid}`);
         // to retreive friends that are not in the chat
         $scope.chatfriends = {};
         $scope.chatfriends.chatid = chatid;
@@ -1443,7 +1439,6 @@ app.controller('ProfileController', function($scope, $http, API_URL, $rootScope)
     $scope.editUserName = function(){
         $('.js-username').html($scope.user.newUserName);
         $rootScope.adjustArrayFromObject($rootScope.groups, $rootScope.Authuserid, 'user_id', 'edit', $scope.user.newUserName, 'name', 0, 0);
-        console.log($rootScope.chatID);
         if($rootScope.chatID){
            $scope.user.chatid = $rootScope.chatID;
         }

@@ -11,7 +11,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
         $rootScope.messagesLoaded = 0;
         $rootScope.messages = new Messages();
         $rootScope.messages.nextPage();
-        console.log($rootScope.messages);
+        // console.log($rootScope.messages);
         $rootScope.themes = response.data.themes;
         $rootScope.generalThemeID = $rootScope.adjustElementNewArray($rootScope.themes, 1,'is_general', 'retreive',0,'id',0)[0];
         $rootScope.message.theme = $rootScope.generalThemeID;
@@ -78,7 +78,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     //BROADCAST CONNECTION
     $scope.broadcast = function(chatid) {
         $scope.currentChatroom = `chatroom.${chatid}`;
-        console.log(`chatroom.${chatid}`);
+        // console.log(`chatroom.${chatid}`);
         // to retreive friends that are not in the chat
         $scope.chatfriends = {};
         $scope.chatfriends.chatid = chatid;

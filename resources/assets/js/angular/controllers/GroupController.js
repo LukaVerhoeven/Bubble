@@ -19,7 +19,12 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     //CREATES A GROUP
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
-        console.log('grop', $scope.newGroup);
+        if($scope.newGroup.friends.length>0){
+            // remove all friends added to group front-end
+            $rootScope.friendsForGroup = $rootScope.friendlist;
+            $scope.newGroup.friends = [];
+            $('#createGroupsName').val('');
+        }
         // $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
         $http({
             method: 'POST',
@@ -30,16 +35,9 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
             }
         }).then(function(response) {
             $rootScope.getFriendChats(); //TODO do this asynchrone front-end
-            // remove all friends added to group front-end
-            $rootScope.friendsForGroup = $rootScope.friendlist;
-            $scope.newGroup.friends = [];
-            $('#createGroupsName').val('');
         }, $rootScope.errorCallback);
     }
-    $scope.test = function(){
-
-        console.log($scope.createGroup);
-    }
+  
     //ACCEPT GROUP INVITE
     $scope.accept = function (chatid, friends) {
         friends = $rootScope.ObjToArray(friends);
