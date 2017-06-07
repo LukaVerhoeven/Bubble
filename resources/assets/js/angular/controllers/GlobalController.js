@@ -461,7 +461,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.groupFriends =  $rootScope.ObjToArray(friends);
         $rootScope.chatFunction = chatFunction;
         $rootScope.isChatAdmin = userIsAdmin;
-        if($rootScope.groupFriends){
+        if($rootScope.groupFriends.length>0){
             $rootScope.groupFriends = $rootScope.ObjToArray(friends);
             $rootScope.groupFriends.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
             $rootScope.groups[index].unread_messages = 0;
