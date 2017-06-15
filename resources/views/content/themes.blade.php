@@ -30,7 +30,7 @@
 		<!-- @include('components.theme-form', ['model' => 'theme', 'action' => 'update']) -->
 	</div>
 	<!-- New theme -->
-	@include('components.theme-form', ['model' => 'NewTheme', 'action' => 'create'])
+	<!-- @include('components.theme-form', ['model' => 'NewTheme', 'action' => 'create']) -->
  
 </div>		
 </div>
