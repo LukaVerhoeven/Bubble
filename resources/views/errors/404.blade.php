@@ -43,8 +43,10 @@
 		margin:  auto;
 		width: 200px;
 		background-color: white;
-		padding: .5rem 2rem ;
+		padding: 0 2rem;
 		text-align: center;
+		line-height: 48px;
+		height:  48px;
 		text-decoration: none;
 		color: #EF4136;
 		font-weight: bold;

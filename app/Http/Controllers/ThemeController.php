@@ -36,7 +36,7 @@ class ThemeController extends Controller
             Keyword::createKeywords($keywords, $theme['id'], $chatid);
             Message::updateTheme($keywords,$theme['id'], $chatid, 0);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return "something went wrong";
         }
     }

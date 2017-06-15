@@ -67,14 +67,17 @@
 						    float: none !important;
 						}
 						.countRequest{
-							background-color: red;
+							background-color: map-get($colors, notification-red);
+							padding: 0 6px;
+							color: white;
+						    border: 2px solid #e53935;
 							border-radius: 50%;
 							min-width: 20px;
-							height: 20px;
+							height: 23px;
 							line-height: 20px;
 							display: inline-block;
-							margin-top: 20px;
-							margin-left: -15px;
+							margin-top: 16px;
+							margin-left: -16px;
 						}
 					}
 				}

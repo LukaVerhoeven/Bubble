@@ -2,7 +2,9 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     //************ GLOBAL FUNCTIONS ************
     // ERROR
     $rootScope.errorCallback = function(error) {
-        // console.log(error);
+        if(error.data.error === 'Unauthenticated.'){
+            location.href = '/login';
+        }
         console.log("wrong call made");
     }
 
@@ -19,6 +21,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                 }
             })
             .then(function(response) {
+                // console.log(response);
                 $scope.postResponse(responseAction);
             }, $rootScope.errorCallback);
     };
@@ -453,6 +456,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
             $rootScope.makeBroadcastConnection = true;
             $rootScope.updateChat(chatID);
         }
+       
         // Chat
         $rootScope.chatname = friendName;
         $rootScope.chatID = chatID;
@@ -506,15 +510,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     $rootScope.broadcastUser = function(userid) {
 
         Echo.join(`user.${userid}`)
-            .here((users) => {
-                // this.usersInRoom = users;
-            })
-            .joining((user) => {
-                
-            })
-            .leaving((user) => {
-
-            })
             .listen('UserEvents', (e) => {
                 $scope.$apply(function() {
                     if(e.event === 'grouprequest'){

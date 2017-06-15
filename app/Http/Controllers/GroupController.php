@@ -13,50 +13,55 @@ class GroupController extends Controller
 {
     public function createGroup(Request $request)
     {	
-		$this->validate($request, [
-            'chatname'		=>   'string',
-        ]);
+        try {
+            
+    		$this->validate($request, [
+                'chatname'		=>   'string',
+                'friends'      =>    'array',
+            ]);
 
-        $UsersInChat = array();
-        $friends = $request->input('friends');
+            $UsersInChat = array();
+            $friends = $request->input('friends');
 
-		$user = Auth::user();
-        $chat = New Chat;
-        $chat->chat_name = $request->input('chatname');
-        $chat->function = 'groupschat';
-        $chat->is_deleted = 0;
-        $chat->save();
+    		$user = Auth::user();
+            $chat = New Chat;
+            $chat->chat_name = $request->input('chatname');
+            $chat->function = 'groupschat';
+            $chat->is_deleted = 0;
+            $chat->save();
 
-        $AuthInchat = UsersInChat::create($user,$chat);
-        $AuthInchat = UsersInChat::AddNameJson($user->name, $AuthInchat);
-        array_push($UsersInChat, $AuthInchat);
-        Theme::create($chat,'general','white', 0,0,1);
+            $AuthInchat = UsersInChat::create($user,$chat);
+            $AuthInchat = UsersInChat::AddNameJson($user->name, $AuthInchat);
+            array_push($UsersInChat, $AuthInchat);
+            Theme::create($chat,'general','white', 0,0,1);
 
+            $data = response()->json([
+                'friends' => $UsersInChat,
+                'chat_id' => (int)$chat->id,
+                'userIsAdmin' => 0 ,
+                'chat_name' => $chat->chat_name,
+                'function' => 'groupschat',
+            ]);
 
-        if($friends){
-            foreach ($friends as $key => $value) {
-                $friendInChat = new UsersInChat;
-                $friendInChat->user_id = $value['userid'];
-                $friendInChat->Chat()->associate($chat);
-                $friendInChat->nickname = $value['name'];
-                $friendInChat->admin = 0;
-                $friendInChat->confirmed = 0;
-                $friendInChat->is_deleted = 0;
-                $friendInChat->unread_messages = 0;
-                $friendInChat->save();
-                $friendInChat = UsersInChat::AddNameJson($value['name'], $friendInChat);
-                array_push($UsersInChat, $friendInChat);
+            if($friends){
+                foreach ($friends as $key => $value) {
+                    $friendInChat = new UsersInChat;
+                    $friendInChat->user_id = $value['userid'];
+                    $friendInChat->Chat()->associate($chat);
+                    $friendInChat->nickname = $value['name'];
+                    $friendInChat->admin = 0;
+                    $friendInChat->confirmed = 0;
+                    $friendInChat->is_deleted = 0;
+                    $friendInChat->unread_messages = 0;
+                    $friendInChat->save();
+                    $friendInChat = UsersInChat::AddNameJson($value['name'], $friendInChat);
+                    array_push($UsersInChat, $friendInChat);
+                    broadcast(new UserEvents($value['userid'] , "grouprequest" , $data->getData()))->toOthers();
+                }
             }
+        } catch (\Exception $e) {
+            return "group could not be created";
         }
-
-        $data = response()->json([
-            'friends' => $UsersInChat,
-            'chat_id' => (int)$chat->id,
-            'userIsAdmin' => 0 ,
-            'chat_name' => $chat->chat_name,
-            'function' => 'groupschat',
-        ]);
-        broadcast(new UserEvents($value['userid'] , "grouprequest" , $data->getData()))->toOthers();
     }
 
     public function accept(Request $request)

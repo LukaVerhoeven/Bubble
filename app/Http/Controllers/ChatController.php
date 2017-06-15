@@ -132,7 +132,9 @@ class ChatController extends Controller
                         ->where('users_in_chats.is_deleted','!=', 1)
                         ->where('chats.is_deleted','!=', 1)
                         ->whereIn('chats.id',$chatID)->get();
-
+                        
+        // sort groupchats
+        $groupchatsNoUsers= collect($groupchatsNoUsers)->sortBy('chat_name');
         // Push users into groupchat
         foreach ($groupchatsNoUsers as $chat) {
             $loggedinUser = $friendsInGroupChats->where('chat_id', $chat->chat_id)->where('user_id','=', $user->id)->first();
@@ -163,7 +165,6 @@ class ChatController extends Controller
             $unread_message = $unread_messages->where('chat_id', $friend->chatid)->pluck('unread_messages');
             $friends[$key] = collect($friends[$key])->put('unread_messages',$unread_message[0]);
         }
-                
         return compact('friends','groupchats','userid');
     }
 

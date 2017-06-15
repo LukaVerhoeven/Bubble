@@ -10307,7 +10307,9 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
     //************ GLOBAL FUNCTIONS ************
     // ERROR
     $rootScope.errorCallback = function (error) {
-        // console.log(error);
+        if (error.data.error === 'Unauthenticated.') {
+            location.href = '/login';
+        }
         console.log("wrong call made");
     };
 
@@ -10323,6 +10325,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(function (response) {
+            // console.log(response);
             $scope.postResponse(responseAction);
         }, $rootScope.errorCallback);
     };
@@ -10765,6 +10768,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
             $rootScope.makeBroadcastConnection = true;
             $rootScope.updateChat(chatID);
         }
+
         // Chat
         $rootScope.chatname = friendName;
         $rootScope.chatID = chatID;
@@ -10818,9 +10822,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
 
     $rootScope.broadcastUser = function (userid) {
 
-        Echo.join('user.' + userid).here(function (users) {
-            // this.usersInRoom = users;
-        }).joining(function (user) {}).leaving(function (user) {}).listen('UserEvents', function (e) {
+        Echo.join('user.' + userid).listen('UserEvents', function (e) {
             $scope.$apply(function () {
                 if (e.event === 'grouprequest') {
                     $rootScope.groups.push(e.data);
@@ -11011,6 +11013,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
+        console.log($rootScope.groups);
         $rootScope.countGroupRequests = $rootScope.adjustElementNewArray($rootScope.groups, '0', 'confirmed', 'retreive', 0, 0, 0).length;
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
@@ -11181,22 +11184,22 @@ app.controller('GroupController', function ($scope, $http, $sanitize, API_URL, $
     $scope.createGroup = function () {
         var url = API_URL + "createGroup";
         if ($scope.newGroup.friends.length > 0) {
+            $http({
+                method: 'POST',
+                url: url,
+                data: $.param($scope.newGroup),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(function (response) {
+                $rootScope.getFriendChats(); //TODO do this asynchrone front-end
+            }, $rootScope.errorCallback);
+
             // remove all friends added to group front-end
             $rootScope.friendsForGroup = $rootScope.friendlist;
             $scope.newGroup.friends = [];
             $('#createGroupsName').val('');
         }
-        // $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
-        $http({
-            method: 'POST',
-            url: url,
-            data: $.param($scope.newGroup),
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        }).then(function (response) {
-            $rootScope.getFriendChats(); //TODO do this asynchrone front-end
-        }, $rootScope.errorCallback);
     };
 
     //ACCEPT GROUP INVITE
@@ -11877,6 +11880,10 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
     };
 
     $rootScope.initShortcut = function () {
+        if ($scope.shortcuts) {
+            $(document).off("keydown"); //reset shortcuts
+            $rootScope.messageColor(''); //reset messageFilter
+        }
         $scope.shortcuts = [];
         var shortcuts = $rootScope.adjustElementNewArray($rootScope.themes, 0, 'shortcut', 'retreive', 0, 0, 0);
         $rootScope.themes.forEach(function (element, index) {
@@ -46929,77 +46936,12 @@ var Themes = function () {
         // this.$toggleButton = '.js-toggle-edit-menu';
         // this.$toggleSlideButton = '.js-toggle-slide-menu';
         // this.$themeCard = '.js-theme-card';
-        this.themes();
+        this.init();
     }
 
     _createClass(Themes, [{
-        key: "themes",
-        value: function themes() {
-
-            // $(document).on('click',this.$toggleButton, (e) => {
-            //     $(e.currentTarget).toggleClass('exit-theme');
-            // });
-
-            //         var parent = $(e.currentTarget).parent().parent();
-            //         var children = parent.children();
-            //         var editTheme = children[3];
-            //         var bg = $(e.currentTarget).css('backgroundColor');
-
-            //         console.log(parent.children());
-            //         $('theme-line').toggleClass('hide');
-            //         $(editTheme).toggleClass('opening');
-            //         $(e.currentTarget).toggleClass('no-shadow');
-            //         setTimeout(function(){ 
-            //             // $(children[0]).toggleClass('hide');
-            //             // $(children[1]).toggleClass('hide');
-
-            //         }, 500);
-
-            //         var rippler =  parent;
-
-            //         // create .ink element if it doesn't exist
-            //         if(rippler.find(".ink").length == 0) {
-            //             rippler.append("<span class='ink'></span>");
-            //         }
-
-            //         var ink = rippler.find(".ink");
-
-            //         // prevent quick double clicks
-            //         ink.removeClass("animate");
-
-            //         // set .ink diametr
-            //         if(!ink.height() && !ink.width())
-            //         {
-            //             var d = Math.max(rippler.outerWidth(), rippler.outerHeight());
-            //             ink.css({height: d, width: d});
-            //         }
-
-            //         // get click coordinates
-            //         var x = e.pageX - rippler.offset().left - ink.width()/2;
-            //         var y = e.pageY - rippler.offset().top - ink.height()/2;
-
-            //         // set .ink position and add class .animate
-            //         ink.css({
-            //           top: y+'px',
-            //           left:x+'px',
-            //           background : bg
-            //         }).addClass("animate");
-            //     });
-
-            //     function removeShadow(element){
-            //         console.log(element);
-            //         element.removeClass('no-shadow');
-            //     }
-
-            //     function hexc(colorval) {
-            //         var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            //         delete(parts[0]);
-            //         for (var i = 1; i <= 3; ++i) {
-            //             parts[i] = parseInt(parts[i]).toString(16);
-            //             if (parts[i].length == 1) parts[i] = '0' + parts[i];
-            //         }
-            //         color = '#' + parts.join('');
-        }
+        key: "init",
+        value: function init() {}
     }]);
 
     return Themes;

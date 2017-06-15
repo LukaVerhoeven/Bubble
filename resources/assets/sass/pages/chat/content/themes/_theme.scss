@@ -1,6 +1,16 @@
 #themes{
 	overflow: scroll;
 	position: relative;
+	display: block !important;
+	opacity: 0;
+	height: 0 !important;
+	padding: 0 !important;
+
+	&.active {
+		padding-top: 6rem !important;
+		opacity: 1;
+		height: 100% !important;
+	}
 
 	.margin-div{
 		height: 100%;
@@ -137,6 +147,8 @@
 			text-align: center;
 			padding: 0 3px;
 			margin: 0 $gutter*2;
+			padding-left: 0px;
+    		padding-right: 3.8px;
 			
 			.waves-ripple{
 				display: none;
@@ -179,6 +191,7 @@
 		.arrow-toggle i{
 			margin-top: .2rem;
 			font-size: 35px;
+			cursor: pointer;
 			@include transition(all .3s ease-out);
 
 			&.close{

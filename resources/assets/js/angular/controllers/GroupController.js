@@ -20,22 +20,22 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
         if($scope.newGroup.friends.length>0){
+            $http({
+                method: 'POST',
+                url: url,
+                data: $.param($scope.newGroup),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(function(response) {
+                $rootScope.getFriendChats(); //TODO do this asynchrone front-end
+            }, $rootScope.errorCallback);
+        
             // remove all friends added to group front-end
             $rootScope.friendsForGroup = $rootScope.friendlist;
             $scope.newGroup.friends = [];
             $('#createGroupsName').val('');
         }
-        // $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
-        $http({
-            method: 'POST',
-            url: url,
-            data: $.param($scope.newGroup),
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        }).then(function(response) {
-            $rootScope.getFriendChats(); //TODO do this asynchrone front-end
-        }, $rootScope.errorCallback);
     }
   
     //ACCEPT GROUP INVITE

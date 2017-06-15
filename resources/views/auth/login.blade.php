@@ -92,7 +92,7 @@
                     <div class="form-box">
                         <nav class="nav-extended">
                             <ul class="tabs tabs-transparent">
-                                <li class="tab col s6 white"><a class="red-text text-darken-4 active"href="#login">Login</a></li>
+                                <li class="tab col s6 white"><a class="red-text text-darken-4 active" href="#login">Login</a></li>
                                 <li class="tab col s6 white js-register-tab"><a class="red-text text-darken-4" href="#register">Register</a></li>
                             </ul>
                         </nav>

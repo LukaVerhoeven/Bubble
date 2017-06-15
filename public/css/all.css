@@ -10497,7 +10497,6 @@ body {
       align-self: flex-end;
   margin-bottom: 0.75rem;
   width: 100%;
-  margin-right: -8px;
 }
 
 #content .filter ul .filter-button-container {
@@ -10791,6 +10790,7 @@ body {
 
 #themes .new-theme-icon a,
 #themes .new-theme-shortcut a {
+  line-height: 33px;
   padding: 0 .5rem;
 }
 
@@ -10826,6 +10826,16 @@ body {
 #themes {
   overflow: scroll;
   position: relative;
+  display: block !important;
+  opacity: 0;
+  height: 0 !important;
+  padding: 0 !important;
+}
+
+#themes.active {
+  padding-top: 6rem !important;
+  opacity: 1;
+  height: 100% !important;
 }
 
 #themes .margin-div {
@@ -10979,6 +10989,8 @@ body {
   text-align: center;
   padding: 0 3px;
   margin: 0 1.5rem;
+  padding-left: 0px;
+  padding-right: 3.8px;
 }
 
 #themes .theme-card .all-letters .waves-ripple {
@@ -11021,6 +11033,7 @@ body {
 #themes .new-theme .arrow-toggle i {
   margin-top: .2rem;
   font-size: 35px;
+  cursor: pointer;
   -webkit-transition: all 0.3s ease-out;
   transition: all 0.3s ease-out;
 }
@@ -11121,14 +11134,17 @@ body {
 
 #sidebar .sidebar header nav div:not(.indicator) .tab .countRequest,
 #sidebar .sidebar header nav ul .tab .countRequest {
-  background-color: red;
+  background-color: #b71c1c;
+  padding: 0 6px;
+  color: white;
+  border: 2px solid #e53935;
   border-radius: 50%;
   min-width: 20px;
-  height: 20px;
+  height: 23px;
   line-height: 20px;
   display: inline-block;
-  margin-top: 20px;
-  margin-left: -15px;
+  margin-top: 16px;
+  margin-left: -16px;
 }
 
 #sidebar .sidebar .side-nav-content {
@@ -11200,19 +11216,19 @@ body {
 }
 
 .online-state.offline {
-  background-color: gray;
+  border: 2px solid gray;
 }
 
 .unread-messages {
   display: inline-block;
   line-height: 21px;
   text-align: center;
-  background-color: red;
+  background-color: #b71c1c;
   margin-left: 0.75rem;
   vertical-align: top;
   color: white;
   min-width: 20px;
-  padding: 0 5px 0 5px;
+  padding: 0 6px 0 5px;
   height: 20px;
   border-radius: 20px;
 }
@@ -11449,7 +11465,7 @@ body {
   cursor: auto;
   background-color: white;
   font-size: 20px;
-  font-weight: normal;
+  font-weight: 500;
   height: 54px;
   line-height: 54px;
   padding: 0 0.75rem;
@@ -11626,6 +11642,7 @@ body {
   font-size: 20px;
   margin: 0;
   padding: 1rem 0.75rem;
+  font-weight: 500;
 }
 
 .side-nav-content #logout-tab a {

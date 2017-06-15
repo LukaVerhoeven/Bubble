@@ -6,7 +6,9 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     //************ GLOBAL FUNCTIONS ************
     // ERROR
     $rootScope.errorCallback = function(error) {
-        // console.log(error);
+        if(error.data.error === 'Unauthenticated.'){
+            location.href = '/login';
+        }
         console.log("wrong call made");
     }
 
@@ -23,6 +25,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                 }
             })
             .then(function(response) {
+                // console.log(response);
                 $scope.postResponse(responseAction);
             }, $rootScope.errorCallback);
     };
@@ -457,6 +460,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
             $rootScope.makeBroadcastConnection = true;
             $rootScope.updateChat(chatID);
         }
+       
         // Chat
         $rootScope.chatname = friendName;
         $rootScope.chatID = chatID;
@@ -510,15 +514,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     $rootScope.broadcastUser = function(userid) {
 
         Echo.join(`user.${userid}`)
-            .here((users) => {
-                // this.usersInRoom = users;
-            })
-            .joining((user) => {
-                
-            })
-            .leaving((user) => {
-
-            })
             .listen('UserEvents', (e) => {
                 $scope.$apply(function() {
                     if(e.event === 'grouprequest'){
@@ -710,6 +705,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
+        console.log($rootScope.groups);
         $rootScope.countGroupRequests = ($rootScope.adjustElementNewArray($rootScope.groups, '0','confirmed', 'retreive',0,0,0)).length;
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;
@@ -879,22 +875,22 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
     $scope.createGroup = function(){
         var url = API_URL + "createGroup";
         if($scope.newGroup.friends.length>0){
+            $http({
+                method: 'POST',
+                url: url,
+                data: $.param($scope.newGroup),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(function(response) {
+                $rootScope.getFriendChats(); //TODO do this asynchrone front-end
+            }, $rootScope.errorCallback);
+        
             // remove all friends added to group front-end
             $rootScope.friendsForGroup = $rootScope.friendlist;
             $scope.newGroup.friends = [];
             $('#createGroupsName').val('');
         }
-        // $scope.newGroup.chatname = $sanitize($scope.newGroup.chatname)
-        $http({
-            method: 'POST',
-            url: url,
-            data: $.param($scope.newGroup),
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        }).then(function(response) {
-            $rootScope.getFriendChats(); //TODO do this asynchrone front-end
-        }, $rootScope.errorCallback);
     }
   
     //ACCEPT GROUP INVITE
@@ -1579,6 +1575,10 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	}
 
 	$rootScope.initShortcut = function (){
+		if($scope.shortcuts){
+			$(document).off("keydown"); //reset shortcuts
+			$rootScope.messageColor(''); //reset messageFilter
+		}
 		$scope.shortcuts = [];
 		var shortcuts = $rootScope.adjustElementNewArray($rootScope.themes , 0,'shortcut', 'retreive',0,0,0);
 		$rootScope.themes.forEach( function(element, index) {

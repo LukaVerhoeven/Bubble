@@ -33,8 +33,8 @@ class MessageController extends Controller
         }
         else {
             $user = Auth::user();
+            // dd($user, $id);
             $profileImage = $user->profile_image;
-
             try {
                 $messages = collect($this->getMessages($id));
                 $themes = Theme::where('chat_id', $id)->where('is_deleted', 0)->with('keywords')->get();

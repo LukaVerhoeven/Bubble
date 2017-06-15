@@ -56,7 +56,7 @@
 	      <form name="frmMessage" novalidate="">
 	        <div class="input-field @{{message.color}}-border">
         	  <a class="insert-emo js-emoji-click"><i class="bubble-icon smiley @{{message.color}}-text"></i></a>
-	          <input class="js-message" type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)" autocomplete="off" maxlength="2000">
+	          <input class="js-message" type="search" id="message-text" ng-model="message.text" ng-keypress="sendMessage($event)" autocomplete="off" maxlength="2000" placeholder="write a message">
 	          <label class="label-icon" for="message-text"></label>
 	          <i class="material-icons send @{{message.color}}-text" ng-click="sendMessage(13)">send</i>
 	        </div>

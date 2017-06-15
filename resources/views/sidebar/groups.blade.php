@@ -16,7 +16,7 @@
 			</li>
 		</ul>
 		<ul class="js-active-container hide-scrollbar no-margin-top">
-			<li ng-repeat="(key, group) in groups | filter:searchgroup" ng-if="group.function === 'groupschat' && !is_deleted" data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , 0 , group.chat_name, 'groupschat', group.friends , group.userIsAdmin, key)"  ng-if="group.confirmed" class="first-letter-capital friend-item js-give-active button-close-nav">
+			<li ng-repeat="(key, group) in groups | filter:searchgroup" ng-if="group.function === 'groupschat' && !group.is_deleted && group.confirmed" data-id="@{{group.chat_id}}" ng-click="openChat(group.chat_id , 0 , group.chat_name, 'groupschat', group.friends , group.userIsAdmin, key)"  ng-if="group.confirmed" class="first-letter-capital friend-item js-give-active button-close-nav">
 				<p class="friend-name truncate">@{{group.chat_name}} </p>
 				<span class="unread-messages v-align" ng-if="friend.unread_messages">@{{friend.unread_messages}}</span>
 			</li>

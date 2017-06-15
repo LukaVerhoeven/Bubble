@@ -111,6 +111,10 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	}
 
 	$rootScope.initShortcut = function (){
+		if($scope.shortcuts){
+			$(document).off("keydown"); //reset shortcuts
+			$rootScope.messageColor(''); //reset messageFilter
+		}
 		$scope.shortcuts = [];
 		var shortcuts = $rootScope.adjustElementNewArray($rootScope.themes , 0,'shortcut', 'retreive',0,0,0);
 		$rootScope.themes.forEach( function(element, index) {

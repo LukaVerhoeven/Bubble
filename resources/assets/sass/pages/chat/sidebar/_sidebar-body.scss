@@ -3,6 +3,9 @@
 		font-size: map-get($font, big);
 		margin: 0;
 		padding: 1rem $gutter;
+		font-weight: 500;
+		// border-bottom: 2px solid gray;
+		// box-shadow: none;
 	}
 	#logout-tab a {
 		margin-top: $gutter*2;
