@@ -11793,6 +11793,8 @@ app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope
 app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) {
     // $scope.initvalue = {color :"red", icon:"school",shortcut:"A"}
     $scope.NewTheme = { color: "red", icon: "school", shortcut: "A" };
+    $scope.ThemeIcons = ['school', 'work', 'star', 'favorite', 'extension', 'euro_symbol', 'query_builder', 'theaters', 'build', 'home', 'videogame_asset', 'brush', 'local_florist', 'terrain', 'flight', 'toys', 'wb_sunny', 'healing', 'music_note', 'flash_on', 'photo_camera', 'wb_cloudy', 'directions_car', 'local_bar', 'local_dining', 'local_hospital', 'hotel', 'local_grocery_store', 'local_shipping', 'beach_access', 'fitness_center', 'casino', 'child_friendly', 'free_breakfast', 'kitchen', 'ac_unit', 'cake', 'public', 'weekend', 'account_balance', 'pets', 'timeline'];
+
     $scope.createNewTheme = function (valid, $event) {
         if ($scope.NewTheme.keywordString && $scope.NewTheme.name) {
             $scope.closeForm($event, 'create');
