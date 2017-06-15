@@ -41,37 +41,33 @@
 				        <div class="input-field col s12 new-theme-color">
 							<p class="inline-block col s1">Color</p>
 							<ul class="col s11 center-align">
-							<!-- 	@foreach (['red','orange','blue','purple','green','cyan', 'pink', 'teal'] as $color)
-								  	<li>
-								      <input name="@{{key}}color" type="radio" id="@{{key}}{{$color}}" ng-model="theme.color" value="{{$color}}" required/>
-								      <label class="{{$color}}-radio {{$color}}-before" for="@{{key}}{{$color}}"></label>
-								    </li>
-								@endforeach -->
+							  	<li ng-repeat="color in ::ThemeColors">
+							      <input name="color" type="radio" id="@{{key+color}}" ng-model="theme.color" value="@{{::color}}" required/>
+							      <label class="@{{::color}}-radio @{{::color}}-before" for="@{{key+color}}"></label>
+							    </li>
 							</ul>
 				        </div>
 				        <div class="input-field col s12 new-theme-icon">
 							<p class="inline-block col s1">Icon</p>
 							<div class="col s11 center-align">
 								<div class="inline-block">
-										<div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
-											<input name="@{{key}}icon" type="radio" id="@{{key}}@{{icon}}" ng-model="theme.icon" value="@{{icon}}" required/>
-											<label for="@{{key}}@{{icon}}" class="no-button js-NIcon"></label>
-											<i class="material-icons btn-floating waves-effect waves-light @{{theme.color}} @{{theme.color}}-text">@{{icon}}</i>
-								    	</div>
+									<div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
+										<input name="icon" type="radio" id="@{{key+icon}}" ng-model="theme.icon" value="@{{::icon}}" required/>
+										<label for="@{{key+icon}}" class="no-button js-NIcon"></label>
+										<i class="material-icons btn-floating waves-effect waves-light ">@{{::icon}}</i>
+							    	</div>
 								</div>
 							</div>
 				        </div>
 				        <div class="input-field col s12 new-theme-shortcut">
 							<p class="inline-block col s1">Shortcut: </p>
 							<div class="col s11 center-align">
-									<div class="inline-block all-letters @{{theme.color}} waves-effect waves-light">
-								<!-- 	@foreach ($shortcuts as $char)
-									    <div class="inline-block new-shortcut">
-											<input name="@{{key}}schortcut" type="radio" id="@{{key}}ctrl-{{ $char }}" ng-model="theme.shortcut" value="{{ $char }}" required/>
-											<label for="@{{key}}ctrl-{{ $char }}" class="no-button"></label>
-											<a class="waves-effect waves-light btn @{{theme.color}} @{{theme.color}}-border @{{theme.color}}-text">{{ $char }}</a>
-								    	</div>
-									@endforeach -->
+								<div class="inline-block all-letters waves-effect waves-light">
+								    <div class="inline-block new-shortcut" ng-repeat="char in ::ThemeShortcuts">
+										<input name="schortcut" type="radio" id="@{{key+char }}" ng-model="theme.shortcut" value="@{{ ::char }}" required/>
+										<label for="@{{key+char }}" class="no-button"></label>
+										<a class="waves-effect waves-light btn ">@{{ ::char }}</a>
+							    	</div>
 								</div>
 							</div>
 				        </div>
