@@ -12,6 +12,7 @@
 
 			a {
 				padding: 0 $gutter;
+				height: 100%;
 
 				i, span {
 					display: inline-block;
@@ -30,6 +31,10 @@
 				}
 			}
 
+			.tab {
+				height: 100%
+			}
+
 			.tab span {
 				font-size: $font-large;
 				display: none;
@@ -43,6 +48,10 @@
 			.indicator{
 				height: 5px;
 			}
+		}
+		
+		.hamburger-tab{
+			height: 100%;
 		}
 
 		.hamburger{

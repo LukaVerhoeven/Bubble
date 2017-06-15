@@ -941,6 +941,7 @@ body {
 
 #content .nav-content .tabs a {
   padding: 0 0.75rem;
+  height: 100%;
 }
 
 #content .nav-content .tabs a i,
@@ -957,6 +958,10 @@ body {
   font-size: 29px;
 }
 
+#content .nav-content .tabs .tab {
+  height: 100%;
+}
+
 #content .nav-content .tabs .tab span {
   font-size: 1.5rem;
   display: none;
@@ -971,6 +976,10 @@ body {
 
 #content .nav-content .tabs .indicator {
   height: 5px;
+}
+
+#content .nav-content .hamburger-tab {
+  height: 100%;
 }
 
 #content .nav-content .hamburger {
@@ -1503,14 +1512,14 @@ body {
   position: relative;
   display: block !important;
   opacity: 0;
-  height: 0 !important;
-  padding: 0 !important;
+  position: absolute;
+  z-index: -10;
 }
 
 #themes.active {
-  padding-top: 6rem !important;
+  z-index: 0;
+  position: relative;
   opacity: 1;
-  height: 100% !important;
 }
 
 #themes .margin-div {

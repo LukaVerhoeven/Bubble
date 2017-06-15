@@ -12,7 +12,6 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
         $rootScope.groups = response.data.groupchats;
-        console.log($rootScope.groups);
         $rootScope.countGroupRequests = ($rootScope.adjustElementNewArray($rootScope.groups, '0','confirmed', 'retreive',0,0,0)).length;
         // make User-broadcast connection
         $rootScope.Authuserid = response.data.userid;

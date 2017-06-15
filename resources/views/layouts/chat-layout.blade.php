@@ -70,10 +70,10 @@
 						<nav class="nav-extended" ng-controller="NavController">
 							<div class="nav-content red darken-1">
 								<ul class="tabs tabs-transparent valign-wrapper">
-									<li><a href="#" data-activates="sidebar" class="button-collapse hamburger"><i class="material-icons">menu</i></a></li>
-									<li class="tab col s4 conversation-tab chat-tab"><a class="active" href="#chat-section"><i class="bubble-icon friend"></i><span class="truncate">@{{ chatname }} </span></a></li>
-									<li class="tab col s4 theme-tab"><a href="#themes"><i class="small material-icons">loyalty</i><span>Theme</span></a></li>
-									<li class="tab col s4 settings-tab js-get-width"><a href="#chat-settings"><i class="small material-icons ">settings</i><span >settings</span></a></li>
+									<li class="hamburger-tab"><a href="#" data-activates="sidebar" class="button-collapse hamburger"><i class="material-icons v-align">menu</i></a></li>
+									<li class="tab col s4 conversation-tab chat-tab"><a class="active" href="#chat-section"><i class="bubble-icon friend v-align"></i><span class="truncate v-align">@{{ chatname }} </span></a></li>
+									<li class="tab col s4 theme-tab"><a href="#themes"><i class="small material-icons v-align">loyalty</i><span class="v-align">Theme</span></a></li>
+									<li class="tab col s4 settings-tab js-get-width"><a href="#chat-settings"><i class="small material-icons v-align">settings</i><span class="v-align">settings</span></a></li>
 								</ul>
 							</div>
 						</nav>
@@ -125,6 +125,7 @@
     	<script src="{{ asset('js/angular/controllers/GlobalController.js') }}"></script>
     	<script src="{{ asset('js/angular/controllers/GroupController.js') }}"></script> --}}
     	<!-- browser sync -->
+
 
 	</body>
 </html>
