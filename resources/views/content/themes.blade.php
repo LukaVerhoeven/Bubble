@@ -27,7 +27,7 @@
 		<div>
 			
 		</div>
-		<!-- @include('components.theme-form', ['model' => 'theme', 'action' => 'update']) -->
+		@include('components.theme-form', ['model' => 'theme', 'action' => 'update'])
 	</div>
 	<!-- New theme -->
 	<!-- @include('components.theme-form', ['model' => 'NewTheme', 'action' => 'create']) -->
