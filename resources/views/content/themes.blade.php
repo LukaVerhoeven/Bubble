@@ -1,5 +1,5 @@
 <div id="themes" class="col s12 tab-item bottom-gutter-double" ng-controller="ThemeController">
-<div class="top-gutter-double margin-div col s12">
+<div class="top-gutter-double margin-div col s12 js-theme-container">
 	<!-- All themes -->
 	<div class="card no-margin-top theme-card js-theme-card" ng-repeat="(key, theme) in themes track by theme.id" ng-if="!theme.is_general && theme.is_active && !theme.is_deleted">
 		<div class="theme-line">
