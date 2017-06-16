@@ -8,9 +8,9 @@
 				<i class="bubble-icon friend @{{theme.color}}-text background waves-effect waves-light"><i class="material-icons white-text">@{{theme.icon}}</i></i>
 				<h2 class="left-align inline-block truncate">@{{theme.name}}</h2>
 			</div>
-			<div class="right right-side">
+			<div class="right right-side" ng-click="$parent.toggleEditTheme(key)">
 				<p class="theme-status js-theme-status right-align truncate first-letter-capital"></p>
-				<div class="btn-floating btn @{{theme.color}} js-toggle-edit-menu edit-theme" ng-click="$parent.toggleEditTheme(key)" ng-mobile-click="showEditTheme=key">
+				<div class="btn-floating btn @{{theme.color}} js-toggle-edit-menu edit-theme"  ng-touch="showEditTheme=key">
 		     	 	<i class="material-icons">mode_edit</i>
 		     	 	<i class="material-icons">clear</i>
 		    	</div>
