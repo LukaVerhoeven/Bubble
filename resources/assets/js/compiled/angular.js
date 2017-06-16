@@ -1666,17 +1666,6 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
         }
 	}
 })
-
-app.directive("ngMobileClick", [function () {
-    return function (scope, elem, attrs) {
-        elem.bind("touchstart click", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            scope.$apply(attrs["ngMobileClick"]);
-        });
-    }
-}])
 app.controller('NavController', function($scope, $http, API_URL, $rootScope) {
 
 	$scope.$watch(function() {
