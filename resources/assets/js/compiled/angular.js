@@ -1491,7 +1491,6 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 
 	$rootScope.toggleEditTheme = function(index){
 		$scope.showEditTheme = index;
-		alert(index);
 	}
 
 	$scope.createNewTheme = function(valid, $event){
