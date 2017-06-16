@@ -10,10 +10,10 @@
 			</div>
 			<div class="right right-side">
 				<p class="theme-status js-theme-status right-align truncate first-letter-capital"></p>
-				<a class="btn-floating btn @{{theme.color}} js-toggle-edit-menu edit-theme" ng-click="$parent.toggleEditTheme(key)">
+				<div class="btn-floating btn @{{theme.color}} js-toggle-edit-menu edit-theme" ng-click="$parent.toggleEditTheme(key)">
 		     	 	<i class="material-icons">mode_edit</i>
 		     	 	<i class="material-icons">clear</i>
-		    	</a>
+		    	</div>
 			</div>
 		</div>
 		<div class="theme-line">
