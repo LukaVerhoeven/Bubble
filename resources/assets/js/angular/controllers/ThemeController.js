@@ -6,8 +6,9 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	$scope.ThemeShortcuts = ['A','B','C','D','F','G','H','J','I','K','L','M','O','P','Q','R','S','U','V','X','Y','Z', '0','1','2','3','4','5','6','7','8','9'];
 	$scope.showEditTheme = 0;
 
-	$scope.toggleEditTheme = function(key){
-		$scope.showEditTheme = key;
+	$scope.toggleEditTheme = function(){
+		alert('hoho');
+		$scope.showEditTheme = 1;
 	}
 
 	$scope.createNewTheme = function(valid, $event){
