@@ -1,5 +1,4 @@
 <div id="themes" class="col s12 tab-item bottom-gutter-double" ng-controller="ThemeController">
-<p ng-click="toggleEditTheme(1)">@{{showEditTheme}} is key</p>
 <div class="top-gutter-double margin-div col s12">
 	<!-- All themes -->
 	<div class="card no-margin-top theme-card js-theme-card" ng-repeat="(key, theme) in themes track by theme.id" ng-if="!theme.is_general && theme.is_active && !theme.is_deleted">
@@ -30,7 +29,6 @@
 		</div>
 		<!-- @include('components.theme-form', ['model' => 'theme', 'action' => 'update']) -->
 				<div class="js-edit-form edit-form top-gutter-double-margin js-slide-menu" ng-show="showEditTheme == key">	
-				<p>@{{showEditTheme}} is key @{{key}}, @{{showEditTheme == key}}</p>
 					<form class="row" ng-submit="editTheme(theme, $event)" >
 				        <div class="input-field col s12">
 							<input placeholder="Ex: Sport" id="@{{key}}theme_name" type="text" ng-model="theme.name" class="validate" autocomplete="off" required>
