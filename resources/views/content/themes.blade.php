@@ -51,11 +51,11 @@
 							<p class="inline-block col s1">Icon</p>
 							<div class="col s11 center-align">
 								<div class="inline-block">
-									<div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
+									<!-- <div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
 										<input name="icon" type="radio" id="@{{key+icon}}" ng-model="theme.icon" value="@{{::icon}}" required/>
 										<label for="@{{key+icon}}" class="no-button js-NIcon"></label>
 										<i class="material-icons btn-floating waves-effect waves-light @{{theme.color}} @{{theme.color}}-text">@{{::icon}}</i>
-							    	</div>
+							    	</div> -->
 								</div>
 							</div>
 				        </div>
