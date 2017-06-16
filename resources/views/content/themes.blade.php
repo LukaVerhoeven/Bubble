@@ -1,5 +1,5 @@
 <div id="themes" class="col s12 tab-item bottom-gutter-double" ng-controller="ThemeController">
-<p>@{{showEditTheme}} is key</p>
+<p ng-click="$parent.toggleEditTheme(1)">@{{showEditTheme}} is key</p>
 <div class="top-gutter-double margin-div col s12">
 	<!-- All themes -->
 	<div class="card no-margin-top theme-card js-theme-card" ng-repeat="(key, theme) in themes track by theme.id" ng-if="!theme.is_general && theme.is_active && !theme.is_deleted">
@@ -8,9 +8,9 @@
 				<i class="bubble-icon friend @{{theme.color}}-text background waves-effect waves-light"><i class="material-icons white-text">@{{theme.icon}}</i></i>
 				<h2 class="left-align inline-block truncate">@{{theme.name}}</h2>
 			</div>
-			<div class="right right-side" ng-click="$parent.toggleEditTheme(key)">
+			<div class="right right-side">
 				<p class="theme-status js-theme-status right-align truncate first-letter-capital"></p>
-				<div class="btn-floating btn @{{theme.color}} js-toggle-edit-menu edit-theme"  ng-touch="showEditTheme=key">
+				<div class="btn-floating btn @{{theme.color}} js-toggle-edit-menu edit-theme" ng-click="$parent.toggleEditTheme(1)">
 		     	 	<i class="material-icons">mode_edit</i>
 		     	 	<i class="material-icons">clear</i>
 		    	</div>
