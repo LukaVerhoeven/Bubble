@@ -20,6 +20,7 @@ import ProfileSettings from './pages/profile-settings';
 // import Sugar from 'sugar';
 import angular from 'angular';
 import angularSanitize from 'angular-sanitize';
+import angularTouch from 'angular-touch';
 // import ngInfiniteScroll from 'ng-infinite-scroll';
 // import angularSanitize from 'angular-sanitize';
 // import VueChat from './components/_vueChat';
