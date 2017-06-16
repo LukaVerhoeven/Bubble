@@ -9,7 +9,7 @@
 			</div>
 			<div class="right right-side">
 				<p class="theme-status js-theme-status right-align truncate first-letter-capital"></p>
-				<a class="btn-floating btn @{{theme.color}} js-toggle-edit-menu edit-theme">
+				<a class="btn-floating btn @{{theme.color}} js-toggle-edit-menu edit-theme" ng-click="toggleEditTheme(key)">
 		     	 	<i class="material-icons">mode_edit</i>
 		     	 	<i class="material-icons">clear</i>
 		    	</a>
@@ -28,7 +28,7 @@
 			
 		</div>
 		<!-- @include('components.theme-form', ['model' => 'theme', 'action' => 'update']) -->
-				<div class="js-edit-form edit-form top-gutter-double-margin js-slide-menu">	
+				<div class="js-edit-form edit-form top-gutter-double-margin js-slide-menu" ng-show="showEditTheme == key">	
 					<form class="row" ng-submit="editTheme(theme, $event)" >
 				        <div class="input-field col s12">
 							<input placeholder="Ex: Sport" id="@{{key}}theme_name" type="text" ng-model="theme.name" class="validate" autocomplete="off" required>
@@ -51,11 +51,11 @@
 							<p class="inline-block col s1">Icon</p>
 							<div class="col s11 center-align">
 								<div class="inline-block">
-									<!-- <div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
+									<div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
 										<input name="icon" type="radio" id="@{{key+icon}}" ng-model="theme.icon" value="@{{::icon}}" required/>
 										<label for="@{{key+icon}}" class="no-button js-NIcon"></label>
 										<i class="material-icons btn-floating waves-effect waves-light @{{theme.color}} @{{theme.color}}-text">@{{::icon}}</i>
-							    	</div> -->
+							    	</div>
 								</div>
 							</div>
 				        </div>
@@ -63,11 +63,11 @@
 							<p class="inline-block col s1">Shortcut: </p>
 							<div class="col s11 center-align">
 								<div class="inline-block all-letters @{{theme.color}} waves-effect waves-light">
-								 <!--    <div class="inline-block new-shortcut" ng-repeat="char in ::ThemeShortcuts">
+								    <div class="inline-block new-shortcut" ng-repeat="char in ::ThemeShortcuts">
 										<input name="schortcut" type="radio" id="@{{key+char }}" ng-model="theme.shortcut" value="@{{ ::char }}" required/>
 										<label for="@{{key+char }}" class="no-button"></label>
 										<a class="waves-effect waves-light btn @{{theme.color}} @{{theme.color}}-border @{{theme.color}}-text">@{{ ::char }}</a>
-							    	</div> -->
+							    	</div>
 								</div>
 							</div>
 				        </div>
