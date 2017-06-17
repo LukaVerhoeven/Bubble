@@ -13,7 +13,13 @@
 
 	.emoji-popup{
 		position: absolute;
-		margin-top: -7rem;
+		margin-top: -8.5rem;
+		padding-right: 84px;
+		z-index: 9;
+
+		@include media($medium-screen-up) {
+		    margin-top: -7rem;
+		}		
 
 		a{
 			cursor: pointer;
@@ -33,7 +39,10 @@
 		}
 
 		&:last-child .message-block{
-			padding-bottom: 2rem;
+			padding-bottom: 3.5rem;
+			@include media($medium-screen-up) {
+				padding-bottom: 2rem;
+			}				
 		}
 
 		.message-block{

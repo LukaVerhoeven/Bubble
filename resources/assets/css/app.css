@@ -1004,7 +1004,15 @@ body {
 
 #content .emoji-popup {
   position: absolute;
-  margin-top: -7rem;
+  margin-top: -8.5rem;
+  padding-right: 84px;
+  z-index: 9;
+}
+
+@media screen and (min-width: 47.9375em) {
+  #content .emoji-popup {
+    margin-top: -7rem;
+  }
 }
 
 #content .emoji-popup a {
@@ -1028,7 +1036,13 @@ body {
 }
 
 #content .message-wrapper:last-child .message-block {
-  padding-bottom: 2rem;
+  padding-bottom: 3.5rem;
+}
+
+@media screen and (min-width: 47.9375em) {
+  #content .message-wrapper:last-child .message-block {
+    padding-bottom: 2rem;
+  }
 }
 
 #content .message-wrapper .message-block {
