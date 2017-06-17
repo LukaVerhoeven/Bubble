@@ -10396,6 +10396,7 @@ body {
   min-width: 7rem;
   border: 2px solid #ececec;
   box-shadow: none;
+  max-width: 90%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -10418,6 +10419,9 @@ body {
 #content .message-wrapper .message p {
   margin: 0;
   padding: 0 1.5rem;
+  text-align: left;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 #content .message-wrapper .image {

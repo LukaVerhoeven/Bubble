@@ -76,6 +76,7 @@
 			min-width: 7rem;
 			border: 2px solid map-get($colors,light-gray);
 			box-shadow: none;
+			max-width: 90%;
 			@include valign-container;
 
 			&.right{
@@ -88,6 +89,9 @@
 			p{
 				margin: 0;
 				padding: 0 $gutter*2;
+				text-align: left;
+				word-break: break-word;
+				max-width: 100%;
 			}
 		}
 

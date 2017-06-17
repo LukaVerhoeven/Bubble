@@ -15,7 +15,7 @@
 							<div class="block">
 								<p class="user-name first-letter-capital">@{{ message.nickname }}</p>
 							</div>
-							<div class="inline-block text-container">
+							<div class="inline-block text-container left">
 								<i class="bubble-icon triangle left"><path class="path1"></path><path class="path2 @{{message.color}}-before"></path></i>
 								<div class="message section card left @{{message.color}}-border">
 									<p>@{{ message.text }}</p>
@@ -32,7 +32,7 @@
 							<div class="block">
 								<p class="right-align user-name">You</p>
 							</div>
-							<div class="inline-block text-container">
+							<div class="inline-block text-container right">
 								<i class="bubble-icon triangle-you right"><path class="path1"></path><path class="path2 @{{message.color}}-before"></path></i>
 								<div class="message section card right-align right @{{message.color}}-border">
 									<p>@{{ message.text }}</p>
