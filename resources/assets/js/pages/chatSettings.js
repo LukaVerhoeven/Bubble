@@ -15,6 +15,9 @@ class chatSettings {
             editName.toggleClass('edit');
             editInput.toggleClass('edit');
             editInput.find('input').focus();
+            if(!editInput.hasClass('edit')){
+                editInput.find('input').blur();
+            }
         });
     }
 }
