@@ -73,7 +73,7 @@
 
 #friends,#groups{
 	.friends{
-		height: 80%;
+		height: calc(100% - 125px);
 		overflow:hidden;
 		overflow-y: scroll;
 		z-index: 21;
@@ -153,7 +153,7 @@
 	.bottom{
 		position: absolute;
 		width: 100%;
-		z-index: 20;
+		z-index: 22;
 		top: calc(100% - 200px);
 		height: 13rem;
 		overflow: hidden;
@@ -235,6 +235,8 @@
 		.btn{
 			margin: 10px 0;
 		}
+
+
 		.add-friend{
 			@include transition(all .8s ease-in-out, line-height .4s);
 			padding: 0 35%;
@@ -242,6 +244,13 @@
 
 			@media only screen and (max-width: 373px ){
 				padding: 0 31%;
+			}
+
+			&.create-group{
+				padding: 0 40%;
+				@include media($large-screen-up) {
+				    padding: 0 35%;
+				}				
 			}
 
 			&.button-header{
@@ -301,6 +310,7 @@
 		.submit-group-form{
 			height: 48px;
 			margin-bottom: 1.3rem;
+			font-weight: 500;
 		}
 
 		#createGroupForm{
@@ -312,7 +322,12 @@
 
 			ul{
 				overflow-y: scroll;
-				min-height: 52px;
+				display: table;
+				width: 100%;
+
+				li {
+					display: table-cell;
+				}
 			}
 
 			.createGroupBottom {

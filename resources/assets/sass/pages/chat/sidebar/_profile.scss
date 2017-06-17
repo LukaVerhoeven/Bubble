@@ -1,10 +1,26 @@
 $profile-size: 9rem;
 #bubble #profile{
+	.fullh{
+		height: 100%;
+	}
+
+	.sidebar-container{
+		display: inline-block;
+		width: 100%;
+		overflow-y: scroll;
+		height: 100%;
+		padding-bottom: 51px;
+	}
+
 	.img-container{
 		margin: 4vw auto; 
 		// margin-top: 4vw;
 		width: $profile-size;
 		height: $profile-size;
+
+		input {
+			opacity: 0;
+		}
 
 	}
 	.img-overflow{
@@ -16,16 +32,20 @@ $profile-size: 9rem;
 			position: absolute;
 			min-width: $profile-size;
 			height: $profile-size;
+			border-radius: 50%;
 		}
 		
 		#profilepicUpload{
 			display: none;
 		}
-		
+
+		.profile-pic {
+			z-index: 0;
+		}
+
 		&:hover{
 			.edit-overlay{
 				background-color: rgba(72, 72, 72, 0.53);
-				border-radius: 50%;
 				opacity: 1;
 				z-index: 5;
 				text-align: center;

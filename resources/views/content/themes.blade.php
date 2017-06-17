@@ -81,6 +81,62 @@
 	</div>
 	<!-- New theme -->
 	<!-- @include('components.theme-form', ['model' => 'NewTheme', 'action' => 'create']) -->
+		<div class="card top-gutter-double-margin new-theme js-slide-menu theme-card">
+			<div class="js-toggle-slide-menu" ng-click="toggleCreate()">
+				<h2 class="inline-block">Create new theme</h2>
+				<a class="right arrow-toggle">
+		     	 	<i class="material-icons grey-text text-darken-3 js-toggle-slide-menu close" ng-click="toggleCreate()">keyboard_arrow_up</i>
+		    	</a>
+			</div>
+			<form class="row" ng-submit="createNewTheme(NewTheme.$valid, $event)" id="createThemeForm" name="createThemeForm" ng-if="openCreate">
+		        <div class="input-field col s12">
+					<input placeholder="Ex: Sport" id="@{{key}}theme_name" type="text" ng-model="NewTheme.name" class="validate" autocomplete="off" required>
+					<label for="@{{key}}theme_name" class="active">Theme name</label>
+		        </div>
+		        <div class="input-field col s12">
+					<input placeholder="Ex: tennis, running, racket" id="@{{key}}keywords" type="text" ng-model="NewTheme.keywordString" class="validate" autocomplete="off" required>
+					<label for="@{{key}}keywords" class="active">Keywords</label>
+		        </div>
+		        <div class="input-field col s12 new-theme-color">
+					<p class="inline-block col s1">Color</p>
+					<ul class="col s11 center-align">
+					  	<li ng-repeat="color in ::ThemeColors">
+					      <input name="color" type="radio" id="@{{key+color}}" ng-model="NewTheme.color" value="@{{::color}}" required/>
+					      <label class="@{{::color}}-radio @{{::color}}-before" for="@{{key+color}}"></label>
+					    </li>
+					</ul>
+		        </div>
+		        <div class="input-field col s12 new-theme-icon">
+					<p class="inline-block col s1">Icon</p>
+					<div class="col s11 center-align">
+						<div class="inline-block">
+							<div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
+								<input name="icon" type="radio" id="@{{key+icon}}" ng-model="NewTheme.icon" value="@{{::icon}}" required/>
+								<label for="@{{key+icon}}" class="no-button js-NIcon"></label>
+								<i class="material-icons btn-floating waves-effect waves-light @{{NewTheme.color}} @{{NewTheme.color}}-text">@{{icon}}</i>
+					    	</div>
+						</div>
+					</div>
+		        </div>
+		        <div class="input-field col s12 new-theme-shortcut">
+					<p class="inline-block col s1">Shortcut: </p>
+					<div class="col s11 center-align">
+						<div class="inline-block all-letters  @{{NewTheme.color}} waves-effect waves-light" >
+						    <div class="inline-block new-shortcut" ng-repeat="char in ::ThemeShortcuts">
+								<input name="schortcut" type="radio" id="@{{key+char }}" ng-model="NewTheme.shortcut" value="@{{ ::char }}" required/>
+								<label for="@{{key+char }}" class="no-button"></label>
+								<a class="waves-effect waves-light btn @{{NewTheme.color}} @{{NewTheme.color}}-border @{{NewTheme.color}}-text">@{{ char }}</a>
+					    	</div>
+						</div>
+					</div>
+		        </div>
+		        <div class="col s12 center">
+
+		        <input type="submit" class="submit-theme waves-effect waves-light btn red inline-block" value="update theme">
+		        	{{-- <a class="waves-effect waves-light btn red inline-block" ng-click="createNewTheme()">Create theme</a>     --}}
+		        </div>
+			</form>
+		</div>		
  
 </div>		
 </div>

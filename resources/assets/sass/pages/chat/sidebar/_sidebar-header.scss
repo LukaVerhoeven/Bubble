@@ -1,7 +1,8 @@
 #sidebar {
 	width: $sidebar-width-mobile;
+	overflow-y: hidden;
 
-	@include media($small-screen-up) {
+	@include media($large-screen-up) {
 		width: $sidebar-width;
 	}	
 

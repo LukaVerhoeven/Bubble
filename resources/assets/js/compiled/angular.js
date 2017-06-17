@@ -1,7 +1,7 @@
 var app = angular.module('bubble',['ngSanitize'])
-        // .constant('API_URL','http://bubble.local/api/');
+        .constant('API_URL','http://bubble.local/api/');
         // .constant('API_URL','http://lukaverhoevenmtantwerpeu.webhosting.be/api/');
-        .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
+        // .constant('API_URL','http://bubble-lukaverhoeven.c9users.io/api/');
 app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) {
     //************ GLOBAL FUNCTIONS ************
     // ERROR
@@ -1488,9 +1488,19 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	$scope.ThemeColors = ['red','orange','blue','purple','green','cyan', 'pink', 'teal'];
 	$scope.ThemeShortcuts = ['A','B','C','D','F','G','H','J','I','K','L','M','O','P','Q','R','S','U','V','X','Y','Z', '0','1','2','3','4','5','6','7','8','9'];
 	$scope.showEditTheme = 0;
+	$scope.openCreate = false;
 
 	$rootScope.toggleEditTheme = function(index){
 		$scope.showEditTheme = index;
+	}
+
+	$rootScope.toggleCreate = function(){
+		if($scope.openCreate){
+			setTimeout(function(){ $scope.openCreate = !$scope.openCreate; }, 500); //transition animatie
+		}else {
+			$scope.openCreate = !$scope.openCreate;
+		}
+
 	}
 
 	$scope.createNewTheme = function(valid, $event){
@@ -1504,6 +1514,7 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 				$scope.resetForm($scope.NewTheme);
 				$scope.NewTheme = {color :"red", icon:"school",shortcut:"A"};
 				$rootScope.initShortcut();
+				$rootScope.toggleCreate();
 			}
 		}
 	}

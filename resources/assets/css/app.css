@@ -262,7 +262,8 @@ $panel-default-heading-bg: #fff;
 }
 
 .fullscreen-loader svg {
-  max-width: 100vw;
+  max-width: 90vw;
+  margin: auto;
 }
 
 .fullscreen-loader .v-align {
@@ -1305,12 +1306,26 @@ body {
   margin-right: .65rem;
 }
 
+#bubble #chat-settings .card-content a.bubble-editButton,
+#bubble #chat-settings .card-content .edit a.bubble-editButton {
+  vertical-align: top;
+}
+
+#bubble #chat-settings .card-content .bubble-editInput a.bubble-editButton {
+  vertical-align: middle;
+  margin-top: 0;
+}
+
 @media screen and (max-width: 47.9375em) {
   #bubble #chat-settings .card-content .bubble-editName {
     text-align: center;
     display: block;
     margin-right: -9px;
     width: 103%;
+  }
+
+  #bubble #chat-settings .card-content .bubble-editName a.bubble-editButton {
+    margin-top: 5px;
   }
 
   #bubble #chat-settings .card-content .bubble-editName.edit a.bubble-editButton {
@@ -1624,6 +1639,10 @@ body {
   transition: none;
 }
 
+#themes .theme-card .edit-theme {
+  margin-top: 2px;
+}
+
 #themes .theme-card .edit-theme i {
   opacity: 1;
   -webkit-transition: all 0.3s ease-out;
@@ -1667,6 +1686,10 @@ body {
   height: 100%;
   margin-left: 1.8rem;
   line-height: 50px;
+}
+
+#themes .theme-card .shortcut {
+  margin-right: 3px;
 }
 
 #themes .theme-card .all-letters {
@@ -1728,10 +1751,11 @@ body {
 }
 
 #sidebar {
-  width: 80%;
+  width: 300px;
+  overflow-y: hidden;
 }
 
-@media screen and (min-width: 25.9375em) {
+@media screen and (min-width: 64.0625em) {
   #sidebar {
     width: 28rem;
   }
@@ -1919,7 +1943,7 @@ body {
 
 #friends .friends,
 #groups .friends {
-  height: 80%;
+  height: calc(100% - 125px);
   overflow: hidden;
   overflow-y: scroll;
   z-index: 21;
@@ -2024,7 +2048,7 @@ body {
 #groups .bottom {
   position: absolute;
   width: 100%;
-  z-index: 20;
+  z-index: 22;
   top: calc(100% - 200px);
   height: 13rem;
   overflow: hidden;
@@ -2143,6 +2167,18 @@ body {
   }
 }
 
+#friends .bottom .add-friend.create-group,
+#groups .bottom .add-friend.create-group {
+  padding: 0 40%;
+}
+
+@media screen and (min-width: 64.0625em) {
+  #friends .bottom .add-friend.create-group,
+  #groups .bottom .add-friend.create-group {
+    padding: 0 35%;
+  }
+}
+
 #friends .bottom .add-friend.button-header,
 #groups .bottom .add-friend.button-header {
   color: black;
@@ -2210,6 +2246,7 @@ body {
 #groups .bottom .submit-group-form {
   height: 48px;
   margin-bottom: 1.3rem;
+  font-weight: 500;
 }
 
 #friends .bottom #createGroupForm,
@@ -2229,7 +2266,13 @@ body {
 #friends .bottom #createGroupForm ul,
 #groups .bottom #createGroupForm ul {
   overflow-y: scroll;
-  min-height: 52px;
+  display: table;
+  width: 100%;
+}
+
+#friends .bottom #createGroupForm ul li,
+#groups .bottom #createGroupForm ul li {
+  display: table-cell;
 }
 
 #friends .bottom #createGroupForm .createGroupBottom,
@@ -2240,10 +2283,26 @@ body {
       align-self: flex-end;
 }
 
+#bubble #profile .fullh {
+  height: 100%;
+}
+
+#bubble #profile .sidebar-container {
+  display: inline-block;
+  width: 100%;
+  overflow-y: scroll;
+  height: 100%;
+  padding-bottom: 51px;
+}
+
 #bubble #profile .img-container {
   margin: 4vw auto;
   width: 9rem;
   height: 9rem;
+}
+
+#bubble #profile .img-container input {
+  opacity: 0;
 }
 
 #bubble #profile .img-overflow {
@@ -2256,15 +2315,19 @@ body {
   position: absolute;
   min-width: 9rem;
   height: 9rem;
+  border-radius: 50%;
 }
 
 #bubble #profile .img-overflow #profilepicUpload {
   display: none;
 }
 
+#bubble #profile .img-overflow .profile-pic {
+  z-index: 0;
+}
+
 #bubble #profile .img-overflow:hover .edit-overlay {
   background-color: rgba(72, 72, 72, 0.53);
-  border-radius: 50%;
   opacity: 1;
   z-index: 5;
   text-align: center;

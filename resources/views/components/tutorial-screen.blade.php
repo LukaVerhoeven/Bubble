@@ -4,7 +4,7 @@
 	<!-- step 1 -->
 	<div class="tutorial-div step-1 v-align center-align">
 		@include('components.bubblesvg')
-		<h2>Do you want see the tutorial?</h2>
+		<h2>Do you want to see the tutorial?</h2>
 		<a href="" class="btn red waves-effect waves-light js-close-tutorial">No thanks</a><a href="" class="btn waves-effect waves-light js-next-step">Yes please</a>
 	</div>
 	<!-- step 2 -->

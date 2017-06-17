@@ -57,13 +57,26 @@
 			margin-right: .65rem;	
 		}	
 
+		a.bubble-editButton, .edit a.bubble-editButton {
+			vertical-align: top;
+		}
+
+		.bubble-editInput a.bubble-editButton {
+			vertical-align: middle;
+			margin-top: 0;
+		}		
+
 		@include media($medium-screen-down) {
 			.bubble-editName {
 				text-align: center;
 				display: block;
 				margin-right: -9px;
 				width: 103%;
-			
+				
+				a.bubble-editButton {
+					margin-top: 5px;
+				}
+				
 				&.edit {
 					a.bubble-editButton {
 						margin-right: 0;

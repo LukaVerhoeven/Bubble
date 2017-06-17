@@ -36,7 +36,7 @@
 				    </div>
 				</div>
 			</div>
-			<a class="js-add-friend btn waves-effect waves-light add-friend">Create group<i class="material-icons close-add-friend">clear</i></a>
+			<a class="js-add-friend btn waves-effect waves-light add-friend create-group">Create group<i class="material-icons close-add-friend">clear</i></a>
 			<form ng-submit="createGroup(newGroup.$valid)" id="createGroupForm" name="createGroupForm">
 				<div class="title-wrapper">
 					<input class="validate" autocomplete="off" id="createGroupsName" type="text" placeholder="Chatname" ng-model="newGroup.chatname" required>

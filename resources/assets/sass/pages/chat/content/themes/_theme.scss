@@ -105,6 +105,8 @@
 			}
 		}
 		.edit-theme{
+			margin-top: 2px;
+
 			i{
 				opacity: 1;
 				@include transition(all .3s ease-out);
@@ -143,6 +145,10 @@
 			height: 100%;
 			margin-left: 1.8rem;
 			line-height: 50px;
+		}
+		
+		.shortcut{
+			margin-right: 3px;
 		}
 
 		.all-letters{
