@@ -11652,7 +11652,11 @@ body {
 }
 
 #bubble #profile .img-overflow .profile-pic {
-  z-index: 0;
+  z-index: -1;
+}
+
+#bubble #profile .img-overflow .edit-overlay i {
+  opacity: 0;
 }
 
 #bubble #profile .img-overflow:hover .edit-overlay {
@@ -11670,6 +11674,7 @@ body {
 
 #bubble #profile .img-overflow:hover .edit-overlay .edit-text,
 #bubble #profile .img-overflow:hover .edit-overlay i {
+  opacity: 1;
   display: inline-block;
   font-size: 18px;
   color: white;
@@ -11692,7 +11697,7 @@ body {
 
 #bubble #profile .solid-block p {
   margin: 0;
-  margin-top: -3px;
+  margin-top: -5px;
 }
 
 #bubble #profile .bubble-editName {
@@ -11703,9 +11708,13 @@ body {
   border-bottom: 2px solid #ececec;
 }
 
+#bubble #profile .relative-container {
+  position: relative;
+}
+
 #bubble #profile .bubble-editInput {
   right: 0;
-  padding-left: 0.75rem;
+  padding: 0;
   width: 100%;
 }
 

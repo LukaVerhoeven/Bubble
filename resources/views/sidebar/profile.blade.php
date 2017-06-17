@@ -24,15 +24,17 @@
 			     	 	<i class="material-icons ">mode_edit</i>
 			    	</a>
 	          	</div>
-	          	<div class="right solid-block bubble-editInput col s12" >
-		          	<input class="js-edit-input" type="text" placeholder="@{{chatname}}" ng-model="user.newUserName" maxlength="20">
-		          	<div class="buttons right v-align">
-			          	<a class=" btn-floating btn bubble-editButton" ng-click="editUserName()">
-				     	 	<i class="material-icons">done</i>
-				    	</a>
-			          	<a class=" btn-floating btn bubble-editButton grey clear">
-				     	 	<i class="material-icons">clear</i>
-				    	</a>
+	          	<div class="relative-container">
+		          	<div class="right solid-block bubble-editInput col s12" >
+			          	<input class="js-edit-input" type="text" placeholder="@{{chatname}}" ng-model="user.newUserName" maxlength="20">
+			          	<div class="buttons right v-align">
+				          	<a class=" btn-floating btn bubble-editButton" ng-click="editUserName()">
+					     	 	<i class="material-icons">done</i>
+					    	</a>
+				          	<a class=" btn-floating btn bubble-editButton grey clear">
+					     	 	<i class="material-icons">clear</i>
+					    	</a>
+			          	</div>
 		          	</div>
 	          	</div>
 	        </div>
@@ -45,15 +47,17 @@
 			     	 	<i class="material-icons ">mode_edit</i>
 			    	</a>
 	          	</div>
-	          	<div class="right solid-block bubble-editInput col s12">
-		          	<input class="js-edit-input" type="text" placeholder="@{{chatname}}" ng-model="user.newUserEmail" maxlength="20" placeholder="{{ Auth::user()->email }}">
-		          	<div class="buttons right v-align">
-			          	<a class=" btn-floating btn bubble-editButton" ng-click="editUserEmail()">
-				     	 	<i class="material-icons">done</i>
-				    	</a>
-			          	<a class=" btn-floating btn bubble-editButton grey clear">
-				     	 	<i class="material-icons">clear</i>
-				    	</a>
+	          	<div class="relative-container">
+		          	<div class="right solid-block bubble-editInput col s12">
+			          	<input class="js-edit-input" type="text" placeholder="@{{chatname}}" ng-model="user.newUserEmail" maxlength="20" placeholder="{{ Auth::user()->email }}">
+			          	<div class="buttons right v-align">
+				          	<a class=" btn-floating btn bubble-editButton" ng-click="editUserEmail()">
+					     	 	<i class="material-icons">done</i>
+					    	</a>
+				          	<a class=" btn-floating btn bubble-editButton grey clear">
+					     	 	<i class="material-icons">clear</i>
+					    	</a>
+			          	</div>
 		          	</div>
 	          	</div>
 	        </div>        
