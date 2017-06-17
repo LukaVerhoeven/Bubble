@@ -46857,9 +46857,10 @@ var chatSettings = function () {
                 var editInput = parent.find(_this.$editNameInput);
                 editName.toggleClass('edit');
                 editInput.toggleClass('edit');
-                editInput.find('input').focus();
                 if (!editInput.hasClass('edit')) {
                     editInput.find('input').blur();
+                } else {
+                    editInput.find('input').focus();
                 }
             });
         }
