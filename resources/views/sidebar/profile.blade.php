@@ -40,7 +40,7 @@
 	        </div>
 
 		<!-- email -->
-	    	<div class="col s12 js-parent">
+	    	<div class="col s12 js-parent profile-padding-bottom">
 		        <div class="right solid-block bubble-editName" >
 		          	<p class="left text-block-center js-edit-value js-email v-align">{{ Auth::user()->email }}</p>
 		          	<a class="left btn-floating btn red bubble-editButton v-align js-edit-button right">

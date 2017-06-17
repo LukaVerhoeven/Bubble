@@ -43,7 +43,7 @@ $profile-size: 9rem;
 			z-index: -1;
 		}
 
-		.edit-overlay i {
+		.edit-overlay i, .edit-text{
 			opacity: 0;
 		}
 
@@ -56,6 +56,7 @@ $profile-size: 9rem;
 
 				.edit-text{
 					margin:0;
+					opacity: 1;
 					vertical-align: top;
 					margin-right: $gutter/2;
 				}
@@ -87,6 +88,9 @@ $profile-size: 9rem;
 			margin: 0;
 			margin-top: -5px;
 		}
+	}
+	.profile-padding-bottom{
+		padding-bottom: 70px;
 	}
 	.bubble-editName{
 		width: 100%;
