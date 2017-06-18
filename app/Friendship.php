@@ -55,16 +55,19 @@ class Friendship extends Model
             $chat->function = 'friendchat';
             $chat->is_deleted = 0;
         	$chat->save();
-
+            // dd($chat);
             Theme::create($chat,'general','white',0 ,0, 1);
             UsersInChat::create($user,$chat);
             UsersInChat::create($friendRequested,$chat);
+
             return $chat->id;
         }else{
             // return a friendrequest that can be broadcasted
             return response()->json([
                 'confirmed' => $friendship->confirmed,
                 'name' => $user->name,
+                'nickname' => $user->name,
+                'unread_messages' => 0,
                 'is_blocked' => $friendship->is_blocked ,
                 'user_id' => $user->id
             ]);

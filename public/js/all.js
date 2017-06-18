@@ -10761,6 +10761,8 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
     // ************ MULTICONTROLLER FUNCTIONS ************
     // ENTER A CHAT
     $rootScope.openChat = function (chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
+        console.log($rootScope.friendlist);
+        console.log(chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index);
         if ($scope.mobileAndTabletcheck()) {
             $(".drag-target").trigger("click");
             $(".drag-target").click();
@@ -10835,10 +10837,11 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                 }
                 if (e.event === 'friendrequest') {
                     $rootScope.friendRequests.push(e.data);
-                    $rootScope.countFriendRequests--;
+                    $rootScope.countFriendRequests++;
                 }
                 if (e.event === 'groupaccept') {
                     $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
+                    $rootScope.countGroupRequests--;
                 }
                 if (e.event === 'leavegroup') {
                     if ($rootScope.Authuserid === e.data.userid) {
@@ -10872,6 +10875,9 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                 }
                 if (e.event === 'acceptfriend') {
                     $rootScope.addFriend(e.data);
+                    console.log($('.js-bottom-add ..name:contains(' + e.data.name + ')').parent());
+                    $('.js-bottom-add ..name:contains(' + e.data.name + ')').parent().remove();
+                    $rootScope.countFriendRequests--;
                 }
                 if (e.event === 'sendOnline') {
                     $scope.onlinestate = {};
@@ -11108,6 +11114,8 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
             }
         }).then(function (response) {
             if (friendrequest) {
+                response.data.unread_messages = 0;
+                response.data.nickname = response.data.name;
                 $scope.removeRequest(friendID);
                 $rootScope.addFriend(response.data);
                 $rootScope.countFriendRequests--;
@@ -11119,6 +11127,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
 
     // DECLINE FRIENDREQUEST
     $scope.decline = function (friendID) {
+        $rootScope.countFriendRequests--;
         var friendID = {
             newfriend: friendID
         };
@@ -11126,13 +11135,12 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         $http({
             method: 'POST',
             url: url,
-            data: $.param(newfriend),
+            data: $.param(friendID),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
-        }).then(function (response) {
-            $scope.removeRequest(friendID);
-        }, $rootScope.errorCallback);
+        }).then(function (response) {}, $rootScope.errorCallback);
+        $scope.removeRequest(friendID.newfriend);
     };
 
     //DELETE FRIEND
@@ -11150,6 +11158,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
     // REMOVE FRIEND FROM FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.removeFriend = function (chatid) {
         $rootScope.adjustObjectElement($rootScope.friendlist, chatid, 'chatid', 'remove', 1, 0, 0);
+        $rootScope.adjustObjectElement($rootScope.friendsForGroup, chatid, 'chatid', 'remove', 1, 0, 0);
         if ($rootScope.chatID == chatid) {
             $rootScope.resetChat();
         }
@@ -11158,6 +11167,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
     // ADD FRIEND TO FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.addFriend = function (user) {
         $rootScope.friendlist.push(user);
+        $rootScope.friendsForGroup.push(user);
     };
 
     // ONLINE STATES
@@ -11482,6 +11492,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
 
                     if (e.event === 'update') {
                         var keywords = $rootScope.ObjToArray(e.data.keywords);
+
                         keywords = $rootScope.keywordToObjectArray(keywords);
                         e.data.keywords = keywords;
                         $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'update', e.data, 0, 0);
@@ -11625,7 +11636,7 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
     // LEAVE GROUP (Send to alert)
     $scope.LeaveGroup = function () {
         // open alert
-        var blockAction = $scope.minimumAdmins();
+        var blockAction = $scope.minimumAdmins(false);
         if (!blockAction) {
             $('#Alerts').addClass('open');
             $('#LeaveGroupschatAlert').addClass('open');
@@ -11637,7 +11648,7 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
         becomeAdmin = 1 - becomeAdmin;
         $scope.adminkey = key;
         if (!becomeAdmin) {
-            var blockAction = $scope.minimumAdmins();
+            var blockAction = $scope.minimumAdmins(true);
         }
         if (!blockAction) {
             var data = {
@@ -11654,7 +11665,7 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
     // DELETE USER FROM GROUP (Send to alert)
     $scope.deleteUserFromGroup = function (userid) {
         // open alert
-        var blockAction = $scope.minimumAdmins();
+        var blockAction = $scope.minimumAdmins(false);
         if (!blockAction) {
             $rootScope.toDeleteUserId = userid;
             $('#Alerts').addClass('open');
@@ -11671,17 +11682,19 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
     };
 
     // CHECK IF THE CHAT HAS MINIMUM 1 ADMIN
-    $scope.minimumAdmins = function () {
+    $scope.minimumAdmins = function (preventToggle) {
         var allAdmins = $rootScope.adjustElementNewArray($rootScope.groupFriends, 1, 'admin', 'retreive', 0, 0, 0);
-        allAdmins = $rootScope.filterArray(allAdmins, 1);
+        // allAdmins = $rootScope.filterArray(allAdmins,1);
         var blockAction = allAdmins.length < 2;
         if (blockAction) {
             $('#Alerts').addClass('open');
             $('#minimunAdminsAlert').addClass('open');
         }
         // prevent checkbox from being unchecked
-        var checkBoxes = $('#filled-in-box' + $scope.adminkey);
-        checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+        if (preventToggle) {
+            var checkBoxes = $('#filled-in-box' + $scope.adminkey);
+            checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+        }
         return blockAction;
     };
 
@@ -11792,6 +11805,7 @@ app.controller('ProfileController', function ($scope, $http, API_URL, $rootScope
 // })
 app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) {
     // $scope.initvalue = {color :"red", icon:"school",shortcut:"A"}
+    $scope.form = {};
     $scope.NewTheme = { color: "red", icon: "school", shortcut: "A" };
     $scope.ThemeIcons = ['school', 'work', 'star', 'favorite', 'extension', 'euro_symbol', 'query_builder', 'theaters', 'build', 'home', 'videogame_asset', 'brush', 'local_florist', 'terrain', 'flight', 'toys', 'wb_sunny', 'healing', 'music_note', 'flash_on', 'photo_camera', 'wb_cloudy', 'directions_car', 'local_bar', 'local_dining', 'local_hospital', 'hotel', 'local_grocery_store', 'local_shipping', 'beach_access', 'fitness_center', 'casino', 'child_friendly', 'free_breakfast', 'kitchen', 'ac_unit', 'cake', 'public', 'weekend', 'account_balance', 'pets', 'timeline'];
     $scope.ThemeColors = ['red', 'orange', 'blue', 'purple', 'green', 'cyan', 'pink', 'teal'];
@@ -11843,18 +11857,21 @@ app.controller('ThemeController', function ($scope, $http, API_URL, $rootScope) 
             form[prop] = null;
         }
         $('#createThemeForm input').removeClass('valid');
-        $scope.createThemeForm.$setPristine();
-        $scope.createThemeForm.$setUntouched();
+        console.log($scope.form);
+        $scope.form.createThemeForm.$setPristine();
+        $scope.form.createThemeForm.$setUntouched();
     };
 
     $rootScope.keywordToObjectArray = function (keywords) {
-        var keywordString = keywords.join(',');
-        var objectString = keywordString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
-        objectString = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-        objectString = objectString.replace(/'/g, '"');
-        objectString = objectString.replace(/[\u0000-\u0019]+/g, ""); // remove invisible symbols
-        objectString = JSON.parse(objectString);
-        return objectString;
+        if (keywords.length > 0) {
+            var keywordString = keywords.join(',');
+            var objectString = keywordString.replace(/^/, '[{word:"').replace(/,/g, '"},{word:"').concat('"}]');
+            objectString = objectString.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+            objectString = objectString.replace(/'/g, '"');
+            objectString = objectString.replace(/[\u0000-\u0019]+/g, ""); // remove invisible symbols
+            objectString = JSON.parse(objectString);
+            return objectString;
+        }
     };
 
     $rootScope.updateMessages = function (keywords, color, themeid) {
@@ -46417,16 +46434,16 @@ var AnimateWidthAuto = function () {
                 $.each(this.$element, function (index, value) {
                     var element = $(this);
                     // when the element is loaded ( => give width )
-                    var WaitForWidth = setInterval(function () {
+                    setTimeout(function () {
                         if (element.width() > 0) {
-                            clearInterval(WaitForWidth);
+                            // clearInterval(WaitForWidth);
                             element.css('width', $(element).width() + 'px');
                         }
-                    }, 250);
+                        //  var WaitForWidth = setInterval(function(){
+                        // }, 250);
+                    }, 500);
                     // clear interval after 3seconds
-                    setTimeout(function () {
-                        clearInterval(WaitForWidth);
-                    }, 3000);
+                    // setTimeout(function(){ clearInterval(WaitForWidth); }, 3000);
                 });
             }
         }
@@ -46540,10 +46557,12 @@ var Tutorial = function () {
         value: function checkStep() {
             if (this.currentStep === 4) {
                 $('.theme-tab a')[0].click();
+                $('.js-toggle-slide-menu')[0].click();
                 $('.new-theme').addClass('open');
                 $('#themes').addClass('tutorial-theme');
             } else if ($('#themes').hasClass('tutorial-theme')) {
                 $('.conversation-tab a')[0].click();
+                $('.js-toggle-slide-menu')[0].click();
                 $('.new-theme').removeClass('open');
                 $('#themes').removeClass('tutorial-theme');
             }
@@ -46946,7 +46965,8 @@ var General = function () {
             if (ClickedOnRegister !== null) {
                 if (ClickedOnRegister) {
                     this.$tutorial.removeClass('hide');
-                    sessionStorage.clear();
+                    sessionStorage.removeItem('register');
+                    // sessionStorage.clear();
                 }
             }
         }

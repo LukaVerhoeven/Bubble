@@ -16,46 +16,54 @@ class MessageController extends Controller
 {
 
     public function getMessages($id){
-        $messages = Message::where('messages.chat_id', $id)
-        ->join('users', 'users.id', '=', 'messages.user_id')
-        ->join('users_in_chats', 'users_in_chats.user_id', '=', 'users.id')
-        ->join('themes', 'themes.id', '=', 'messages.theme_id')
-        ->where('users_in_chats.chat_id',$id)
-        ->orderBy('messages.id','desc')
-        ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image', 'themes.color', 'users_in_chats.nickname')->paginate(20)->items();
-        return $messages;
+        try {
+            $messages = Message::where('messages.chat_id', $id)
+            ->join('users', 'users.id', '=', 'messages.user_id')
+            ->join('users_in_chats', 'users_in_chats.user_id', '=', 'users.id')
+            ->join('themes', 'themes.id', '=', 'messages.theme_id')
+            ->where('users_in_chats.chat_id',$id)
+            ->orderBy('messages.id','desc')
+            ->select('messages.*', 'users.id as user_id', 'users.name as name', 'users.profile_image', 'themes.color', 'users_in_chats.nickname')->paginate(20)->items();
+            return $messages;
+        } catch (\Exception $e) {
+            return "something went wrong";
+        }
     }
 
     public function index($id = null)
     {
-        if ($id == null) {
-            return 'no id has been passed';
-        }
-        else {
-            $user = Auth::user();
-            // dd($user, $id);
-            $profileImage = $user->profile_image;
-            try {
-                $messages = collect($this->getMessages($id));
-                $themes = Theme::where('chat_id', $id)->where('is_deleted', 0)->with('keywords')->get();
-                $themes = Theme::addKeywordString($themes);
-                // theme usage
-                foreach ($themes as $key => $theme) {
-                    $themeMessages = $messages->where('theme_id',$theme['id']);
-                    $amountThemeMessages = $themeMessages->count();
-                    $amountMessages = $messages->count();
-                    if($amountMessages){
-                        $themeUsage = ($amountThemeMessages/$amountMessages)*100;
-                        $themeUsage = round($themeUsage) . '%';
-                    }else{
-                        $themeUsage = '0%';
-                    }
-                    $themes[$key] = collect($theme)->put('themeUsage', $themeUsage);
-                }
-                return compact('messages', 'themes','profileImage');
-            } catch (Exception $e) {
-                return 'something went wrong retrieving the chat';
+        try {
+            if ($id == null) {
+                return 'no id has been passed';
             }
+            else {
+                $user = Auth::user();
+                // dd($user, $id);
+                $profileImage = $user->profile_image;
+                try {
+                    $messages = collect($this->getMessages($id));
+                    $themes = Theme::where('chat_id', $id)->where('is_deleted', 0)->with('keywords')->get();
+                    $themes = Theme::addKeywordString($themes);
+                    // theme usage
+                    foreach ($themes as $key => $theme) {
+                        $themeMessages = $messages->where('theme_id',$theme['id']);
+                        $amountThemeMessages = $themeMessages->count();
+                        $amountMessages = $messages->count();
+                        if($amountMessages){
+                            $themeUsage = ($amountThemeMessages/$amountMessages)*100;
+                            $themeUsage = round($themeUsage) . '%';
+                        }else{
+                            $themeUsage = '0%';
+                        }
+                        $themes[$key] = collect($theme)->put('themeUsage', $themeUsage);
+                    }
+                    return compact('messages', 'themes','profileImage');
+                } catch (Exception $e) {
+                    return 'something went wrong retrieving the chat';
+                }
+            }
+        } catch (Exception $e) {
+            return "something went wrong";
         }
     }
     
@@ -131,7 +139,7 @@ class MessageController extends Controller
 
             broadcast(new UpdateChat($message , $user, $chatid))->toOthers();
             return 'Message record succefuly created and send';
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return 'wrong postcall made';
         }
     }

@@ -20,14 +20,16 @@ class AnimateWidthAuto {
 		    $.each(this.$element, function(index, value){
 		    	var element = $(this);
 		    	// when the element is loaded ( => give width )
-		    	var WaitForWidth = setInterval(function(){
-		    					if(element.width() > 0){
-		    						clearInterval(WaitForWidth);
-       								element.css('width', $(element).width() + 'px');
-		    					}
-		    			}, 250);
+                setTimeout(function(){ 
+    					if(element.width() > 0){
+    						// clearInterval(WaitForWidth);
+							element.css('width', $(element).width() + 'px');
+    					}
+                    //  var WaitForWidth = setInterval(function(){
+        			// }, 250);
+                }, 500);
 		    	// clear interval after 3seconds
-				setTimeout(function(){ clearInterval(WaitForWidth); }, 3000);
+				// setTimeout(function(){ clearInterval(WaitForWidth); }, 3000);
 		    })
     	}
     }

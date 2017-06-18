@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Auth;
+use DB;
 
 class UsersInChat extends Model
 {
@@ -51,15 +52,40 @@ class UsersInChat extends Model
     }
 
     public static function getDeletedFriendship($userIDs){
-        $deletedUsers = UsersInChat::select('users_in_chats.id','users_in_chats.chat_id','users_in_chats.is_deleted', 'users_in_chats.user_id')
-            ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
-            ->where('chats.function', '=', 'friendchat')
-            ->whereIn('users_in_chats.user_id', $userIDs)
-            ->where('users_in_chats.is_deleted', 1)
-            ->where('chats.is_deleted', 1)->get();
+        // $test = Chat::with('users')
+        // $deletedUsers = Chat::whereHas('users_in_chats', function ($query) {
+        //         $query->where('id', '<', '10');
+        //     })->orderByRaw("RAND()")->limit(5)
+        //     ->get();
+
+        // join('users_in_chats', 'users_in_chats.chat_id', '=', 'chats.id')
+        //             ->where('chats.function', '=', 'friendchat')
+        //             ->whereIn('users_in_chats.user_id', $userIDs)
+        //             ->where('users_in_chats.is_deleted', 1)
+        //             ->where('chats.is_deleted', 1)->get();
+
+        $deletedChat = UsersInChat::select('users_in_chats.chat_id', DB::raw('count(*) as user_count, users_in_chats.chat_id '))
+                ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
+                ->where('chats.function', '=', 'friendchat')
+                ->whereIn('users_in_chats.user_id', $userIDs)
+                ->where('users_in_chats.is_deleted', 1)
+                ->where('chats.is_deleted', 1)
+                ->groupBy('users_in_chats.chat_id')
+                ->get();
+
+
         $return = null;
-        if(!$deletedUsers->isEmpty()){
-            $deletedChat = Chat::where('id', $deletedUsers->first()->chat_id)->first();
+        if(!$deletedChat->isEmpty()){
+            $deletedChat = collect($deletedChat->first());
+            // dd($deletedChat);
+            $deletedChat = $deletedChat->where('user_count', 2);
+            $chat_id = $deletedChat->get('chat_id');
+
+            $deletedUsers = UsersInChat::select('users_in_chats.id','users_in_chats.chat_id as chat_id','users_in_chats.is_deleted', 'users_in_chats.user_id')
+                ->where('users_in_chats.chat_id', $chat_id)
+                ->get();
+
+            $deletedChat = Chat::where('id', $chat_id)->first();
             $userids = array();
             foreach ($deletedUsers as $user) {
                 array_push($userids, $user->id);

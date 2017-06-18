@@ -87,6 +87,8 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
             })
             .then(function(response) {
                 if(friendrequest){
+                    response.data.unread_messages = 0;
+                    response.data.nickname = response.data.name;
                     $scope.removeRequest(friendID);
                     $rootScope.addFriend(response.data);
                     $rootScope.countFriendRequests--;
@@ -98,6 +100,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     // DECLINE FRIENDREQUEST
     $scope.decline = function(friendID) {
+        $rootScope.countFriendRequests--;
         var friendID = {
             newfriend: friendID
         };
@@ -105,14 +108,14 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
         $http({
                 method: 'POST',
                 url: url,
-                data: $.param(newfriend),
+                data: $.param(friendID),
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             })
             .then(function(response) {
-                $scope.removeRequest(friendID);
             }, $rootScope.errorCallback);
+        $scope.removeRequest(friendID.newfriend);
     }
 
     //DELETE FRIEND
@@ -130,6 +133,7 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
     // REMOVE FRIEND FROM FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.removeFriend = function(chatid) {
          $rootScope.adjustObjectElement($rootScope.friendlist, chatid,'chatid', 'remove',1,0,0);
+         $rootScope.adjustObjectElement($rootScope.friendsForGroup, chatid,'chatid', 'remove',1,0,0);
          if($rootScope.chatID == chatid){
             $rootScope.resetChat();
          }
@@ -137,7 +141,8 @@ app.controller('FriendController', function($scope, $http, $sanitize, API_URL, $
 
     // ADD FRIEND TO FRIENDLIST (visualy) called when allert is confirmed
     $rootScope.addFriend = function(user) {
-        $rootScope.friendlist.push(user)
+        $rootScope.friendlist.push(user);
+        $rootScope.friendsForGroup.push(user);
     }
 
     // ONLINE STATES

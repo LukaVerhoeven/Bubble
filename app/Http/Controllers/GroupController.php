@@ -66,80 +66,88 @@ class GroupController extends Controller
 
     public function accept(Request $request)
     {   
-        $this->validate($request, [
-            'chatid'      =>   'integer',
-            'friends'      =>   'Array',
-        ]);
-        $friends = $request->input('friends');
-        $chatid = $request->input('chatid');
-        $user = Auth::user();
-        $UserInchat = UsersInChat::where('chat_id',$chatid)->where('user_id', $user->id)->first();
-        $UserInchat->confirmed = 1;
-        $UserInchat->save();
-        $UserInchat = collect($UserInchat)->put('name', $user->name);
+        try {
+            $this->validate($request, [
+                'chatid'      =>   'integer',
+                'friends'      =>   'Array',
+            ]);
+            $friends = $request->input('friends');
+            $chatid = $request->input('chatid');
+            $user = Auth::user();
+            $UserInchat = UsersInChat::where('chat_id',$chatid)->where('user_id', $user->id)->first();
+            $UserInchat->confirmed = 1;
+            $UserInchat->save();
+            $UserInchat = collect($UserInchat)->put('name', $user->name);
 
-        // Broadcast user confirmed
-        $data = response()->json([
-            'userid' => (int)$user->id,
-            'chatid' => (int)$chatid,
-            'user'   => $UserInchat
-        ]);
+            // Broadcast user confirmed
+            $data = response()->json([
+                'userid' => (int)$user->id,
+                'chatid' => (int)$chatid,
+                'user'   => $UserInchat
+            ]);
 
-        $noDuplicates = array();
-        foreach ($friends as $friend) {
-            $id = $friend['user_id'];
-            if(!in_array($id, $noDuplicates)){
-                broadcast(new UserEvents($id , "groupaccept" , $data->getData()));
-                array_push($noDuplicates, $id);
+            $noDuplicates = array();
+            foreach ($friends as $friend) {
+                $id = $friend['user_id'];
+                if(!in_array($id, $noDuplicates)){
+                    broadcast(new UserEvents($id , "groupaccept" , $data->getData()));
+                    array_push($noDuplicates, $id);
+                }
             }
+        } catch (\Exception $e) {
+            return "something went wrong";
         }
     }
 
     public function decline(Request $request)
     {   
-        $this->validate($request, [
-            'chatid'    =>   'integer',
-            'userid'    =>   'integer',
-            'friends'   =>   'Array'
-        ]);
-        $chatid = $request->input('chatid');
-        $friends = $request->input('friends');
-        $userid = (int)$request->input('userid');
-        if($userid){
-        // delete user from group
-            UsersInChat::deleteUsersInChat($userid, $chatid);
-        }else{
-        // leave group or decline request
-            $user = Auth::user();
-            $userid = $user->id;
-            UsersInChat::deleteUsersInChat($user->id, $chatid);
-        }
-        $data = response()->json([
-            'userid'   => (int)$userid,
-            'chatid'   => (int)$chatid
-        ]);
-
-        $noDuplicates = array();
-        foreach ($friends as $friend) {
-            $id = (int)$friend['user_id'];
-            if(!in_array($id, $noDuplicates)){
-                broadcast(new UserEvents($id , "leavegroup" , $data->getData()))->toOthers();
-                array_push($noDuplicates, $id);
+        try {
+            $this->validate($request, [
+                'chatid'    =>   'integer',
+                'userid'    =>   'integer',
+                'friends'   =>   'Array'
+            ]);
+            $chatid = $request->input('chatid');
+            $friends = $request->input('friends');
+            $userid = (int)$request->input('userid');
+            if($userid){
+            // delete user from group
+                UsersInChat::deleteUsersInChat($userid, $chatid);
+            }else{
+            // leave group or decline request
+                $user = Auth::user();
+                $userid = $user->id;
+                UsersInChat::deleteUsersInChat($user->id, $chatid);
             }
+            $data = response()->json([
+                'userid'   => (int)$userid,
+                'chatid'   => (int)$chatid
+            ]);
+
+            $noDuplicates = array();
+            foreach ($friends as $friend) {
+                $id = (int)$friend['user_id'];
+                if(!in_array($id, $noDuplicates)){
+                    broadcast(new UserEvents($id , "leavegroup" , $data->getData()))->toOthers();
+                    array_push($noDuplicates, $id);
+                }
+            }
+        } catch (\Exception $e) {
+            return "something went wrong";
         }
     }
 
     public function addFriendToGroup(Request $request)
     {   
-        $this->validate($request, [
-            'chat_id'      =>   'integer',
-            'user_id'   =>   'integer',
-            'chatname'    =>   'string',
-            'friends'     =>   'Array',
-            'name'  =>   'string'
-
-        ]);
         try {
+            $this->validate($request, [
+                'chat_id'      =>   'integer',
+                'user_id'   =>   'integer',
+                'chatname'    =>   'string',
+                'friends'     =>   'Array',
+                'name'  =>   'string'
+
+            ]);
             $chatid = $request->input('chat_id');
             $friendid = $request->input('user_id');
             $chatname = $request->input('chatname');
@@ -176,7 +184,7 @@ class GroupController extends Controller
             ]);
             broadcast(new UserEvents($friendid , "grouprequest" , $data->getData()))->toOthers();
             return 'Add user requested';
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return 'something went wrong';
         }
     }
@@ -213,7 +221,7 @@ class GroupController extends Controller
                     array_push($noDuplicates, $userid);
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return "something went wrong";
         }
 
@@ -244,7 +252,7 @@ class GroupController extends Controller
                     array_push($noDuplicates, $userid);
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return "something went wrong";
         }
 
@@ -277,7 +285,7 @@ class GroupController extends Controller
                     array_push($noDuplicates, $userid);
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return "something went wrong";
         }
 

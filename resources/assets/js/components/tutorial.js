@@ -37,12 +37,14 @@ class Tutorial {
     checkStep () {
     	if(this.currentStep === 4){
     		$('.theme-tab a')[0].click();
-    		$('.new-theme').addClass('open');
-    		$('#themes').addClass('tutorial-theme');
+            $('.js-toggle-slide-menu')[0].click();
+            $('.new-theme').addClass('open');
+            $('#themes').addClass('tutorial-theme');
     	} else if($('#themes').hasClass('tutorial-theme')){
     		$('.conversation-tab a')[0].click();
-    		$('.new-theme').removeClass('open');
-    		$('#themes').removeClass('tutorial-theme');
+            $('.js-toggle-slide-menu')[0].click();
+            $('.new-theme').removeClass('open');
+            $('#themes').removeClass('tutorial-theme');
     	}
     	if (this.currentStep === 5){
     		$('#chat-section .chat-input').addClass('tutorial-theme');

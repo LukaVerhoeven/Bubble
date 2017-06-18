@@ -25,7 +25,7 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
     // LEAVE GROUP (Send to alert)
     $scope.LeaveGroup = function() {
         // open alert
-        var blockAction = $scope.minimumAdmins();
+        var blockAction = $scope.minimumAdmins(false);
         if(!blockAction){
             $('#Alerts').addClass('open');
             $('#LeaveGroupschatAlert').addClass('open');
@@ -37,7 +37,7 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
         becomeAdmin = 1 - becomeAdmin;
         $scope.adminkey = key;
         if(!becomeAdmin){
-            var blockAction = $scope.minimumAdmins();
+            var blockAction = $scope.minimumAdmins(true);
         }
         if(!blockAction){
             var data = {
@@ -54,7 +54,7 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
     // DELETE USER FROM GROUP (Send to alert)
     $scope.deleteUserFromGroup = function(userid) {
         // open alert
-        var blockAction = $scope.minimumAdmins();
+        var blockAction = $scope.minimumAdmins(false);
         if(!blockAction){
             $rootScope.toDeleteUserId = userid;
             $('#Alerts').addClass('open');
@@ -71,17 +71,19 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
     }
 
     // CHECK IF THE CHAT HAS MINIMUM 1 ADMIN
-    $scope.minimumAdmins = function(){
+    $scope.minimumAdmins = function(preventToggle){
         var allAdmins = $rootScope.adjustElementNewArray($rootScope.groupFriends, 1,'admin', 'retreive',0,0,0);
-        allAdmins = $rootScope.filterArray(allAdmins,1);
+        // allAdmins = $rootScope.filterArray(allAdmins,1);
         var blockAction = allAdmins.length < 2;
         if(blockAction){
             $('#Alerts').addClass('open');
             $('#minimunAdminsAlert').addClass('open');
         }
         // prevent checkbox from being unchecked
-        var checkBoxes = $('#filled-in-box'+ $scope.adminkey);
-        checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+        if(preventToggle){
+            var checkBoxes = $('#filled-in-box'+ $scope.adminkey);
+            checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+        }
         return blockAction;
     }
 

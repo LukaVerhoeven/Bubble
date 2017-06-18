@@ -449,6 +449,8 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     // ************ MULTICONTROLLER FUNCTIONS ************
     // ENTER A CHAT
     $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
+        console.log( $rootScope.friendlist );
+        console.log( chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index );
         if($scope.mobileAndTabletcheck()){
             $(".drag-target").trigger("click");
             $(".drag-target").click();
@@ -523,10 +525,11 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     }
                     if(e.event === 'friendrequest'){
                         $rootScope.friendRequests.push(e.data);
-                        $rootScope.countFriendRequests--;
+                        $rootScope.countFriendRequests++;
                     }
                     if(e.event === 'groupaccept'){
                         $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
+                        $rootScope.countGroupRequests--;
                     }
                     if(e.event === 'leavegroup'){
                         if($rootScope.Authuserid === e.data.userid){
@@ -560,6 +563,9 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     }
                     if(e.event === 'acceptfriend'){
                         $rootScope.addFriend(e.data);
+                        console.log($('.js-bottom-add ..name:contains('+e.data.name+')').parent());
+                        $('.js-bottom-add ..name:contains('+e.data.name+')').parent().remove();
+                        $rootScope.countFriendRequests--;
                     }
                     if(e.event === 'sendOnline'){
                         $scope.onlinestate = {};

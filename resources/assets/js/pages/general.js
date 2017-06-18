@@ -57,7 +57,8 @@ class General {
         if(ClickedOnRegister !== null){
             if(ClickedOnRegister){
                 this.$tutorial.removeClass('hide');
-                sessionStorage.clear();
+                sessionStorage.removeItem('register');
+                // sessionStorage.clear();
             }
         }
     }

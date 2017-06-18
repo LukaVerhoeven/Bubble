@@ -15,25 +15,29 @@ class FriendController extends Controller
 {
     public function searchNewFriend($letters = null)
     {   
-        $user = Auth::user();
-        $friends = Friendship::getList();
-        $requests = Friendship::getListFriendrequest();  // non-confirmed friends (friendrequest)
-        $disabledIDs = array();
-        //DON'T FIND YOURSELF AND FRIENDS
-        array_push($disabledIDs, $user->id);
-        foreach ($friends as $key => $friend) {
-            array_push($disabledIDs, $friend->id);
-        }
-        foreach ($requests as $key => $request) {
-            array_push($disabledIDs, $request->id);
-        }
-        
-        //ONLY RETURN NON-FRIEND USERS
-        if ($letters) {
-            return User::whereNotIn('id', $disabledIDs )->where('name', 'LIKE', '%'.$letters.'%')->orderBy('id','asc')->take(20)->select('name', 'id')->get();
-        }
-        else {
-            return null;
+        try {
+            $user = Auth::user();
+            $friends = Friendship::getList();
+            $requests = Friendship::getListFriendrequest();  // non-confirmed friends (friendrequest)
+            $disabledIDs = array();
+            //DON'T FIND YOURSELF AND FRIENDS
+            array_push($disabledIDs, $user->id);
+            foreach ($friends as $key => $friend) {
+                array_push($disabledIDs, $friend->id);
+            }
+            foreach ($requests as $key => $request) {
+                array_push($disabledIDs, $request->id);
+            }
+            
+            //ONLY RETURN NON-FRIEND USERS
+            if ($letters) {
+                return User::whereNotIn('id', $disabledIDs )->where('name', 'LIKE', '%'.$letters.'%')->orderBy('id','asc')->take(20)->select('name', 'id')->get();
+            }
+            else {
+                return null;
+            }
+        } catch (\Exception $e) {
+            return "something went wrong";
         }
     }
 
@@ -60,7 +64,7 @@ class FriendController extends Controller
                 $ids = array($newFriendID,$user->id);
                 $deleteUserschats = UsersInChat::getDeletedFriendship($ids);
                 $chatDoesNotExist = collect($deleteUserschats[0])->isEmpty();
-                
+
                 Friendship::confirm($friendrequest);
                 if($chatDoesNotExist){
                     //CREATE 2 WAY FRIENDSHIP
@@ -77,8 +81,7 @@ class FriendController extends Controller
                         $userinChat->save();
                     }
                 }
-
-                $data = array('chatid' => $chatID, 'name' => $user->name , 'userid' => $user->id);
+                $data = array('chatid' => $chatID, 'name' => $user->name , 'userid' => $user->id, 'nickname' => $user->name, 'unread_messages' => 0);
                 $returnData = array('chatid' => $chatID, 'name' => $friendRequested->name , 'userid' => $friendRequested->id);
                 $returnData = json_encode($returnData);
                 broadcast(new UserEvents($newFriendID , "acceptfriend" , $data))->toOthers();
@@ -89,7 +92,7 @@ class FriendController extends Controller
                 broadcast(new UserEvents($newFriendID , "friendrequest" , $request->getData()))->toOthers();
                 return 'friendship is requested';
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return 'something went wrong with the friendrequest';
         }
 
@@ -97,96 +100,120 @@ class FriendController extends Controller
 
     public function decline(Request $request)
     {
-        $user = Auth::user();
-        $newFriendID = $request->input('newfriend');
-        $friendRequested = User::where('id', $newFriendID)->first();
-        $friendship = Friendship::where('user_id', $friendRequested->id)->where('friend_id', $user->id)->first();
-        $friendship->delete();
-        return 'request declined';
+        try {
+            $user = Auth::user();
+            $newFriendID = (int)$request->input('newfriend');
+            $friendRequested = User::where('id', $newFriendID)->first();
+            $friendship = Friendship::where('user_id', $friendRequested->id)->where('friend_id', $user->id)->first();
+            $friendship->delete();
+            return 'request declined';
+        } catch (\Exception $e) {
+             return 'something went wrong';
+        }
     }
 
     public function delete(Request $request)
     {
-        $user = Auth::user();
-        $newFriendID = $request->input('newfriend');
-        $chatid = (int)$request->input('chatID');
+        try {
+            $user = Auth::user();
+            $newFriendID = $request->input('newfriend');
+            $chatid = (int)$request->input('chatID');
 
-        // retreive data
-        $friendRequested = User::where('id', $newFriendID)->first();
-        $chat = Chat::where('id', $chatid)->first();
-        $usersinchat = UsersInChat::where('chat_id', $chatid)->get();
-        $friendship = Friendship::whereIn('user_id', [$friendRequested->id, $user->id])
-                                ->whereIn('friend_id', [$friendRequested->id, $user->id])
-                                ->get();
-        // delete data
-        $chat->is_deleted = 1;
-        $chat->save();
-        $friendship[0]->delete();
-        $friendship[1]->delete();
-        foreach ($usersinchat as $chatuser) {
-            $chatuser->is_deleted = 1;
-            $chatuser->save();
-            broadcast(new UserEvents($chatuser->user_id ,"deletefriend" ,$chatid))->toOthers();
+            // retreive data
+            $friendRequested = User::where('id', $newFriendID)->first();
+            $chat = Chat::where('id', $chatid)->first();
+            $usersinchat = UsersInChat::where('chat_id', $chatid)->get();
+            $friendship = Friendship::whereIn('user_id', [$friendRequested->id, $user->id])
+                                    ->whereIn('friend_id', [$friendRequested->id, $user->id])
+                                    ->get();
+            // delete data
+            $chat->is_deleted = 1;
+            $chat->save();
+            $friendship[0]->delete();
+            $friendship[1]->delete();
+            foreach ($usersinchat as $chatuser) {
+                $chatuser->is_deleted = 1;
+                $chatuser->save();
+                broadcast(new UserEvents($chatuser->user_id ,"deletefriend" ,$chatid))->toOthers();
+            }
+
+            return 'friend deleted';
+        } catch (\Exception $e) {
+            return 'something went wrong';
         }
-
-        return 'friend deleted';
     }
 
     public function getFriendRequests()
     {
-        $user = Auth::user();
-        $friendrequests = Friendship::where('friendships.friend_id',$user->id)
-                        ->join('users','users.id','friendships.user_id')
-                        ->select('friendships.*','users.name')
-                        ->where('friendships.confirmed',0)->get();
-        return compact('friendrequests');
+        try {
+            $user = Auth::user();
+            $friendrequests = Friendship::where('friendships.friend_id',$user->id)
+                            ->join('users','users.id','friendships.user_id')
+                            ->select('friendships.*','users.name')
+                            ->where('friendships.confirmed',0)->get();
+            return compact('friendrequests');
+        } catch (\Exception $e) {
+            return 'something went wrong';
+        }
     }
 
     public function sendOnline(Request $request)
     {
-        $this->validate($request, [
-            'authid'      =>   'integer',
-            'friendids'   =>   'array'
-        ]);
-        $userid = (int)$request->input('authid');
-        $friendids = $request->input('friendids');
+        try {
+            $this->validate($request, [
+                'authid'      =>   'integer',
+                'friendids'   =>   'array'
+            ]);
+            $userid = (int)$request->input('authid');
+            $friendids = $request->input('friendids');
 
-        $noDuplicates = array();
-        foreach ($friendids as $id) {
-            if(!in_array($id, $noDuplicates)){
-                broadcast(new UserEvents($id , "sendOnline" , $userid))->toOthers();
-                array_push($noDuplicates, $id);
+            $noDuplicates = array();
+            foreach ($friendids as $id) {
+                if(!in_array($id, $noDuplicates)){
+                    broadcast(new UserEvents($id , "sendOnline" , $userid))->toOthers();
+                    array_push($noDuplicates, $id);
+                }
             }
+        } catch (\Exception $e) {
+            return 'something went wrong';
         }
     }
 
     public function sendOffline(Request $request)
     {
-        $this->validate($request, [
-            'authid'      =>   'integer',
-            'friendids'   =>   'array'
-        ]);
-        $userid = (int)$request->input('authid');
-        $friendids = $request->input('friendids');
-        $noDuplicates = array();
-        foreach ($friendids as $id) {
-            if(!in_array($id, $noDuplicates)){
-                broadcast(new UserEvents($id , "sendOffline" , $userid))->toOthers();
-                array_push($noDuplicates, $id);
+        try {
+            $this->validate($request, [
+                'authid'      =>   'integer',
+                'friendids'   =>   'array'
+            ]);
+            $userid = (int)$request->input('authid');
+            $friendids = $request->input('friendids');
+            $noDuplicates = array();
+            foreach ($friendids as $id) {
+                if(!in_array($id, $noDuplicates)){
+                    broadcast(new UserEvents($id , "sendOffline" , $userid))->toOthers();
+                    array_push($noDuplicates, $id);
+                }
             }
+        } catch (\Exception $e) {
+            return 'something went wrong';
         }
     }
 
     public function receiveOnline(Request $request)
     {
-        $this->validate($request, [
-            'authid'      =>   'integer',
-            'userid'      =>   'integer'
-        ]);
-        $authid = (int)$request->input('authid');
-        $userid = $request->input('userid');
+        try {
+            $this->validate($request, [
+                'authid'      =>   'integer',
+                'userid'      =>   'integer'
+            ]);
+            $authid = (int)$request->input('authid');
+            $userid = $request->input('userid');
 
-        broadcast(new UserEvents($userid , "receiveOnline" , $authid))->toOthers();
+            broadcast(new UserEvents($userid , "receiveOnline" , $authid))->toOthers();
+        } catch (\Exception $e) {
+            return 'something went wrong';
+        }
     }
 
     public function renameFriend(Request $request)

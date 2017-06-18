@@ -149,7 +149,7 @@
                                     {{ csrf_field() }}
 
                                     <div class="input-field col s12{{ $errors->has('name') ? ' has-error' : '' }}">
-                                        <input id="name" type="text" class="validate" name="name" value="{{ old('name') }}" maxlength="100" required>
+                                        <input id="name" type="text" class="validate" name="name" value="{{ old('name') }}" minlength="1" maxlength="100" required>
                                         <label for="name">Name</label>
                                         @if ($errors->has('name'))
                                             <span class="help-block">
@@ -159,7 +159,7 @@
                                     </div>
 
                                     <div class="input-field col s12{{ $errors->has('email') ? ' has-error' : '' }}">
-                                        <input id="register-email" maxlength="100" type="email" class="validate" name="email" value="{{ old('email') }}" required>
+                                        <input id="register-email" maxlength="100" type="email" minlength="3" class="validate" name="email" value="{{ old('email') }}" required>
                                         <label for="register-email" data-error="this is not a valid e-mail" data-success="valid e-mail">E-Mail Address</label>
                                         @if ($errors->has('email'))
                                             <span class="help-block">

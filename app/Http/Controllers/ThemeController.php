@@ -82,7 +82,7 @@ class ThemeController extends Controller
             // update all messages theme_id
             Message::updateTheme($keywords,$themeid,$chatid,$generalid);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return "something went bubbly wrong";
         }
     }
@@ -121,7 +121,7 @@ class ThemeController extends Controller
                 Message::where('theme_id', $themeid)->update(['theme_id'=> $generalid]);
             }
             Theme::where('id', $themeid)->update(['is_active' => $isActive]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return "something went bubbly wrong";
         }
     }
@@ -141,7 +141,7 @@ class ThemeController extends Controller
             broadcast(new ThemeEvent($themeid , 'delete', $chatid))->toOthers();
             Theme::where('id', $themeid)->update(['is_deleted' => 1]);
             Message::where('theme_id', $themeid)->update(['theme_id' => $generalid]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return "something went bubbly wrong";
         }
     }    

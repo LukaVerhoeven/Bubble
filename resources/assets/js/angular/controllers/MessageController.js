@@ -148,6 +148,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
 
                         if(e.event === 'update'){
                             var keywords = $rootScope.ObjToArray(e.data.keywords);
+
                             keywords = $rootScope.keywordToObjectArray(keywords);
                             e.data.keywords = keywords;
                             $rootScope.adjustObjectElement($rootScope.themes, e.data.id, 'id', 'update', e.data, 0, 0);
