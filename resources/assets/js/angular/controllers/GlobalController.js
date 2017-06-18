@@ -38,7 +38,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     $rootScope.IsEdited = false;
     // array prepend
     $rootScope.prependArray = function prepend(value, array) {
-        console.log(array);
       var newArray = array.slice();
       newArray.unshift(value);
       return newArray;
@@ -297,7 +296,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     }
                     if(action === 'retreive'){
                         var foundObj = $rootScope.adjustElementNewArray(array ,[elementValue[0], elementValue[1] ], [keyvalue[0], keyvalue[1]], 'retreive', editValue, editKey,1);
-                        console.log(foundObj.length);
                         if(foundObj.length > 0){
                             editElements.push(obj);
                         }
@@ -449,8 +447,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     // ************ MULTICONTROLLER FUNCTIONS ************
     // ENTER A CHAT
     $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
-        console.log( $rootScope.friendlist );
-        console.log( chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index );
         if($scope.mobileAndTabletcheck()){
             $(".drag-target").trigger("click");
             $(".drag-target").click();
@@ -563,8 +559,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     }
                     if(e.event === 'acceptfriend'){
                         $rootScope.addFriend(e.data);
-                        console.log($('.js-bottom-add ..name:contains('+e.data.name+')').parent());
-                        $('.js-bottom-add ..name:contains('+e.data.name+')').parent().remove();
+                        $('.js-bottom-add .name:contains('+e.data.name+')').parent().remove();
                         $rootScope.countFriendRequests--;
                     }
                     if(e.event === 'sendOnline'){

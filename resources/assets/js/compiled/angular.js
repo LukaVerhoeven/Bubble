@@ -42,7 +42,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     $rootScope.IsEdited = false;
     // array prepend
     $rootScope.prependArray = function prepend(value, array) {
-        console.log(array);
       var newArray = array.slice();
       newArray.unshift(value);
       return newArray;
@@ -301,7 +300,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     }
                     if(action === 'retreive'){
                         var foundObj = $rootScope.adjustElementNewArray(array ,[elementValue[0], elementValue[1] ], [keyvalue[0], keyvalue[1]], 'retreive', editValue, editKey,1);
-                        console.log(foundObj.length);
                         if(foundObj.length > 0){
                             editElements.push(obj);
                         }
@@ -453,8 +451,6 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
     // ************ MULTICONTROLLER FUNCTIONS ************
     // ENTER A CHAT
     $rootScope.openChat = function(chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index) {
-        console.log( $rootScope.friendlist );
-        console.log( chatID, friendID, friendName, chatFunction, friends, userIsAdmin, index );
         if($scope.mobileAndTabletcheck()){
             $(".drag-target").trigger("click");
             $(".drag-target").click();
@@ -567,8 +563,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     }
                     if(e.event === 'acceptfriend'){
                         $rootScope.addFriend(e.data);
-                        console.log($('.js-bottom-add ..name:contains('+e.data.name+')').parent());
-                        $('.js-bottom-add ..name:contains('+e.data.name+')').parent().remove();
+                        $('.js-bottom-add .name:contains('+e.data.name+')').parent().remove();
                         $rootScope.countFriendRequests--;
                     }
                     if(e.event === 'sendOnline'){
@@ -899,7 +894,7 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
         arrayToAdd.sort($rootScope.sort_by('name', false, function(a){return a.toUpperCase()}));
     }
     $scope.hasChildren = function(list, model){
-        return list.filter(function(item){console.log(item.nickname,  $scope.$parent.groupFriendInput);return item.nickname.indexOf(model) !== -1});
+        return list.filter(function(item){/*console.log(item.nickname,  $scope.$parent.groupFriendInput);*/return item.nickname.indexOf(model) !== -1});
     }
     //CREATES A GROUP
     $scope.createGroup = function(){
@@ -1549,7 +1544,6 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	    	form[prop] = null;
 	    }
 	    $('#createThemeForm input').removeClass('valid');
-	    console.log($scope.form);
 	    $scope.form.createThemeForm.$setPristine();
 	    $scope.form.createThemeForm.$setUntouched();
 	}

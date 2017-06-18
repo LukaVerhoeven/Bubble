@@ -13,7 +13,6 @@ class RegisterSession {
         this.$register.on('click',()=>{
             sessionStorage.setItem("register", true);
         })
-        console.log('register',this.$tab);
         if(this.$tab){
             this.$tab.click();
         }

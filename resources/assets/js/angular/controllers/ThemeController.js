@@ -52,7 +52,6 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 	    	form[prop] = null;
 	    }
 	    $('#createThemeForm input').removeClass('valid');
-	    console.log($scope.form);
 	    $scope.form.createThemeForm.$setPristine();
 	    $scope.form.createThemeForm.$setUntouched();
 	}

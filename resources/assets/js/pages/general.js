@@ -20,15 +20,15 @@ class General {
 
     sidebar() {
                      
-        $('.drag-target').on('mousedown',()=>{
-            console.log(this);
-        })
-        $('.drag-target').on('click',()=>{
-            console.log(this);
-        })
-        $('#sidenav-overlay').on('hover',()=>{
-            console.log(this);
-        })        
+        // $('.drag-target').on('mousedown',()=>{
+        //     console.log(this);
+        // })
+        // $('.drag-target').on('click',()=>{
+        //     console.log(this);
+        // })
+        // $('#sidenav-overlay').on('hover',()=>{
+        //     console.log(this);
+        // })        
         // mobile sidebar
         if(this.IsDesktop){
             $("#slide-out").sideNav({
