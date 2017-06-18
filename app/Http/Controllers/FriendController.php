@@ -64,7 +64,6 @@ class FriendController extends Controller
                 $ids = array($newFriendID,$user->id);
                 $deleteUserschats = UsersInChat::getDeletedFriendship($ids);
                 $chatDoesNotExist = collect($deleteUserschats[0])->isEmpty();
-
                 Friendship::confirm($friendrequest);
                 if($chatDoesNotExist){
                     //CREATE 2 WAY FRIENDSHIP
@@ -72,7 +71,8 @@ class FriendController extends Controller
                 }else{
                     // MAKE CHAT BACK ACTIVE
                     $friendship = Friendship::createFriendship($user , $friendRequested , 1);
-                    $chat = $deleteUserschats[1]->first();
+                    $chat = Chat::where('id', $deleteUserschats[1] )->first();
+                    // $chat = $deleteUserschats[1]->first();
                     $chat->is_deleted = 0;
                     $chat->save();
                     $chatID = $chat->id;
