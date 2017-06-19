@@ -11034,7 +11034,6 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         // All your friends
         // console.log(response.data);
         $rootScope.friendlist = response.data.friends;
-        console.log($rootScope.friendlist);
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
