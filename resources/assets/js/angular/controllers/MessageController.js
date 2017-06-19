@@ -143,7 +143,7 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
 
                         if(e.event === 'delete'){
                             $rootScope.adjustObjectElement($rootScope.themes, e.data, 'id', 'remove', 0, 0, 0);
-                            $rootScope.removeThemeFromMessages(e.data.themeid);
+                            $rootScope.removeThemeFromMessages(e.data);
                             $rootScope.updateThemeUsage(); //update Theme usage
                         }
 

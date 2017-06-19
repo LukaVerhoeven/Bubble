@@ -99,10 +99,12 @@ app.controller('ThemeController', function($scope, $http, API_URL, $rootScope) {
 
 	$rootScope.removeThemeFromMessages = function(themeid){
 		for ($prop in $rootScope.messages.items) {
+			console.log($rootScope.messages.items[$prop] , themeid);
 			if($rootScope.messages.items[$prop].theme_id == themeid){
 				$rootScope.messages.items[$prop].theme_id = $rootScope.generalThemeID;
 				$rootScope.messages.items[$prop].color = "white";
 			}
+			console.log($rootScope.messages.items[$prop], $rootScope.generalThemeID);
 		}
 	}
 
