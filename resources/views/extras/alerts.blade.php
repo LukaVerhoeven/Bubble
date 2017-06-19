@@ -25,15 +25,15 @@
 	    <span class="close" ng-click="Close()">&times;</span>
 	    <p class="alert-header">Choose a group to which you want to add the friend</p>
 	    <ul>
-	    	<li ng-repeat="group in groupsWithoutFriend">
+	    	<li ng-repeat="(key, group) in groupsWithoutFriend">
 	    		<p>@{{group.chat_name}}</p>
-				<a href="#!" class="secondary-content" ng-click="addFriendToGroupAlert(group.chat_id, 0, group.chat_name, group.friends)">
+				<a href="#!" class="secondary-content" ng-click="addFriendToGroupAlert(group.chat_id, 0, group.chat_name, group.friends, 0,key)">
 					<i class="material-icons">add</i>
 			    </a>
 	    	</li>
-	    	<li ng-repeat="group in groupsNotConfirmed">
+	    	<li ng-repeat="(key, group) in groupsNotConfirmed">
 	    		<p>@{{group.chat_name}}</p>
-				<a href="#!" class="secondary-content" ng-click="revokeInvite(group.friends, group.chat_id)">
+				<a href="#!" class="secondary-content" ng-click="revokeInvite(group.friends, group.chat_id, key)">
 					<i class="material-icons red">remove</i>
 			    </a>
 	    	</li>	    	
@@ -109,7 +109,7 @@
 	    <ul>
 	    	<li ng-repeat="friend in FriendsNotInGroup">
 	    		<p>@{{friend.name}}</p>
-				<a href="#!" class="secondary-content" ng-click="addFriendToGroupAlert(0, friend.userid, 0, 0, friend.name)">
+				<a href="#!" class="secondary-content" ng-click="addFriendToGroupAlert(0, friend.userid, 0, 0, friend.name, 0)">
 					<i class="material-icons">add</i>
 			    </a>
 	    	</li>

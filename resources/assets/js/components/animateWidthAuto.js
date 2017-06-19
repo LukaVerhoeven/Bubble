@@ -24,10 +24,11 @@ class AnimateWidthAuto {
     					if(element.width() > 0){
     						// clearInterval(WaitForWidth);
 							element.css('width', $(element).width() + 'px');
+                            element.addClass('truncate');
     					}
                     //  var WaitForWidth = setInterval(function(){
         			// }, 250);
-                }, 700);
+                }, 250);
 		    	// clear interval after 3seconds
 				// setTimeout(function(){ clearInterval(WaitForWidth); }, 3000);
 		    })

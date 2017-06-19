@@ -10491,7 +10491,11 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                         if (action === 'retreive') {
                             if (value) {
                                 if (obj[key] == value) {
-                                    retreiveData.push(obj[editKey]);
+                                    if (editValue == "obj") {
+                                        retreiveData.push(obj);
+                                    } else {
+                                        retreiveData.push(obj[editKey]);
+                                    }
                                 }
                             } else {
                                 retreiveData.push(obj[key]);
@@ -10806,7 +10810,7 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         $rootScope.chatFunction = null;
         $rootScope.groupFriends = null;
         $rootScope.isChatAdmin = null;
-        if ($rootScope.messages.items) {
+        if ($rootScope.messages) {
             $rootScope.messages.items = null;
         }
     };
@@ -10840,11 +10844,26 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
                 if (e.event === 'groupaccept') {
                     $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
                     $rootScope.countGroupRequests--;
+                    if ($rootScope.countGroupRequests < 0) {
+                        $rootScope.countGroupRequests = 0;
+                    }
+                    if ($rootScope.groupsNotConfirmed) {
+                        $rootScope.adjustObjectElement($rootScope.groupsNotConfirmed, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                    }
                 }
                 if (e.event === 'leavegroup') {
                     if ($rootScope.Authuserid === e.data.userid) {
                         $rootScope.resetChat();
+                        $rootScope.countGroupRequests--;
+                        if ($rootScope.countGroupRequests < 0) {
+                            $rootScope.countGroupRequests = 0;
+                        }
                         $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                        if ($rootScope.groupsNotConfirmed) {
+                            var group = $rootScope.adjustElementNewArray($rootScope.groupsNotConfirmed, e.data.chatid, 'chat_id', 'retrieve', 'obj', 0, 0);
+                            $rootScope.groupsWithoutFriend.push(group[0]);
+                            $rootScope.adjustObjectElement($rootScope.groupsNotConfirmed, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                        }
                     } else {
                         $rootScope.adjustArrayFromObject($rootScope.groups, [e.data.chatid, e.data.userid], ['chat_id', 'user_id'], 'remove', 0, 'friends', 1, 0);
                         if ($rootScope.chatID === e.data.chatid) {
@@ -10922,9 +10941,12 @@ app.controller('AlertController', function ($scope, $http, API_URL, $rootScope) 
     };
 
     // ADD FRIEND TO A GROUP
-    $scope.addFriendToGroupAlert = function (chatID, friendID, chat_name, friends, friendName) {
+    $scope.addFriendToGroupAlert = function (chatID, friendID, chat_name, friends, friendName, chatindex) {
         if (!friendID) {
             friendID = $rootScope.friendID;
+            // if add to chat
+            $rootScope.groupsNotConfirmed.push($rootScope.groupsWithoutFriend[chatindex]);
+            $rootScope.groupsWithoutFriend.splice(chatindex, 1);
         }
         if (!chatID) {
             chatID = $rootScope.chatID;
@@ -10969,14 +10991,16 @@ app.controller('AlertController', function ($scope, $http, API_URL, $rootScope) 
     };
 
     // REVOKE FRIEND TO GROUP INVITE
-    $rootScope.revokeInvite = function (friends, chatid) {
+    $rootScope.revokeInvite = function (friends, chatid, key) {
         var data = {
             chatid: chatid,
             userid: $rootScope.toDeleteUserId,
             friends: friends
         };
+        $rootScope.groupsWithoutFriend.push($rootScope.groupsWithoutFriend[key]);
+        $rootScope.groupsNotConfirmed.splice(key, 1);
         $rootScope.postRequest(data, 'decline', '');
-        $scope.Close();
+        // $scope.Close();
     };
 
     // REVOKE FRIEND TO GROUP INVITE
@@ -10987,7 +11011,7 @@ app.controller('AlertController', function ($scope, $http, API_URL, $rootScope) 
             friends: $rootScope.groupFriends
         };
         $rootScope.postRequest(data, 'decline', '');
-        $scope.Close();
+        // $scope.Close();
     };
 
     // REMOVE USER FROM GROUPCHAT CONFIRMED
@@ -11667,8 +11691,15 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
 
     // DELETE USER FROM GROUP (Send to alert)
     $scope.deleteUserFromGroup = function (userid) {
+        var userIsAdmin = $rootScope.adjustElementNewArray($rootScope.groupFriends, userid, 'user_id', 'retreive', 0, 'admin', 0);
         // open alert
-        var blockAction = $scope.minimumAdmins(false);
+        var blockAction = true;
+        if (!userIsAdmin[0]) {
+            blockAction = false;
+        } else {
+            blockAction = $scope.minimumAdmins(false);
+        }
+
         if (!blockAction) {
             $rootScope.toDeleteUserId = userid;
             $('#Alerts').addClass('open');
@@ -46445,10 +46476,11 @@ var AnimateWidthAuto = function () {
                         if (element.width() > 0) {
                             // clearInterval(WaitForWidth);
                             element.css('width', $(element).width() + 'px');
+                            element.addClass('truncate');
                         }
                         //  var WaitForWidth = setInterval(function(){
                         // }, 250);
-                    }, 700);
+                    }, 250);
                     // clear interval after 3seconds
                     // setTimeout(function(){ clearInterval(WaitForWidth); }, 3000);
                 });

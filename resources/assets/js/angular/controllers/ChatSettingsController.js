@@ -53,8 +53,15 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
 
     // DELETE USER FROM GROUP (Send to alert)
     $scope.deleteUserFromGroup = function(userid) {
+        var userIsAdmin = $rootScope.adjustElementNewArray($rootScope.groupFriends, userid,'user_id', 'retreive',0, 'admin',0);
         // open alert
-        var blockAction = $scope.minimumAdmins(false);
+        var blockAction = true;
+        if(!userIsAdmin[0]){
+            blockAction = false;
+        }else {
+            blockAction = $scope.minimumAdmins(false);
+        }
+        
         if(!blockAction){
             $rootScope.toDeleteUserId = userid;
             $('#Alerts').addClass('open');

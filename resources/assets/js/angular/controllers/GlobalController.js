@@ -183,7 +183,11 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                         if(action === 'retreive'){
                            if(value){
                                 if(obj[key] == value){
-                                    retreiveData.push(obj[editKey]); 
+                                    if(editValue == "obj"){
+                                        retreiveData.push(obj); 
+                                    }else{
+                                        retreiveData.push(obj[editKey]); 
+                                    }
                                 }
                             }else{
                                 retreiveData.push(obj[key]);
@@ -492,7 +496,7 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.chatFunction  = null;      
         $rootScope.groupFriends  = null;
         $rootScope.isChatAdmin   = null;
-        if($rootScope.messages.items){
+        if($rootScope.messages){
             $rootScope.messages.items = null;
         }
     }
@@ -528,17 +532,32 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
                     if(e.event === 'groupaccept'){
                         $rootScope.userConfirmed(e.data.userid, e.data.chatid, e.data.user);
                         $rootScope.countGroupRequests--;
+                        if($rootScope.countGroupRequests<0){
+                            $rootScope.countGroupRequests = 0;
+                        }
+                        if($rootScope.groupsNotConfirmed){
+                            $rootScope.adjustObjectElement($rootScope.groupsNotConfirmed, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                        }                        
                     }
                     if(e.event === 'leavegroup'){
                         if($rootScope.Authuserid === e.data.userid){
                             $rootScope.resetChat();
+                            $rootScope.countGroupRequests--;
+                            if($rootScope.countGroupRequests<0){
+                                $rootScope.countGroupRequests = 0;
+                            }                            
                             $rootScope.adjustObjectElement($rootScope.groups, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                            if($rootScope.groupsNotConfirmed){
+                                var group =  $rootScope.adjustElementNewArray($rootScope.groupsNotConfirmed,  e.data.chatid , 'chat_id', 'retrieve','obj',0,0);
+                                $rootScope.groupsWithoutFriend.push(group[0]);
+                                $rootScope.adjustObjectElement($rootScope.groupsNotConfirmed, e.data.chatid, 'chat_id', 'remove', 0, 0, 0);
+                            }
                         }else{
                             $rootScope.adjustArrayFromObject($rootScope.groups, [e.data.chatid, e.data.userid], ['chat_id', 'user_id'], 'remove', 0, 'friends', 1, 0);
                             if ($rootScope.chatID === e.data.chatid) {
                                 $rootScope.adjustObjectElement($rootScope.groupFriends, e.data.userid, 'user_id', 'remove', 0, 0, 0);
                             }
-                        }                        
+                        }
                     }
                     if(e.event === 'toggleAdmin'){
                         if($rootScope.Authuserid === e.data.userid){

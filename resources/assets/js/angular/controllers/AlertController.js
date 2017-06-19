@@ -7,9 +7,12 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
     }
 
     // ADD FRIEND TO A GROUP
-    $scope.addFriendToGroupAlert = function(chatID, friendID, chat_name, friends, friendName) {        
+    $scope.addFriendToGroupAlert = function(chatID, friendID, chat_name, friends, friendName, chatindex) {        
         if(!friendID){
             friendID = $rootScope.friendID;
+            // if add to chat
+            $rootScope.groupsNotConfirmed.push($rootScope.groupsWithoutFriend[chatindex]);
+            $rootScope.groupsWithoutFriend.splice(chatindex,1);
         }
         if(!chatID){
             chatID = $rootScope.chatID;
@@ -54,14 +57,16 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
     }
 
     // REVOKE FRIEND TO GROUP INVITE
-    $rootScope.revokeInvite = function (friends, chatid){
+    $rootScope.revokeInvite = function (friends, chatid, key){
         var data = {
             chatid      : chatid,
             userid      : $rootScope.toDeleteUserId,
             friends     : friends
         };
+        $rootScope.groupsWithoutFriend.push($rootScope.groupsWithoutFriend[key]);
+        $rootScope.groupsNotConfirmed.splice(key,1);        
         $rootScope.postRequest(data ,'decline', '');
-        $scope.Close();
+        // $scope.Close();
     }
 
     // REVOKE FRIEND TO GROUP INVITE
@@ -72,7 +77,7 @@ app.controller('AlertController', function($scope, $http, API_URL, $rootScope) {
             friends     : $rootScope.groupFriends
         };
         $rootScope.postRequest(data ,'decline', '');
-        $scope.Close();
+        // $scope.Close();
     }
 
     // REMOVE USER FROM GROUPCHAT CONFIRMED

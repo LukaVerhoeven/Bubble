@@ -6,7 +6,7 @@
 		        <p ng-if="chatFunction === 'friendchat'" class="text-block-center">Nickname</p>
 		        <p ng-if="chatFunction === 'groupschat'" class="text-block-center">Groupsname</p>
 		        <div class="right solid-block bubble-editName" id="editChatName">
-		          	<p class="text-block-center js-auto-width truncate">@{{ chatname }}</p>
+		          	<p class="text-block-center js-auto-width">@{{ chatname }}</p>
 		          	<a class="btn-floating btn red bubble-editButton">
 			     	 	<i class="material-icons ">mode_edit</i>
 			    	</a>
