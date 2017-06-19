@@ -12155,7 +12155,7 @@ var App = function () {
         this.scrolling = new __WEBPACK_IMPORTED_MODULE_0__components_scrolling__["a" /* default */]();
         this.injector = { app: this };
         this.addfriend = new __WEBPACK_IMPORTED_MODULE_1__components_addFriend__["a" /* default */]();
-        this.animatewidthauto = new __WEBPACK_IMPORTED_MODULE_2__components_animateWidthAuto__["a" /* default */]();
+        this.animatewidthauto = new __WEBPACK_IMPORTED_MODULE_2__components_animateWidthAuto__["a" /* default */](isMobile);
         this.tutorial = new __WEBPACK_IMPORTED_MODULE_3__components_tutorial__["a" /* default */]();
         // this.registersession = new RegisterSession();
         //helpers
@@ -46444,13 +46444,15 @@ var addFriend = function () {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var AnimateWidthAuto = function () {
-    function AnimateWidthAuto() {
+    function AnimateWidthAuto(isMobile) {
         _classCallCheck(this, AnimateWidthAuto);
 
         this.$get = $('.js-get-width');
         this.$reset = $('.js-reset-width');
         this.$element = $('.js-auto-width');
-        this.init();
+        if (isMobile) {
+            this.init();
+        }
     }
 
     _createClass(AnimateWidthAuto, [{
@@ -46476,7 +46478,6 @@ var AnimateWidthAuto = function () {
                         if (element.width() > 0) {
                             // clearInterval(WaitForWidth);
                             element.css('width', $(element).width() + 'px');
-                            element.addClass('truncate');
                         }
                         //  var WaitForWidth = setInterval(function(){
                         // }, 250);

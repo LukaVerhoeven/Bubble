@@ -48,7 +48,7 @@ class App {
         this.scrolling = new Scrolling();
         this.injector = { app: this };
         this.addfriend = new addFriend();
-        this.animatewidthauto = new AnimateWidthAuto();
+        this.animatewidthauto = new AnimateWidthAuto(isMobile);
         this.tutorial = new Tutorial();
         // this.registersession = new RegisterSession();
         //helpers

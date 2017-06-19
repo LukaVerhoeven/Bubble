@@ -1,9 +1,11 @@
 class AnimateWidthAuto {
-    constructor() {
+    constructor(isMobile) {
     	this.$get = $('.js-get-width');
         this.$reset = $('.js-reset-width');
     	this.$element = $('.js-auto-width');
-        this.init();
+        if(isMobile){
+            this.init();
+        }
     }
 
     init() {
@@ -24,7 +26,6 @@ class AnimateWidthAuto {
     					if(element.width() > 0){
     						// clearInterval(WaitForWidth);
 							element.css('width', $(element).width() + 'px');
-                            element.addClass('truncate');
     					}
                     //  var WaitForWidth = setInterval(function(){
         			// }, 250);
