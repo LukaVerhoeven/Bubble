@@ -492,7 +492,9 @@ app.controller('GlobalController', function($scope, $http, API_URL, $rootScope) 
         $rootScope.chatFunction  = null;      
         $rootScope.groupFriends  = null;
         $rootScope.isChatAdmin   = null;
-        $rootScope.messages.items = null;
+        if($rootScope.messages.items){
+            $rootScope.messages.items = null;
+        }
     }
 
     $rootScope.logout = function() {

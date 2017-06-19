@@ -10806,7 +10806,9 @@ app.controller('GlobalController', function ($scope, $http, API_URL, $rootScope)
         $rootScope.chatFunction = null;
         $rootScope.groupFriends = null;
         $rootScope.isChatAdmin = null;
-        $rootScope.messages.items = null;
+        if ($rootScope.messages.items) {
+            $rootScope.messages.items = null;
+        }
     };
 
     $rootScope.logout = function () {
@@ -11032,6 +11034,7 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         // All your friends
         // console.log(response.data);
         $rootScope.friendlist = response.data.friends;
+        console.log($rootScope.friendlist);
         // An array with all your friends => for creating a new group => friends get removed from this array to the newGroup array. (GroupController)
         $rootScope.friendsForGroup = $rootScope.friendlist.slice(0, $rootScope.friendlist.lenght);
         // All your groups (GroupController)
@@ -11086,13 +11089,18 @@ app.controller('FriendController', function ($scope, $http, $sanitize, API_URL, 
         $http.get(API_URL + "searchNewFriend/" + $validate).then($scope.newfriendsearch, $rootScope.errorCallback);
     };
 
+    $scope.emptySearch = function () {
+        $scope.searchedfriends = [];
+        $scope.newFriendInput = undefined;
+    };
+
     // ADD NEW FRIEND
     $scope.addFriend = function (friendID, friendrequest, index) {
         var newfriend = {
             newfriend: friendID
         };
         var url = API_URL + "addFriend";
-        if ($scope.searchedfriends) {
+        if ($scope.searchedfriends && !friendrequest) {
             if ($scope.searchedfriends[index].removeRequest) {
                 newfriend.removeRequest = $scope.searchedfriends[index].removeRequest;
                 $scope.searchedfriends[index].removeRequest = null;
@@ -11450,6 +11458,7 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
                     text: e.message.text,
                     theme_id: e.message.theme_id,
                     name: e.user.name,
+                    nickname: e.user.name,
                     user_id: e.message.user_id,
                     profile_image: e.message.profile_image,
                     force_theme: e.message.force_theme,
@@ -11678,19 +11687,24 @@ app.controller('ChatSettingsController', function ($scope, $http, $sanitize, API
 
     // CHECK IF THE CHAT HAS MINIMUM 1 ADMIN
     $scope.minimumAdmins = function (preventToggle) {
-        var allAdmins = $rootScope.adjustElementNewArray($rootScope.groupFriends, 1, 'admin', 'retreive', 0, 0, 0);
-        // allAdmins = $rootScope.filterArray(allAdmins,1);
-        var blockAction = allAdmins.length < 2;
-        if (blockAction) {
-            $('#Alerts').addClass('open');
-            $('#minimunAdminsAlert').addClass('open');
+        if ($rootScope.isChatAdmin) {
+            var allAdmins = $rootScope.adjustElementNewArray($rootScope.groupFriends, 1, 'admin', 'retreive', 0, 0, 0);
+
+            // allAdmins = $rootScope.filterArray(allAdmins,1);
+            var blockAction = allAdmins.length < 2;
+            if (blockAction) {
+                $('#Alerts').addClass('open');
+                $('#minimunAdminsAlert').addClass('open');
+            }
+            // prevent checkbox from being unchecked
+            if (preventToggle) {
+                var checkBoxes = $('#filled-in-box' + $scope.adminkey);
+                checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+            }
+            return blockAction;
+        } else {
+            return false;
         }
-        // prevent checkbox from being unchecked
-        if (preventToggle) {
-            var checkBoxes = $('#filled-in-box' + $scope.adminkey);
-            checkBoxes.prop("checked", !checkBoxes.prop("checked"));
-        }
-        return blockAction;
     };
 
     // EDIT GROUP NAME

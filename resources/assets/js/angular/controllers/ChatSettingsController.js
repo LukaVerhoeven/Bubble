@@ -72,19 +72,24 @@ app.controller('ChatSettingsController', function($scope, $http, $sanitize, API_
 
     // CHECK IF THE CHAT HAS MINIMUM 1 ADMIN
     $scope.minimumAdmins = function(preventToggle){
-        var allAdmins = $rootScope.adjustElementNewArray($rootScope.groupFriends, 1,'admin', 'retreive',0,0,0);
-        // allAdmins = $rootScope.filterArray(allAdmins,1);
-        var blockAction = allAdmins.length < 2;
-        if(blockAction){
-            $('#Alerts').addClass('open');
-            $('#minimunAdminsAlert').addClass('open');
+        if($rootScope.isChatAdmin){
+            var allAdmins = $rootScope.adjustElementNewArray($rootScope.groupFriends, 1,'admin', 'retreive',0,0,0);
+
+            // allAdmins = $rootScope.filterArray(allAdmins,1);
+            var blockAction = allAdmins.length < 2;
+            if(blockAction){
+                $('#Alerts').addClass('open');
+                $('#minimunAdminsAlert').addClass('open');
+            }
+            // prevent checkbox from being unchecked
+            if(preventToggle){
+                var checkBoxes = $('#filled-in-box'+ $scope.adminkey);
+                checkBoxes.prop("checked", !checkBoxes.prop("checked"));
+            }
+            return blockAction;
+        }else {
+            return false;
         }
-        // prevent checkbox from being unchecked
-        if(preventToggle){
-            var checkBoxes = $('#filled-in-box'+ $scope.adminkey);
-            checkBoxes.prop("checked", !checkBoxes.prop("checked"));
-        }
-        return blockAction;
     }
 
     // EDIT GROUP NAME

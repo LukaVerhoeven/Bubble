@@ -35,13 +35,6 @@ class GroupController extends Controller
             array_push($UsersInChat, $AuthInchat);
             Theme::create($chat,'general','white', 0,0,1);
 
-            $data = response()->json([
-                'friends' => $UsersInChat,
-                'chat_id' => (int)$chat->id,
-                'userIsAdmin' => 0 ,
-                'chat_name' => $chat->chat_name,
-                'function' => 'groupschat',
-            ]);
 
             if($friends){
                 foreach ($friends as $key => $value) {
@@ -56,9 +49,26 @@ class GroupController extends Controller
                     $friendInChat->save();
                     $friendInChat = UsersInChat::AddNameJson($value['name'], $friendInChat);
                     array_push($UsersInChat, $friendInChat);
-                    broadcast(new UserEvents($value['userid'] , "grouprequest" , $data->getData()))->toOthers();
                 }
             }
+            
+            $data = response()->json([
+                'friends' => $UsersInChat,
+                'chat_id' => (int)$chat->id,
+                'userIsAdmin' => 0 ,
+                'chat_name' => $chat->chat_name,
+                'function' => 'groupschat',
+                'unread_messages' => 0,
+            ]);
+
+            $noDuplicates = array();
+            foreach ($friends as $friend) {
+                $id = $friend['userid'];
+                if(!in_array($id, $noDuplicates)){
+                    broadcast(new UserEvents($friend['userid'] , "grouprequest" , $data->getData()))->toOthers();
+                    array_push($noDuplicates, $id);
+                }
+            }            
         } catch (\Exception $e) {
             return "group could not be created";
         }

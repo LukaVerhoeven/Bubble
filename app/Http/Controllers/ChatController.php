@@ -51,6 +51,7 @@ class ChatController extends Controller
             $chatid = (int)$request->input('chatid');
             $username = $request->input('newUserName');
             $user = Auth::user();
+            UsersInChat::where('user_id', $user->id)->where('nickname', $user->name)->update(['nickname' => $username]); //update all chats
             $user->name = $username;
             $user->save();
             if($chatid){

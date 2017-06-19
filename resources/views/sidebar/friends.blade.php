@@ -40,14 +40,14 @@
 					  </form>
 					</div>
 				</div>
-				<a class="js-add-friend btn waves-effect waves-light add-friend">Add friend <i class="material-icons close-add-friend">clear</i></a>
+				<a class="js-add-friend btn waves-effect waves-light add-friend">Add friend <i class="material-icons close-add-friend" ng-click="emptySearch()">clear</i></a>
 			</div>
 			<div class="search-new-friends js-search-new-friends">
 				<div class="nav-wrapper">
 				    <div class="input-field no-margin-top">
 				      <input id="search-add-friend" type="search" ng-model="newFriendInput" ng-keyup="updateFriendSearch(newFriendInput)" placeholder="add friends" autocomplete="off" required>
 				      <label class="label-icon" for="search-add-friend"><i class="material-icons">search</i></label>
-				      <i class="material-icons close-search js-empty-input">close</i>
+				      <i class="material-icons close-search js-empty-input" ng-click="updateFriendSearch('')">close</i>
 				    </div>
 				</div>
 			</div>
