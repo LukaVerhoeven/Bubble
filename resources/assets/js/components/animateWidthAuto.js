@@ -27,7 +27,7 @@ class AnimateWidthAuto {
     					}
                     //  var WaitForWidth = setInterval(function(){
         			// }, 250);
-                }, 500);
+                }, 700);
 		    	// clear interval after 3seconds
 				// setTimeout(function(){ clearInterval(WaitForWidth); }, 3000);
 		    })

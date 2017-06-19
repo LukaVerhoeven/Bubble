@@ -100,13 +100,13 @@
                             <div class="panel-body">
                                 <form class="form-horizontal" role="form" method="POST" action="{{ route('login') }}">
                                     {{ csrf_field() }}
-
+                                    
                                     <div class="input-field col s12{{ $errors->has('email') ? ' has-error' : '' }}">
                                         <input id="email" type="email" maxlength="100" class="validate" name="email" value="{{ old('email') }}" required autofocus>
                                         <label for="email">E-Mail Address</label>
                                         @if ($errors->has('email'))
                                             <span class="help-block">
-                                                <strong>{{ $errors->getBag('login')->first('email') }}</strong>
+                                                <strong>{{ $errors->first('email') }}</strong>
                                             </span>
                                         @endif
                                     </div>
