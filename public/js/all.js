@@ -11572,8 +11572,23 @@ app.controller('MessageController', function ($scope, $http, API_URL, $rootScope
     };
 
     // on refresh or url change => leave chat channel
-    $scope.$on('$routeChangeStart', function () {
+    $scope.$on('$locationChangeStart', function () {
         Echo.leave($scope.currentChatroom);
+        $rootScope.logout();
+    });
+
+    window.onbeforeunload = function () {
+        Echo.leave($scope.currentChatroom);
+        $rootScope.logout();
+    };
+
+    $scope.$on('$locationChangeStart', function (event, next, current) {
+        if (check(next + current)) {
+            var answer = confirm("Are you sure you want to navigate away from this page");
+            if (!answer) {
+                event.preventDefault();
+            }
+        }
     });
 
     // infinite scroll messages ↓↓↓↓ all code down below ↓↓↓↓ 
@@ -12126,6 +12141,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // import Sugar from 'sugar';
 
 
+// import angularRoute from 'angular-route';
 // import ngInfiniteScroll from 'ng-infinite-scroll';
 // import angularSanitize from 'angular-sanitize';
 // import VueChat from './components/_vueChat';
