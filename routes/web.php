@@ -16,12 +16,12 @@
 // Route::group(['middleware' => 'auth'], function () {
 // 	Route::get('/api/message/{id?}','MessageController@index')->middleware('auth');
 // });
-Route::group(['middleware' => ['forceSSL']], function()
-{
+// Route::group(['middleware' => ['forceSSL']], function()
+// {
 // Route::group(['https'], function(){
 	Route::get('/', 'ChatController@index');
 	Auth::routes();
-});
+// });
 
 	Route::get('/api/getChatRooms', 'ChatController@getChatRooms');
 	Route::post('/api/username', 'ChatController@editUserName')->middleware('auth');
