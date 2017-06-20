@@ -1269,8 +1269,8 @@ app.controller('MessageController', function($scope, $http, API_URL, $rootScope,
     });
     
     window.onbeforeunload = function(){
-        Echo.leave($scope.currentChatroom);
         $rootScope.logout();
+        Echo.leave($scope.currentChatroom);
     }    
 
     $scope.$on('$locationChangeStart', function (event, next, current) {
