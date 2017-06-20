@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        URL::forceScheme('https'); //force https for laravel 5.4
+        // URL::forceScheme('https'); //force https for laravel 5.4
     }
 
     /**
@@ -26,5 +26,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        if (env('APP_ENV') === 'prod') {
+        $this->app['request']->server->set('HTTPS', true);
+}
     }
 }
