@@ -18,6 +18,7 @@
 // });
 // Route::group(['middleware' => ['auth','forceSSL']], function()
 // {
+Route::group(['https'], function(){
 	Route::get('/', 'ChatController@index');
 	Route::get('/api/getChatRooms', 'ChatController@getChatRooms');
 	Route::post('/api/username', 'ChatController@editUserName')->middleware('auth');
@@ -65,4 +66,4 @@
 	// Route::get('logout','auth\LoginController@logout');
 
 	Route::get('/home', 'HomeController@index');
-// });
+});
