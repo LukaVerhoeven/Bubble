@@ -5,6 +5,9 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta property="og:image" content="{{URL::asset('/img/bubble-icon.png')}}">
+		<meta property="og:description" content="Bubble is the chat application that makes chatting more clear. Using theme's inside your chat makes it possible to filter your messages">
+		<meta name="description" content="Bubble is the chat application that makes chatting more clear. Using theme's inside your chat makes it possible to filter your message"/>
 		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<title>Bubble</title>
 		<link href="/css/all.css" rel="stylesheet" type="text/css">
