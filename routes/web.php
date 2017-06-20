@@ -16,10 +16,13 @@
 // Route::group(['middleware' => 'auth'], function () {
 // 	Route::get('/api/message/{id?}','MessageController@index')->middleware('auth');
 // });
-// Route::group(['middleware' => ['auth','forceSSL']], function()
-// {
-Route::group(['https'], function(){
+Route::group(['middleware' => ['forceSSL']], function()
+{
+// Route::group(['https'], function(){
 	Route::get('/', 'ChatController@index');
+	Auth::routes();
+});
+
 	Route::get('/api/getChatRooms', 'ChatController@getChatRooms');
 	Route::post('/api/username', 'ChatController@editUserName')->middleware('auth');
 	Route::post('/api/email', 'ChatController@editUserEmail')->middleware('auth');
@@ -60,10 +63,9 @@ Route::group(['https'], function(){
 	Route::post('/api/deleteTheme', 'ThemeController@delete');
 
 	// User
-	Auth::routes();
+	
 	Route::post('/api/profileImage', 'ChatController@profileImage')->middleware('auth');
 
 	// Route::get('logout','auth\LoginController@logout');
 
 	Route::get('/home', 'HomeController@index');
-});
