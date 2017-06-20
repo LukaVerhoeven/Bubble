@@ -79,7 +79,7 @@
 			        </div>
 			        <!-- tables -->
 			        <div class="col s12 no-pad" ng-repeat="(key, friend) in groupFriends" ng-if="friend.confirmed">
-			        	<p class="text-block-center first-letter-capital">@{{ friend.name }}</p>
+			        	<p class="text-block-center first-letter-capital">@{{ friend.nickname }}</p>
 			        	<div class="right actions" ng-if="isChatAdmin">
 		        		    <p class="checkbox left v-align ">
 						      <input type="checkbox" class="filled-in" id="filled-in-box@{{key}}" checked="checked" ng-if="friend.admin" ng-click="toggleAdmin(friend.admin, friend.user_id, key)"/>

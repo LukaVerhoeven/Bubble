@@ -43,7 +43,7 @@
 				</div>
 				<!-- TODO filter laten werken ( endless scroll fixen ?) -->
 				
-				<!-- search results: users added to the group -->
+				<!-- : users added to the group -->
 				<h2 ng-if="newGroup.friends.length > 0">Friends added to this group</h2>
 				<ul class="collection js-newGroupFriends hide-scrollbar" ng-if="newGroup.friends.length > 0">
 					<li class="collection-item teal-border newGroupFriends" data-id="@{{friend.id}}" ng-repeat="friend in newGroup.friends">
@@ -53,11 +53,11 @@
 					    </a> 
 					</li>
 				</ul>
-				<!-- search results: users -->
+				<!-- friends to add to the group: users -->
 				<h2 ng-if="friendsForGroup.length > 0">Your friends</h2>
 				<ul class="collection hide-scrollbar" ng-show="(friendsForGroup|filter:{name: groupFriendInput}).length > 0">
 					<li class="collection-item" data-id="@{{friend.userid}}" ng-repeat="friend in friendsForGroup | filter:groupFriendInput"> 
-						<p class="name">@{{friend.name}}</p>
+						<p class="name">@{{friend.nickname}}</p>
 					    <a href="#!" class="secondary-content" ng-click="toggleFriendToGroup(friend.chatid, friendsForGroup, newGroup.friends)">
 							<i class="material-icons">add</i>
 					    </a> 
