@@ -24,7 +24,7 @@
 						<!-- profile info -->
 						<div class="valign-wrapper profile-info">
 							<div class="no-pad  img-overflow circle center fixed">
-								<img class="profile-pic " src="{{ Auth::user()->profile_image }}" alt="">
+								<img class="profile-pic " src="{{ URL::asset(Auth::user()->profile_image) }}" alt="">
 							</div>
 							<div class="fixed user-info">
 								<h1 class="bubble-username js-username truncate first-letter-capital">{{ Auth::user()->name }}</h1>

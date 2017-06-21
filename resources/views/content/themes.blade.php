@@ -39,7 +39,7 @@
 							<label for="@{{key}}keywords" class="active">Keywords</label>
 				        </div>
 				        <div class="input-field col s12 new-theme-color">
-							<p class="inline-block col s1">Color</p>
+							<p class="inline-block col s1 hide-on-small-only">Color</p>
 							<ul class="col s11 center-align">
 							  	<li ng-repeat="color in ::ThemeColors">
 							      <input name="color" type="radio" id="@{{key+color}}" ng-model="theme.color" value="@{{::color}}" required/>
@@ -48,7 +48,7 @@
 							</ul>
 				        </div>
 				        <div class="input-field col s12 new-theme-icon">
-							<p class="inline-block col s1">Icon</p>
+							<p class="inline-block col s1 hide-on-small-only">Icon</p>
 							<div class="col s11 center-align">
 								<div class="inline-block">
 									<div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
@@ -60,7 +60,7 @@
 							</div>
 				        </div>
 				        <div class="input-field col s12 new-theme-shortcut">
-							<p class="inline-block col s1">Shortcut: </p>
+							<p class="inline-block col s1 hide-on-small-only">Shortcut: </p>
 							<div class="col s11 center-align">
 								<div class="inline-block all-letters @{{theme.color}} waves-effect waves-light">
 								    <div class="inline-block new-shortcut" ng-repeat="char in ::ThemeShortcuts">
@@ -98,7 +98,7 @@
 				<label for="@{{key}}keywords" class="active">Keywords</label>
 	        </div>
 	        <div class="input-field col s12 new-theme-color">
-				<p class="inline-block col s1">Color</p>
+				<p class="inline-block col s1 hide-on-small-only">Color</p>
 				<ul class="col s11 center-align">
 				  	<li ng-repeat="color in ::ThemeColors">
 				      <input name="color" type="radio" id="@{{key+color}}" ng-model="NewTheme.color" value="@{{::color}}" required/>
@@ -107,7 +107,7 @@
 				</ul>
 	        </div>
 	        <div class="input-field col s12 new-theme-icon">
-				<p class="inline-block col s1">Icon</p>
+				<p class="inline-block col s1 hide-on-small-only">Icon</p>
 				<div class="col s11 center-align">
 					<div class="inline-block">
 						<div class="btn-floating btn white inline-block js-parent-selector" ng-repeat="icon in ::ThemeIcons">
@@ -119,7 +119,7 @@
 				</div>
 	        </div>
 	        <div class="input-field col s12 new-theme-shortcut">
-				<p class="inline-block col s1">Shortcut: </p>
+				<p class="inline-block col s1 hide-on-small-only">Shortcut: </p>
 				<div class="col s11 center-align">
 					<div class="inline-block all-letters  @{{NewTheme.color}} waves-effect waves-light" >
 					    <div class="inline-block new-shortcut" ng-repeat="char in ::ThemeShortcuts">
