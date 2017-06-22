@@ -941,7 +941,6 @@ app.controller('GroupController', function($scope, $http,$sanitize, API_URL, $ro
             }).then(function(response) {
                 $rootScope.getFriendChats(); //TODO do this asynchrone front-end
             }, $rootScope.errorCallback);
-        
             // remove all friends added to group front-end
             $rootScope.friendsForGroup = $rootScope.friendlist;
             $scope.newGroup.friends = [];

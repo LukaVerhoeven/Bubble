@@ -131,7 +131,7 @@ class ChatController extends Controller
             }
             
             // Get all users from the groupchats 
-            $friendsInGroupChats = UsersInChat::select('name','user_id','confirmed', 'chat_id','users_in_chats.admin', 'users_in_chats.is_deleted' , 'users_in_chats.unread_messages')
+            $friendsInGroupChats = UsersInChat::select('name','user_id','confirmed', 'chat_id','users_in_chats.admin', 'users_in_chats.is_deleted' , 'users_in_chats.unread_messages', 'users_in_chats.nickname')
                             ->join('chats', 'chats.id', '=', 'users_in_chats.chat_id')
                             ->join('users', 'users.id', '=', 'users_in_chats.user_id')
                             ->where('chats.function', '=', 'groupschat')
